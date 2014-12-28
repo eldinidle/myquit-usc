@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MyQuit USC</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_my_quit_plans">MyQuitPlans</string>
+    <string name="title_activity_my_quit_calendar">MyQuitCalendar</string>
+    <string name="title_activity_my_quit_pre_plan_calendar">MyQuitPrePlanCalendar</string>
+    <string name="title_activity_my_quit_progress">MyQuitProgress</string>
+    <string name="title_activity_my_quit_tasks">MyQuitTasksActivity</string>
+
+</resources>

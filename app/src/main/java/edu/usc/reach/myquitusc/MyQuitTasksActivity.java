@@ -1,5 +1,6 @@
 package edu.usc.reach.myquitusc;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -14,7 +15,7 @@ import android.widget.Toast;
 import java.io.IOException;
 
 
-public class MyQuitTasksActivity extends ActionBarActivity {
+public class MyQuitTasksActivity extends Activity {
     static final String[] TASKS_LIST =
             new String[] { "Sleeping", "Clubbing"};
     String[] pulledTimes;

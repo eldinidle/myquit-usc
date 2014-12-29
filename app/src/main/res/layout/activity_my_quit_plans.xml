@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="MyQuit Plans"
-        android:id="@+id/textView"
+        android:id="@+id/plansTitle"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
@@ -22,7 +22,7 @@
         android:text="Let&apos;s work on some scenarios where you might find it difficult to refrain from smoking."
         android:id="@+id/textView2"
         android:layout_marginTop="34dp"
-        android:layout_below="@+id/textView"
+        android:layout_below="@+id/plansTitle"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -30,8 +30,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="If I&apos;m going with with friends..."
-        android:id="@+id/textView3"
+        android:text="If I&apos;m going out with friends..."
+        android:id="@+id/showSituation"
         android:layout_below="@+id/textView2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -63,7 +63,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="&lt;"
-        android:id="@+id/button5"
+        android:id="@+id/previousIntent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -72,19 +72,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0/15"
-        android:id="@+id/button6"
+        android:id="@+id/statusBar"
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@+id/textView4"
-        android:layout_alignRight="@+id/textView"
-        android:layout_alignEnd="@+id/textView" />
+        android:layout_alignRight="@+id/plansTitle"
+        android:layout_alignEnd="@+id/plansTitle" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=">"
-        android:id="@+id/button7"
+        android:id="@+id/nextIntent"
         android:layout_alignParentBottom="true"
         android:layout_alignRight="@+id/editText"
         android:layout_alignEnd="@+id/editText" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Need a suggestion? Click here!"
+        android:id="@+id/button2"
+        android:layout_below="@+id/textView4"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

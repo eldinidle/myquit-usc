@@ -24,4 +24,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile files('src/main/java/edu/usc/reach/myquitusc/opencsv-3.1.jar')
     compile files('src/main/java/edu/usc/reach/myquitusc/commons-net-3.3.jar')
+    compile files('src/main/java/edu/usc/reach/myquitusc/GraphView-3.1.2.jar')
 }

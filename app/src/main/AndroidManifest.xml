@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:allowBackup="true"
@@ -12,7 +13,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MyQuitHomeScreen"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,23 +23,28 @@
         </activity>
         <activity
             android:name=".MyQuitPlans"
-            android:label="@string/title_activity_my_quit_plans" >
+            android:label="@string/title_activity_my_quit_plans"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".MyQuitCalendar"
-            android:label="@string/title_activity_my_quit_calendar" >
+            android:label="@string/title_activity_my_quit_calendar"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".MyQuitPrePlanCalendar"
-            android:label="@string/title_activity_my_quit_pre_plan_calendar" >
+            android:label="@string/title_activity_my_quit_pre_plan_calendar"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".MyQuitProgress"
-            android:label="@string/title_activity_my_quit_progress" >
+            android:label="@string/title_activity_my_quit_progress"
+            android:screenOrientation="sensorLandscape" >
         </activity>
         <activity
             android:name=".MyQuitTasksActivity"
-            android:label="@string/title_activity_my_quit_tasks" >
+            android:label="@string/title_activity_my_quit_tasks"
+            android:screenOrientation="portrait" >
         </activity>
 
         <receiver
@@ -51,6 +58,18 @@
             android:enabled="true"
             android:exported="false" >
         </service>
+
+        <activity
+            android:name=".MyQuitEMA"
+            android:label="@string/title_activity_my_quit_em" >
+        </activity>
+
+        <receiver
+            android:name=".MyQuitOnBootBroadcastReceiver"
+            android:enabled="true"
+            android:exported="false" >
+            <action android:name="android.intent.action.BOOT_COMPLETED" />
+        </receiver>
     </application>
 
 </manifest>

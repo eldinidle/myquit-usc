@@ -10,9 +10,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,15 +23,80 @@ import java.util.List;
 public class MyQuitCSVHelper {
 
     private static final String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/";
-    private static final String calPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/Calendars";
-    private static final String emaPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/EMA";
-    private static final String logPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/Logs";
+    private static final String calPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/Calendars/";
+    private static final String emaPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/EMA/";
+    private static final String logPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/Logs/";
 
     final public static String[] defaultTimes =
             new String[] { "12:00 AM", "01:00 AM", "02:00 AM", "03:00 AM", "04:00 AM", "05:00 AM",
                     "06:00 AM", "07:00 AM", "08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM",
                     "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM",
                     "06:00 PM", "07:00 PM", "08:00 PM", "09:00 PM", "10:00 PM", "11:00 PM"};
+
+    public static int convertRepromptChar() {
+        String testID = MyQuitCSVHelper.pullLastEvent()[0];
+        //int lengthFull = testID.length();
+        //int lengthMin = lengthFull - 1;
+        int bringBack = 0;
+                if (testID.substring(0, 11).equalsIgnoreCase("emaReprompt")) {
+                    bringBack = Integer.parseInt(testID.substring(11));
+                    return bringBack;
+                }
+
+        else {
+              return bringBack;
+              }
+    }
+
+    public static boolean isLastEventPastXMinutes(int minutes){
+        String stringTime = MyQuitCSVHelper.pullLastEvent()[1];
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        Calendar now = Calendar.getInstance();
+        Date timeNow = now.getTime();
+        try {
+            Date timeThen = sdf.parse(stringTime);
+            long compareTime = timeNow.getTime() - timeThen.getTime();
+            return (compareTime > (minutes * 60 * 1000));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static int compareEvents(String event1, String event2) {
+        String e1Time = pullLastEvent(event1);
+        String e2Time = pullLastEvent(event2);
+        if (e1Time == null & e2Time == null) {
+            return 0;
+        }
+        else if (e1Time == null & e2Time != null) {
+            return 2;
+        }
+        else if (e1Time != null & e2Time == null) {
+            return 1;
+        }
+        else if (e1Time != null & e2Time != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+            Date e1Date;
+            Date e2Date;
+            try {
+                e1Date = sdf.parse(e1Time);
+                e2Date = sdf.parse(e2Time);
+                if (e2Date.after(e1Date)) {
+                    return 2;
+                }
+                else if (e2Date.before(e1Date)) {
+                    return 1;
+                }
+                else {
+                    return 3;
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
 
     public static String getFulltime() {
         Calendar emptyCal = Calendar.getInstance();
@@ -38,10 +105,65 @@ public class MyQuitCSVHelper {
         return fullTime;
     }
 
-    public static void logCigarette(String fullTime) {
-        String[] pushEvent = new String [] {fullTime};
+    public static int pullCigarette(String calledDate) throws IOException {
+        String stepDate = calledDate.replaceAll("/", "_");
+        String fileName = stepDate + ".csv";
+        CSVReader reader = new CSVReader(new FileReader(logPath + fileName));
+        List<String[]> pullCigs = reader.readAll();
+        reader.close();
+        return pullCigs.size();
+    }
+
+    public static void pushCigarette(String calledDate, String fullTime) throws IOException {
+        String stepDate = calledDate.replaceAll("/", "_");
+        String fileName = stepDate + ".csv";
+        CSVWriter writer = new CSVWriter(new FileWriter(logPath + fileName, true));
+        String[] pushTime = new String[] {fullTime};
+        writer.writeNext(pushTime);
+        writer.close();
+    }
+
+    public static String[] pullLastEvent() {
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter(logPath + "Cigarettes.csv"));
+            CSVReader reader = new CSVReader(new FileReader(logPath + "SystemEvents.csv"));
+            String[] report;
+            String[] report2 = null;
+            while((report = reader.readNext()) != null) {
+                report2 = report;
+            }
+            return report2;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String pullLastEvent(String logMessage) {
+        try {
+            CSVReader reader = new CSVReader(new FileReader(logPath + "SystemEvents.csv"));
+            String[] report;
+            String pulledTime = null;
+            String pulledMessage;
+            while((report = reader.readNext()) != null) {
+               pulledMessage = report[0];
+                if (pulledMessage.equalsIgnoreCase(logMessage)) {
+                    pulledTime = report[1];
+                }
+                else {
+                    pulledTime = null;
+                }
+            }
+            return pulledTime;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static void logRogueEvent(String fullTime) {
+        String[] pushEvent = new String [] {"rogueEvent", fullTime};
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter(logPath + "RogueEvents.csv", true));
             writer.writeNext(pushEvent);
             writer.close();
         } catch (IOException e) {
@@ -49,10 +171,10 @@ public class MyQuitCSVHelper {
         }
     }
 
-    public static void logEvent(String logMessage, String fullTime) {
+    public static void logEMAEvents(String logMessage, String fullTime) {
         String[] pushEvent = new String [] {logMessage, fullTime};
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter(logPath + "SystemEvents.csv"));
+            CSVWriter writer = new CSVWriter(new FileWriter(logPath + "SystemEvents.csv", true));
             writer.writeNext(pushEvent);
             writer.close();
         } catch (IOException e) {

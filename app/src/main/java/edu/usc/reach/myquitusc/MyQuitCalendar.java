@@ -31,7 +31,7 @@ import java.util.Date;
 import java.util.Dictionary;
 
 
-public class MyQuitCalendar extends ActionBarActivity   {
+public class MyQuitCalendar extends Activity   {
 
     static ArrayAdapter<String> timeArrayAdapter;
 

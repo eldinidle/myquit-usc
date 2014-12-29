@@ -1,12 +1,13 @@
 package edu.usc.reach.myquitusc;
 
+import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class MyQuitPrePlanCalendar extends ActionBarActivity {
+public class MyQuitPrePlanCalendar extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,17 +1,27 @@
 package edu.usc.reach.myquitusc;
 
+import android.app.AlarmManager;
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -23,6 +33,17 @@ public class MyQuitHomeScreen extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_quit_home_screen);
         boolean creatStruc = MyQuitCSVHelper.createStructure();
+        if(MyQuitCSVHelper.pullLastEvent("loginSuccess") == null) {
+            AlarmManager alarmMgr;
+            PendingIntent alarmIntent;
+            alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            Intent loopAlarm = new Intent(this, MyQuitReceiver.class);
+            alarmIntent = PendingIntent.getBroadcast(this, 0, loopAlarm, 0);
+            Calendar currentTime = Calendar.getInstance();
+            alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, currentTime.getTimeInMillis(),
+                    1000 * 60 * 2, alarmIntent);
+        }
+
         if (!creatStruc) {
             Toast.makeText(getApplicationContext(), "Warning: Directory not created", Toast.LENGTH_LONG).show();
         }
@@ -59,8 +80,59 @@ public class MyQuitHomeScreen extends ActionBarActivity {
         oopsSmoke.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyQuitCSVHelper.logCigarette(MyQuitCSVHelper.getFulltime());
-                Toast.makeText(getApplicationContext(),"Thank you for reporting your cigarette", Toast.LENGTH_LONG).show();
+                Calendar smokeDate = Calendar.getInstance();
+                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                try {
+                    MyQuitCSVHelper.pushCigarette(sdf.format(smokeDate.getTime()), MyQuitCSVHelper.getFulltime());
+                    MyQuitCSVHelper.logRogueEvent(MyQuitCSVHelper.getFulltime());
+                    Toast.makeText(getApplicationContext(),("Thank you for reporting your smoking."), Toast.LENGTH_LONG).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(),"Please insert SD card or restart application.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        Button progressTracker = (Button) findViewById(R.id.progressButton);
+        progressTracker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent openProgress = new Intent(getApplicationContext(), MyQuitProgress.class);
+                MyQuitHomeScreen.this.overridePendingTransition(R.anim.abc_fade_in,R.anim.abc_fade_out);
+                startActivity(openProgress);
+            }
+        });
+
+        Button gonnaSmoke = (Button) findViewById(R.id.smokeNow);
+        gonnaSmoke.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                Fragment older = getFragmentManager().findFragmentByTag("impintent");
+                if (older != null) {
+                    ft.remove(older);
+                }
+                ft.addToBackStack(null);
+
+                // Create and show the dialog.
+                DialogFragment impIntent = ImpIntentDialog.newInstance();
+                MyQuitCSVHelper.logEMAEvents("intentPresented", MyQuitCSVHelper.getFulltime());
+                impIntent.show(ft, "impintent");
+            }
+        });
+
+        Button launchPlans = (Button) findViewById(R.id.quitPlans);
+        launchPlans.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (MyQuitCSVHelper.pullLastEvent("completedPlans") != null) {
+                    Toast.makeText(getApplicationContext(),"You've already completed this portion of the study!",Toast.LENGTH_SHORT).show();;
+                }
+                else {
+                    Intent startPlan = new Intent(getApplicationContext(), MyQuitPlans.class);
+                    MyQuitHomeScreen.this.overridePendingTransition(R.anim.abc_fade_in,R.anim.abc_fade_out);
+                    startActivity(startPlan);
+                }
             }
         });
 
@@ -89,4 +161,40 @@ public class MyQuitHomeScreen extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public static class ImpIntentDialog extends DialogFragment {
+        // String timeTitle;
+
+        static ImpIntentDialog newInstance() {
+            ImpIntentDialog tdf = new ImpIntentDialog();
+
+          //  Bundle args = new Bundle();
+          //  args.putString("timeCode", timeCode);
+          //  tdf.setArguments(args);
+            return tdf;
+        }
+
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            //timeTitle = getArguments().getString("timeCode");
+            getDialog().setTitle("Instead of smoking...");
+            View v = inflater.inflate(R.layout.fragment_imp_intent, container, false);
+
+            Button closeImp = (Button) v.findViewById(R.id.confirmIntent);
+            closeImp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getDialog().dismiss();
+                }
+            });
+
+            TextView intentView = (TextView) v.findViewById(R.id.viewIntent);
+            intentView.setText("Go out for a jog");
+            intentView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+            return v;
+        }
+    }
+
 }

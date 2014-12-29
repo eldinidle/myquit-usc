@@ -9,5 +9,6 @@
     <string name="title_activity_my_quit_pre_plan_calendar">MyQuitPrePlanCalendar</string>
     <string name="title_activity_my_quit_progress">MyQuitProgress</string>
     <string name="title_activity_my_quit_tasks">MyQuitTasksActivity</string>
+    <string name="title_activity_my_quit_em">MyQuitEMA</string>
 
 </resources>

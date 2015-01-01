@@ -33,6 +33,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_quit_home_screen);
         boolean creatStruc = MyQuitCSVHelper.createStructure();
+
         if(MyQuitCSVHelper.pullLastEvent("loginSuccess") == null) {
             AlarmManager alarmMgr;
             PendingIntent alarmIntent;
@@ -156,6 +157,11 @@ public class MyQuitHomeScreen extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+            return true;
+        }
+        if (id == R.id.renewFolders) {
+            MyQuitCSVHelper.deleteAndRefresh(true,495030);
             return true;
         }
 

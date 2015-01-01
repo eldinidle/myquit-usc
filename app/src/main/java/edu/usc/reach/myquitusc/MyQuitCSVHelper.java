@@ -1,5 +1,6 @@
 package edu.usc.reach.myquitusc;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.os.Environment;
 import android.widget.Toast;
 
@@ -20,18 +21,35 @@ import java.util.List;
 /**
  * Created by Eldin on 12/26/14.
  */
-public class MyQuitCSVHelper {
+public class MyQuitCSVHelper{
+    /*
+    final String filePath;
+        final String calPath;
+        final String emaPath;
+        final String logPath;
+
+    public MyQuitCSVHelper(Context c) {
+        String path = c.getExternalFilesDir(Environment.getExternalStorageDirectory().getAbsolutePath()).getAbsolutePath()
+        filePath = path + "/MyQuitUSC/";
+        calPath = path + "/MyQuitUSC/Calendars/";
+        emaPath = path + "/MyQuitUSC/EMA/";
+        logPath = path + "/MyQuitUSC/Logs/";
+    }
+    */
 
     private static final String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/";
     private static final String calPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/Calendars/";
-    private static final String emaPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/EMA/";
+    public static final String emaPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/EMA/";
     private static final String logPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/Logs/";
+
 
     final public static String[] defaultTimes =
             new String[] { "12:00 AM", "01:00 AM", "02:00 AM", "03:00 AM", "04:00 AM", "05:00 AM",
                     "06:00 AM", "07:00 AM", "08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM",
                     "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM",
                     "06:00 PM", "07:00 PM", "08:00 PM", "09:00 PM", "10:00 PM", "11:00 PM"};
+
+
 
     public static int convertRepromptChar() {
         String testID = MyQuitCSVHelper.pullLastEvent()[0];
@@ -97,6 +115,21 @@ public class MyQuitCSVHelper {
         }
         return 0;
     }
+
+    public static String getTimeOnly() {
+        Calendar emptyCal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        String fullTime = sdf.format(emptyCal.getTime());
+        return fullTime;
+    }
+
+    public static String getFullDate() {
+        Calendar emptyCal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        String fullTime = sdf.format(emptyCal.getTime());
+        return fullTime;
+    }
+
 
     public static String getFulltime() {
         Calendar emptyCal = Calendar.getInstance();
@@ -182,6 +215,41 @@ public class MyQuitCSVHelper {
         }
     }
 
+    public static boolean deleteDirectory(File path) {
+        if(path.exists() ) {
+            File[] files = path.listFiles();
+            if (files == null) {
+                return true;
+            }
+            for(int i=0; i<files.length; i++) {
+                if(files[i].isDirectory()) {
+                    deleteDirectory(files[i]);
+                }
+                else {
+                    files[i].delete();
+                }
+            }
+        }
+        return(path.delete());
+    }
+
+    public static void deleteAndRefresh(Boolean confirmYes,int passwordInClass) {
+        /*
+        The password is 495030.
+         */
+        if(confirmYes & (passwordInClass == 495030)){
+            File newDirectory4 = new File(filePath);
+            File newDirectory3 = new File(calPath);
+            File newDirectory2 = new File(emaPath);
+            File newDirectory1 = new File(logPath);
+            deleteDirectory(newDirectory1);
+            deleteDirectory(newDirectory2);
+            deleteDirectory(newDirectory3);
+            deleteDirectory(newDirectory4);
+            createStructure();
+        }
+    }
+
     public static boolean createStructure () {
         File newDirectory = new File(filePath);
         File newCalendar = new File(calPath);
@@ -231,12 +299,12 @@ public class MyQuitCSVHelper {
         reader.close();
         return pullTimes;
     }
-// TODO:EMA section for push
-    public static void pushEMATimes(String calledDate, String calledTime) throws IOException {
+
+    public static void pushEMATimes(String calledDate, String calledTime, String emaState, int sessionID) throws IOException {
         String stepDate = calledDate.replaceAll("/", "_");
         String fileName = stepDate + ".csv";
         CSVWriter writer = new CSVWriter(new FileWriter(emaPath + fileName));
-        String[] pushTimes = new String[] { calledDate, calledTime };
+        String[] pushTimes = new String[] { calledDate, calledTime, emaState, String.valueOf(sessionID)};
         writer.writeNext(pushTimes);
         writer.close();
     }

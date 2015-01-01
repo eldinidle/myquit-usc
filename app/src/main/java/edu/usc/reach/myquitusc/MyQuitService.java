@@ -10,6 +10,9 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
+
+import java.io.IOException;
 
 public class MyQuitService extends Service {
     public MyQuitService() {
@@ -18,7 +21,14 @@ public class MyQuitService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        String decisionAction = intent.getStringExtra("Action");
+        String decisionAction;
+        try {
+            decisionAction = intent.getStringExtra("Action");
+        }
+        catch(Exception e) {
+            decisionAction = "Do Nothing";
+        }
+        int decisionSessionID = intent.getIntExtra("SessionID",0);
         String actionString = "Processing...";
         if (decisionAction.matches("SFTP")) {
             actionString = "Uploading data to the cloud...";
@@ -27,7 +37,7 @@ public class MyQuitService extends Service {
             actionString = "Thank you for participating in the study.";
         }
         else {
-            actionString = "";
+            actionString = "Remember to record your smoking!";
         }
         NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle("MyQuit USC")
@@ -40,6 +50,21 @@ public class MyQuitService extends Service {
        if (decisionAction.matches("EMA")) {
             PendingIntent emaIntent;
             Intent launchEMA = new Intent(this, MyQuitEMA.class);
+            launchEMA.putExtra("Survey",MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS);
+            MyQuitEMAHelper.pushLastSessionID(MyQuitCSVHelper.getFullDate(),MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS,decisionSessionID);
+            //launchEMA.putExtra("Position",0);
+            //launchEMA.putExtra("SessionID",decisionSessionID);
+           //String decID = String.valueOf(decisionSessionID);
+           //launchEMA.putExtra("StringSessionID",decID);
+            Log.d("MY-QUIT-USC","pushed session ID is" + MyQuitEMAHelper.pullLastSessionID(MyQuitCSVHelper.getFullDate(),MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS));
+           try {
+               MyQuitEMAHelper.pushSpecificAnswer(MyQuitCSVHelper.getFullDate(),
+                       MyQuitCSVHelper.getTimeOnly(),
+                       decisionSessionID, 9999, 0, true, MyQuitEMA.retrieveSurveyLength(MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS));
+           } catch (IOException e) {
+               e.printStackTrace();
+               Log.d("MY-QUIT-USC", "Something's wrong...");
+           }
             launchEMA.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
             launchEMA.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             launchEMA.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

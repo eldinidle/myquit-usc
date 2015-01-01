@@ -12,7 +12,7 @@ import java.util.Calendar;
 import org.apache.commons.net.ftp.FTPClient;
 
 public class MyQuitReceiver extends BroadcastReceiver {
-    static final int KEY_NUM_REPROMPTS = 3;
+   // static final int KEY_NUM_REPROMPTS = 3;
 
     public MyQuitReceiver() {
     }
@@ -55,6 +55,8 @@ public class MyQuitReceiver extends BroadcastReceiver {
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(1, myQuitSFTPNotify);
 
+        MyQuitEMAHelper.decideEMA(context);
+        /*
         if (MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("intentPresented")) {
             Intent launchService = new Intent(context, MyQuitService.class);
             launchService.putExtra("Action","EMA");
@@ -70,8 +72,7 @@ public class MyQuitReceiver extends BroadcastReceiver {
             launchService.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startService(launchService);
         }
-
-
+        */
 
 
         mNotificationManager.cancel(1);

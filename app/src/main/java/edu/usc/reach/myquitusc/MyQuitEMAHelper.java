@@ -46,17 +46,19 @@ public class MyQuitEMAHelper {
     }
 
     public static void decideEMA (Context context) {
+    try {
         if (MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("intentPresented")) {
             pushActionEMA(context);
-        }
-        else if (MyQuitCSVHelper.pullLastEvent()[0].substring(0,11).equalsIgnoreCase("emaReprompt") & (MyQuitCSVHelper.convertRepromptChar() > KEY_NUM_REPROMPTS)) {
+        } else if (MyQuitCSVHelper.pullLastEvent()[0].substring(0, 11).equalsIgnoreCase("emaReprompt") & (MyQuitCSVHelper.convertRepromptChar() > KEY_NUM_REPROMPTS)) {
             MyQuitCSVHelper.logEMAEvents("emaMissedSurvey", MyQuitCSVHelper.getFulltime());
-        }
-        else if ((MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("emaPrompted") | MyQuitCSVHelper.pullLastEvent()[0].substring(0,11).equalsIgnoreCase("emaReprompt"))  & MyQuitCSVHelper.isLastEventPastXMinutes(3)) {
+        } else if ((MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("emaPrompted") | MyQuitCSVHelper.pullLastEvent()[0].substring(0, 11).equalsIgnoreCase("emaReprompt")) & MyQuitCSVHelper.isLastEventPastXMinutes(3)) {
             pushActionEMA(context);
+        } else if ((MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("emaFinished"))) {
         }
-        else if ((MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("emaFinished"))) {
-        }
+    }
+    catch (NullPointerException neo){
+
+    }
     }
 
 

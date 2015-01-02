@@ -23,6 +23,8 @@ public class MyQuitTasksActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final String[] NEW_TASKS_LIST = MyQuitPlanHelper.pullTasksList(getApplicationContext());
+
         Intent calendarCall = getIntent();
         final String timeTitle = calendarCall.getStringExtra("timeCode");
         final int positionTitle = calendarCall.getIntExtra("positionTime",0);
@@ -30,7 +32,7 @@ public class MyQuitTasksActivity extends Activity {
         try {
             pulledTimes = MyQuitCSVHelper.pullDateTimes(callingDate);
         } catch (IOException e) {
-            Toast.makeText(getApplicationContext(),"Warning: Please reinsert your SD card",Toast.LENGTH_LONG);
+            Toast.makeText(getApplicationContext(),"Warning: Please reinsert your SD card",Toast.LENGTH_LONG).show();
             Intent launchBack = new Intent(this, MyQuitCalendar.class);
             launchBack.putExtra("Date",callingDate);
             launchBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -40,12 +42,18 @@ public class MyQuitTasksActivity extends Activity {
         }
         setContentView(R.layout.activity_my_quit_tasks);
         ListView tasksView = (ListView) findViewById(R.id.tasksList);
-        ArrayAdapter<String> tasksArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, TASKS_LIST);
+        ArrayAdapter<String> tasksArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, NEW_TASKS_LIST);
+        if(NEW_TASKS_LIST==null) {
+            tasksArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, TASKS_LIST);
+        }
         tasksView.setAdapter(tasksArrayAdapter);
         tasksView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                pulledTimes[positionTitle] = MyQuitCSVHelper.defaultTimes[positionTitle] + " - " + TASKS_LIST[position];
+                pulledTimes[positionTitle] = MyQuitCSVHelper.defaultTimes[positionTitle] + " - " + NEW_TASKS_LIST[position];
+                if(NEW_TASKS_LIST==null) {
+                    pulledTimes[positionTitle] = MyQuitCSVHelper.defaultTimes[positionTitle] + " - " + TASKS_LIST[position];
+                }
 
                 try {
                     MyQuitCSVHelper.pushDateTimes(callingDate, pulledTimes);

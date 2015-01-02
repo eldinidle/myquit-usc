@@ -38,7 +38,7 @@ public class MyQuitCSVHelper{
     */
 
     private static final String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/";
-    private static final String calPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/Calendars/";
+    public static final String calPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/Calendars/";
     public static final String emaPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/EMA/";
     private static final String logPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/Logs/";
 
@@ -178,7 +178,29 @@ public class MyQuitCSVHelper{
             String pulledTime = null;
             String pulledMessage;
             while((report = reader.readNext()) != null) {
-               pulledMessage = report[0];
+                pulledMessage = report[0];
+                if (pulledMessage.equalsIgnoreCase(logMessage)) {
+                    pulledTime = report[1];
+                }
+                else {
+                    pulledTime = null;
+                }
+            }
+            return pulledTime;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String pullLoginStatus(String logMessage) {
+        try {
+            CSVReader reader = new CSVReader(new FileReader(logPath + "LoginEvents.csv"));
+            String[] report;
+            String pulledTime = null;
+            String pulledMessage;
+            while((report = reader.readNext()) != null) {
+                pulledMessage = report[0];
                 if (pulledMessage.equalsIgnoreCase(logMessage)) {
                     pulledTime = report[1];
                 }
@@ -208,6 +230,17 @@ public class MyQuitCSVHelper{
         String[] pushEvent = new String [] {logMessage, fullTime};
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(logPath + "SystemEvents.csv", true));
+            writer.writeNext(pushEvent);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void logLoginEvents(String logMessage, String fullTime) {
+        String[] pushEvent = new String [] {logMessage, fullTime};
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter(logPath + "LoginEvents.csv", true));
             writer.writeNext(pushEvent);
             writer.close();
         } catch (IOException e) {
@@ -299,7 +332,7 @@ public class MyQuitCSVHelper{
         reader.close();
         return pullTimes;
     }
-
+// TODO: Is this useful? Fix.
     public static void pushEMATimes(String calledDate, String calledTime, String emaState, int sessionID) throws IOException {
         String stepDate = calledDate.replaceAll("/", "_");
         String fileName = stepDate + ".csv";

@@ -43,14 +43,14 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="I will..."
         android:id="@+id/textView4"
-        android:layout_alignBottom="@+id/editText"
-        android:layout_toLeftOf="@+id/editText"
-        android:layout_toStartOf="@+id/editText" />
+        android:layout_alignBottom="@+id/customIntent"
+        android:layout_toLeftOf="@+id/customIntent"
+        android:layout_toStartOf="@+id/customIntent" />
 
     <EditText
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:id="@+id/editText"
+        android:id="@+id/customIntent"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -84,14 +84,14 @@
         android:text=">"
         android:id="@+id/nextIntent"
         android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/editText"
-        android:layout_alignEnd="@+id/editText" />
+        android:layout_alignRight="@+id/customIntent"
+        android:layout_alignEnd="@+id/customIntent" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Need a suggestion? Click here!"
-        android:id="@+id/button2"
+        android:id="@+id/suggestButton"
         android:layout_below="@+id/textView4"
         android:layout_centerHorizontal="true" />
 

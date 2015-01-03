@@ -10,21 +10,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="MyQuit Plans"
+        android:text="MyQuit 15"
         android:id="@+id/plansTitle"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Let&apos;s work on some scenarios where you might find it difficult to refrain from smoking."
         android:id="@+id/textView2"
         android:layout_marginTop="34dp"
         android:layout_below="@+id/plansTitle"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentTop="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -32,41 +33,34 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="If I&apos;m going out with friends..."
         android:id="@+id/showSituation"
-        android:layout_below="@+id/textView2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="44dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="I will..."
-        android:id="@+id/textView4"
-        android:layout_alignBottom="@+id/customIntent"
-        android:layout_toLeftOf="@+id/customIntent"
-        android:layout_toStartOf="@+id/customIntent" />
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/customIntent" />
 
     <EditText
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:id="@+id/customIntent"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="false"
+        android:layout_alignParentEnd="false"
         android:autoText="true"
         android:editable="true"
         android:enabled="true"
-        android:inputType="text" />
+        android:inputType="text"
+        android:layout_centerInParent="true"
+        android:layout_alignLeft="@+id/suggestButton"
+        android:layout_alignRight="@+id/suggestButton"
+        android:hint="I will" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="&lt;"
         android:id="@+id/previousIntent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/statusBar"
+        android:background="@color/Teal200" />
 
     <Button
         android:layout_width="wrap_content"
@@ -74,25 +68,29 @@
         android:text="0/15"
         android:id="@+id/statusBar"
         android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/textView4"
         android:layout_alignRight="@+id/plansTitle"
-        android:layout_alignEnd="@+id/plansTitle" />
+        android:layout_alignEnd="@+id/plansTitle"
+        android:layout_alignLeft="@+id/plansTitle"
+        android:background="@color/Teal200" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text=">"
         android:id="@+id/nextIntent"
         android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/customIntent"
-        android:layout_alignEnd="@+id/customIntent" />
+        android:layout_toRightOf="@+id/statusBar"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:background="@color/Teal200" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Need a suggestion? Click here!"
         android:id="@+id/suggestButton"
-        android:layout_below="@+id/textView4"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/customIntent"
+        android:layout_centerHorizontal="true"
+        android:background="@color/Teal200" />
 
 </RelativeLayout>

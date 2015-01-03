@@ -10,14 +10,20 @@ import android.content.Intent;
 import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -140,7 +146,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
 
                     // Create and show the dialog.
                     DialogFragment impIntent = ImpIntentDialog.newInstance();
-                    MyQuitCSVHelper.logEMAEvents("intentPresented", MyQuitCSVHelper.getFulltime());
+                  //  MyQuitCSVHelper.logEMAEvents("intentPresented", MyQuitCSVHelper.getFulltime());
                     impIntent.show(ft, "impintent");
                 }
                 else {
@@ -192,6 +198,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
         }
         if (id == R.id.renewFolders) {
             MyQuitCSVHelper.deleteAndRefresh(true,495030);
+            finish();
             return true;
         }
 
@@ -215,20 +222,61 @@ public class MyQuitHomeScreen extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             //timeTitle = getArguments().getString("timeCode");
-            getDialog().setTitle("Instead of smoking...");
+            final String[] NEW_TASKS_LIST = MyQuitPlanHelper.pullTasksList(getActivity());
+            final String[] NEW_INTENTS_LIST = MyQuitPlanHelper.pullIntentsList(getActivity());
+
+
+
             View v = inflater.inflate(R.layout.fragment_imp_intent, container, false);
 
-            Button closeImp = (Button) v.findViewById(R.id.confirmIntent);
+            getDialog().setTitle(Html.fromHtml("<font color='#004D40'>What are you doing now?</font>"));
+
+            final ListView activityList = (ListView) v.findViewById(R.id.chooseCraveEvent);
+            final Button closeImp = (Button) v.findViewById(R.id.confirmIntent);
+            final TextView intentView = (TextView) v.findViewById(R.id.viewIntent);
+            intentView.setVisibility(View.GONE);
+            closeImp.setVisibility(View.GONE);
+
+            ArrayAdapter<String> tasksArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_activated_1, NEW_TASKS_LIST);
+            if(NEW_TASKS_LIST==null) {
+                tasksArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_activated_1, MyQuitTasksActivity.TASKS_LIST);
+            }
+
+            activityList.setAdapter(tasksArrayAdapter);
+            activityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    String pulledActivity;
+                    try {
+                       pulledActivity = NEW_TASKS_LIST[position];
+                   }
+                   catch (Exception neo) {
+                        pulledActivity = MyQuitTasksActivity.TASKS_LIST[position];
+                   }
+                   MyQuitCSVHelper.logCraveEvent(pulledActivity,MyQuitCSVHelper.getFulltime());
+                   getDialog().setTitle(Html.fromHtml("<font color='#004D40'>Instead of smoking...</font>"));
+                    ArrayAdapter<String> blankAA = new ArrayAdapter<>(getActivity(),
+                            android.R.layout.simple_list_item_activated_1, new String[] {""});
+                activityList.setAdapter(blankAA);
+                    activityList.setClickable(false);
+                   activityList.setVisibility(View.INVISIBLE);
+                 intentView.setText(NEW_INTENTS_LIST[position]);
+                  intentView.getLayout();
+                  intentView.setVisibility(View.VISIBLE);
+                 intentView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+                   closeImp.setVisibility(View.VISIBLE);
+                }
+            });
+
+
             closeImp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    MyQuitCSVHelper.logEMAEvents("intentPresented", MyQuitCSVHelper.getFulltime());
                     getDialog().dismiss();
                 }
             });
 
-            TextView intentView = (TextView) v.findViewById(R.id.viewIntent);
-            intentView.setText("Go out for a jog");
-            intentView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
             return v;
         }
     }

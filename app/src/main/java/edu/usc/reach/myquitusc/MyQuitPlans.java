@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,12 +34,19 @@ public class MyQuitPlans extends Activity  {
 
     private void callAllListeners(Button nextButton, Button backButton,
                                   Button statusBar, Button suggestButton,
-                                  EditText customIntent, int oldPosition) {
-        setBackBaseListListener(backButton,nextButton,statusBar, suggestButton, customIntent, oldPosition);
-        setNextBaseListListener(nextButton,backButton,statusBar, suggestButton, customIntent, oldPosition);
+                                  EditText customIntent, TextView presentSituation,
+                                  int oldPosition) {
+        setBackBaseListListener(backButton,nextButton,statusBar, suggestButton, customIntent, presentSituation, oldPosition);
+        setNextBaseListListener(nextButton,backButton,statusBar, suggestButton, customIntent, presentSituation, oldPosition);
         setPushBaseListListener(statusBar);
         setSuggestButtonListener(suggestButton, oldPosition);
         setEditTextListener(getApplicationContext(),customIntent,oldPosition);
+        setSituationTextView(presentSituation, oldPosition);
+    }
+
+    private void setSituationTextView(TextView presentSituation, int indexPosition){
+        String pullAll = MyQuitPlanHelper.pullSituationList(getApplicationContext())[indexPosition];
+        presentSituation.setText(pullAll);
     }
 
     private void setSuggestButtonListener(Button suggestButton, int indexPosition){
@@ -100,7 +108,8 @@ public class MyQuitPlans extends Activity  {
 
     private void setNextBaseListListener(final Button nextButton, final Button backButton,
                                          final Button statusBar, final Button suggestButton,
-                                         final EditText customIntent, int indexPosition) {
+                                         final EditText customIntent, final TextView presentSituation,
+                                         int indexPosition) {
         if(indexPosition==(MyQuitPlanHelper.pullSizeBaseList(getApplicationContext())-1)){
             // nextButton.setText("Add situation");//TODO: Add custom situation
             nextButton.setVisibility(View.VISIBLE);
@@ -114,6 +123,7 @@ public class MyQuitPlans extends Activity  {
                                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         MyQuitCSVHelper.logLoginEvents("completedPlans", MyQuitCSVHelper.getFulltime());
                         finish();
+                        startActivity(homeLaunch);
                     }
                     else {
                         Toast.makeText(getApplicationContext(),"Please enter longer answer.",Toast.LENGTH_SHORT).show();
@@ -128,7 +138,7 @@ public class MyQuitPlans extends Activity  {
             nextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    callAllListeners(nextButton,backButton,statusBar,suggestButton, customIntent, oldPosition);
+                    callAllListeners(nextButton,backButton,statusBar,suggestButton, customIntent, presentSituation, oldPosition);
                 }
             });
         }
@@ -136,7 +146,8 @@ public class MyQuitPlans extends Activity  {
 
     private void setBackBaseListListener(final Button backButton, final Button nextButton,
                                          final Button statusBar, final Button suggestButton,
-                                         final EditText customIntent, int indexPosition) {
+                                         final EditText customIntent, final TextView presentSituation,
+                                         int indexPosition) {
         if(indexPosition==0){
             backButton.setText("");
             backButton.setClickable(false);
@@ -150,7 +161,7 @@ public class MyQuitPlans extends Activity  {
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    callAllListeners(nextButton,backButton,statusBar, suggestButton, customIntent, oldPosition);
+                    callAllListeners(nextButton,backButton,statusBar, suggestButton, customIntent, presentSituation, oldPosition);
                }
             });
         }
@@ -168,6 +179,7 @@ public class MyQuitPlans extends Activity  {
                                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         MyQuitCSVHelper.logLoginEvents("completedPlans",MyQuitCSVHelper.getFulltime());
                         finish();
+                        startActivity(homeLaunch);
                     }
                 }
             });
@@ -195,7 +207,7 @@ public class MyQuitPlans extends Activity  {
 
         //Initial onCreate setup
         MyQuitPlanHelper.pushBaseList(getApplicationContext(), MyQuitPlanHelper.baseList);
-        callAllListeners(nextButton, backButton, statusBar, suggestOne, customIntent, 0);
+        callAllListeners(nextButton, backButton, statusBar, suggestOne, customIntent, showSituation, 0);
 
 
 
@@ -250,7 +262,7 @@ public class MyQuitPlans extends Activity  {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             position = getArguments().getInt("position");
-            getDialog().setTitle("I will...");
+            getDialog().setTitle(Html.fromHtml("<font color='#004D40'>I will...</font>"));
             View v = inflater.inflate(R.layout.fragment_intents_list1, container, false);
             ListView intentsView = (ListView) v.findViewById(R.id.allIntentSuggestions);
             ArrayAdapter<String> tasksArrayAdapter = new ArrayAdapter<>(v.getContext(),

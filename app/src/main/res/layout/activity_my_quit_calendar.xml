@@ -31,23 +31,27 @@
         android:layout_alignParentBottom="true"
         android:layout_toLeftOf="@+id/nextDay"
         android:layout_alignLeft="@+id/calendarTitle"
-        android:layout_alignStart="@+id/calendarTitle" />
+        android:layout_alignStart="@+id/calendarTitle"
+        android:layout_alignRight="@+id/calendarTitle"
+        android:background="@color/Teal200" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text=">"
         android:id="@+id/nextDay"
         android:layout_below="@+id/listView"
-        android:layout_toEndOf="@+id/calendarTitle" />
+        android:layout_toEndOf="@+id/calendarTitle"
+        android:background="@color/Teal200" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="&lt;"
         android:id="@+id/previousDay"
         android:layout_below="@+id/listView"
-        android:layout_toLeftOf="@+id/calendarTitle"
-        android:layout_toStartOf="@+id/calendarTitle" />
+        android:layout_toLeftOf="@+id/calendarHome"
+        android:layout_toStartOf="@+id/calendarTitle"
+        android:background="@color/Teal200" />
 
 </RelativeLayout>

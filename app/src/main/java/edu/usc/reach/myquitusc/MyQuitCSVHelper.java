@@ -215,6 +215,17 @@ public class MyQuitCSVHelper{
         }
     }
 
+    public static void logCraveEvent(String activity, String fullTime) {
+        String[] pushEvent = new String [] {activity, fullTime};
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter(logPath + "CraveEvents.csv", true));
+            writer.writeNext(pushEvent);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void logRogueEvent(String fullTime) {
         String[] pushEvent = new String [] {"rogueEvent", fullTime};
         try {

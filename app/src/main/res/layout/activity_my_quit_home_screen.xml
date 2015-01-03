@@ -3,51 +3,102 @@
     android:layout_height="fill_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MyQuitHomeScreen">
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MyQuitHomeScreen"
+    android:background="@color/Teal50">
 
     <CalendarView
         android:layout_width="fill_parent"
-        android:layout_height="200dp"
+        android:layout_height="250dp"
         android:id="@+id/calendarView"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="false"
-        android:layout_alignParentEnd="true"
-        android:clickable="true" />
+        android:layout_alignParentEnd="false"
+        android:clickable="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerHorizontal="true"
+        android:weekNumberColor="@color/Teal200"
+        android:shownWeekCount="4"
+        android:showWeekNumber="false"
+         />
 
-    <Button
-        android:layout_width="130dp"
-        android:layout_height="130dp"
-        android:text="MyQuit Plans"
-        android:id="@+id/quitPlans"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_below="@+id/calendarView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:background="@color/Teal50">
 
-    <Button
-        android:layout_width="130dp"
-        android:layout_height="130dp"
-        android:text="Achievements/Progress/Statistics"
-        android:id="@+id/progressButton"
-        android:layout_alignTop="@+id/quitPlans"
-        android:layout_alignRight="@+id/calendarView"
-        android:layout_alignEnd="@+id/calendarView" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/Teal50">
 
-    <Button
-        android:layout_width="130dp"
-        android:layout_height="130dp"
-        android:text="Oops I smoked."
-        android:id="@+id/oopsSmoked"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/quitPlans"
-        android:layout_alignEnd="@+id/quitPlans" />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:text="MyQuit Plans"
+                android:id="@+id/quitPlans"
+                android:layout_below="@+id/calendarView"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_columnSpan="1"
+                android:layout_rowSpan="1"
+                android:layout_weight="1"
+                android:background="@color/Teal200"
+                android:textColor="@color/Teal900" />
 
-    <Button
-        android:layout_width="130dp"
-        android:layout_height="130dp"
-        android:text="I want to smoke now."
-        android:id="@+id/smokeNow"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/calendarView"
-        android:layout_alignEnd="@+id/calendarView" />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:text="Oops I smoked."
+                android:id="@+id/oopsSmoked"
+                android:layout_alignParentBottom="true"
+                android:layout_alignRight="@+id/quitPlans"
+                android:layout_alignEnd="@+id/quitPlans"
+                android:layout_columnSpan="1"
+                android:layout_rowSpan="1"
+                android:layout_weight="1"
+                android:background="@color/Teal200"
+                android:textColor="@color/Teal900" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/Teal50">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:text="Progress"
+                android:id="@+id/progressButton"
+                android:layout_alignTop="@+id/quitPlans"
+                android:layout_alignRight="@+id/calendarView"
+                android:layout_alignEnd="@+id/calendarView"
+                android:layout_columnSpan="1"
+                android:layout_rowSpan="1"
+                android:layout_weight="1"
+                android:background="@color/Teal200"
+                android:textColor="@color/Teal900" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:text="I want to smoke now."
+                android:id="@+id/smokeNow"
+                android:layout_alignParentBottom="true"
+                android:layout_alignRight="@+id/calendarView"
+                android:layout_alignEnd="@+id/calendarView"
+                android:layout_columnSpan="1"
+                android:layout_rowSpan="1"
+                android:layout_weight="1"
+                android:background="@color/Teal200"
+                android:textColor="@color/Teal900" />
+        </LinearLayout>
+    </LinearLayout>
 
 </RelativeLayout>

@@ -18,19 +18,67 @@ import java.util.List;
  * Created by Eldin on 1/1/15.
  */
 public class MyQuitPlanHelper {
-    private static String[] lunchActivity = new String[] {"Lunch with Others",
-            "When I'm having lunch with others...",""};
-    private static String[] clubActivity = new String[] {"Clubbing",
-            "When I go out clubbing...",""};
-    private static String[] hangingOut = new String[] {"Hanging out",
-            "When I hang out with friends...",""};
+
+    private static String[] outWithFriends = new String[] {"Going out with friends",
+            "If I am going out with friends...",""};
+    private static String[] partyBar = new String[] {"Party or bar",
+            "If I am at a party or a bar...",""};
+    private static String[] aroundSmokers = new String[] {"Around other smokers",
+            "If I am around other people who smoke...",""};
+    private static String[] offerCigarette = new String[] {"Someone will offer cigarette",
+            "If someone offers me a cigarette...",""};
+    private static String[] nonSmokingVenue = new String[] {"At a non-smoking venue",
+            "If I am about to go to places where smoking is not allowed...",""};
+    private static String[] wakeUpActivity = new String[] {"Waking up",
+            "If I get up in the morning...",""};
+    private static String[] mealFinished = new String[] {"Eating a meal",
+            "If I just finished a meal...",""};
+    private static String[] coffeeOrTea = new String[] {"Having coffee or tea",
+            "If I am having coffee or tea...",""};
+    private static String[] onABreak = new String[] {"On a break",
+            "If I am having a break...",""};
+    private static String[] inACarActivity = new String[] {"In a car",
+            "If I am in the car...",""};
+    private static String[] bedTimeActivity = new String[] {"Going to bed",
+            "If I am about to go to bed...",""};
 
 
-    public static final List<String[]> baseList = Arrays.asList(lunchActivity, clubActivity,hangingOut);
+
+
+    public static final List<String[]> baseList = Arrays.asList(outWithFriends, partyBar,aroundSmokers,
+            offerCigarette, nonSmokingVenue, wakeUpActivity, mealFinished, coffeeOrTea, onABreak,
+            inACarActivity, bedTimeActivity);
 
 
     //TODO: Add code to allow for custom events
     // public static void addCustomIntent(Context context, )
+
+    public static String[] pullIntentsList(Context context) {
+        String fileName = "ACTIVITY_PAIRING" + ".csv";
+        List<String[]> pullAll = pullBaseList(context);
+        int length = pullAll.size();
+        int count = 0;
+        String[] newPush = new String[length];
+        for(String[] allPulled: pullAll) {
+            newPush[count] = allPulled[2];
+            count++;
+        }
+        return newPush;
+    }
+
+
+    public static String[] pullSituationList(Context context) {
+        String fileName = "ACTIVITY_PAIRING" + ".csv";
+        List<String[]> pullAll = pullBaseList(context);
+        int length = pullAll.size();
+        int count = 0;
+        String[] newPush = new String[length];
+        for(String[] allPulled: pullAll) {
+            newPush[count] = allPulled[1];
+            count++;
+        }
+        return newPush;
+    }
 
     public static String[] pullTasksList(Context context) {
         String fileName = "ACTIVITY_PAIRING" + ".csv";
@@ -115,7 +163,7 @@ public class MyQuitPlanHelper {
             return "Submit";
         }
         else {
-            return (countCompletion(context) + "/" + pullSizeBaseList(context) + " Completed");
+            return (countCompletion(context) + "/" + pullSizeBaseList(context) + " Done");
         }
     }
 

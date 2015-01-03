@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputConnectionWrapper;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -35,13 +37,36 @@ public class MyQuitPlans extends Activity  {
     private void callAllListeners(Button nextButton, Button backButton,
                                   Button statusBar, Button suggestButton,
                                   EditText customIntent, TextView presentSituation,
-                                  int oldPosition) {
-        setBackBaseListListener(backButton,nextButton,statusBar, suggestButton, customIntent, presentSituation, oldPosition);
-        setNextBaseListListener(nextButton,backButton,statusBar, suggestButton, customIntent, presentSituation, oldPosition);
+                                  Button removeCustom, int oldPosition) {
+        setBackBaseListListener(backButton,nextButton,statusBar, suggestButton,
+                customIntent, presentSituation, removeCustom, oldPosition);
+        setNextBaseListListener(nextButton,backButton,statusBar, suggestButton,
+                customIntent, presentSituation, removeCustom, oldPosition);
         setPushBaseListListener(statusBar);
         setSuggestButtonListener(suggestButton, oldPosition);
         setEditTextListener(getApplicationContext(),customIntent,oldPosition);
         setSituationTextView(presentSituation, oldPosition);
+        setRemoveCustomButton(removeCustom,oldPosition);
+    }
+
+    private void setRemoveCustomButton(Button removeCustomSituation, int indexPosition) {
+        final int oldPosition = indexPosition;
+        if(oldPosition>10){
+            removeCustomSituation.setVisibility(View.VISIBLE);
+            removeCustomSituation.setClickable(true);
+            removeCustomSituation.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    RemoveCustomSituationFragmentDialog removeSituation  = new RemoveCustomSituationFragmentDialog()
+                            .newInstance(oldPosition);
+                    removeSituation.show(getFragmentManager(), "removeSituation");
+                }
+            });
+        }
+        else {
+            removeCustomSituation.setVisibility(View.INVISIBLE);
+            removeCustomSituation.setClickable(false);
+        }
     }
 
     private void setSituationTextView(TextView presentSituation, int indexPosition){
@@ -109,8 +134,27 @@ public class MyQuitPlans extends Activity  {
     private void setNextBaseListListener(final Button nextButton, final Button backButton,
                                          final Button statusBar, final Button suggestButton,
                                          final EditText customIntent, final TextView presentSituation,
-                                         int indexPosition) {
-        if(indexPosition==(MyQuitPlanHelper.pullSizeBaseList(getApplicationContext())-1)){
+                                         final Button removeCustom, int indexPosition) {
+       if(indexPosition==(MyQuitPlanHelper.pullSizeBaseList(getApplicationContext())-1)){
+            // nextButton.setText("Add situation");//TODO: Add custom situation
+            final int oldPosition = indexPosition;
+            nextButton.setVisibility(View.VISIBLE);
+            nextButton.setText("Add");
+            nextButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(MyQuitPlanHelper.listDone(getApplicationContext())) {
+                        CustomIntentFragmentDialog newSituation  = new CustomIntentFragmentDialog().newInstance(oldPosition);
+                        newSituation.show(getFragmentManager(), "customSituation");
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(),"Please enter longer answer.",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+
+       /* if(indexPosition==(MyQuitPlanHelper.pullSizeBaseList(getApplicationContext())-1)){
             // nextButton.setText("Add situation");//TODO: Add custom situation
             nextButton.setVisibility(View.VISIBLE);
             nextButton.setText("Finish");
@@ -131,6 +175,7 @@ public class MyQuitPlans extends Activity  {
                 }
             });
         }
+        */
         else{
             nextButton.setVisibility(View.VISIBLE);
             nextButton.setText("Next");
@@ -138,7 +183,8 @@ public class MyQuitPlans extends Activity  {
             nextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    callAllListeners(nextButton,backButton,statusBar,suggestButton, customIntent, presentSituation, oldPosition);
+                    callAllListeners(nextButton,backButton,statusBar,suggestButton, customIntent,
+                            presentSituation, removeCustom, oldPosition);
                 }
             });
         }
@@ -147,7 +193,7 @@ public class MyQuitPlans extends Activity  {
     private void setBackBaseListListener(final Button backButton, final Button nextButton,
                                          final Button statusBar, final Button suggestButton,
                                          final EditText customIntent, final TextView presentSituation,
-                                         int indexPosition) {
+                                         final Button removeCustom, int indexPosition) {
         if(indexPosition==0){
             backButton.setText("");
             backButton.setClickable(false);
@@ -161,7 +207,8 @@ public class MyQuitPlans extends Activity  {
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    callAllListeners(nextButton,backButton,statusBar, suggestButton, customIntent, presentSituation, oldPosition);
+                    callAllListeners(nextButton,backButton,statusBar, suggestButton, customIntent,
+                            presentSituation, removeCustom,  oldPosition);
                }
             });
         }
@@ -173,14 +220,14 @@ public class MyQuitPlans extends Activity  {
             statusBar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(MyQuitPlanHelper.pushBaseList(getApplicationContext(),MyQuitPlanHelper.baseList)){
+                    //if(MyQuitPlanHelper.pushBaseList(getApplicationContext(),MyQuitPlanHelper.baseList)){
                         Intent homeLaunch = new Intent(v.getContext(), MyQuitPrePlanCalendar.class);
                         homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         MyQuitCSVHelper.logLoginEvents("completedPlans",MyQuitCSVHelper.getFulltime());
                         finish();
                         startActivity(homeLaunch);
-                    }
+                   // }
                 }
             });
         }
@@ -196,18 +243,22 @@ public class MyQuitPlans extends Activity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_quit_plans);
-        //Intent pickupIntents = getIntent();
-        //pickupIntents.getStringArrayListExtra("Implementation Intents");
+        Intent pickupIntents = getIntent();
+        int dialogPosition = pickupIntents.getIntExtra("Custom Position",0);
         Button statusBar = (Button) findViewById(R.id.statusBar); // Ties buttons to XML
         Button backButton = (Button) findViewById(R.id.previousIntent);
         Button nextButton = (Button) findViewById(R.id.nextIntent);
         Button suggestOne = (Button) findViewById(R.id.suggestButton);
         TextView showSituation = (TextView) findViewById(R.id.showSituation);
-        EditText customIntent = (EditText) findViewById(R.id.customIntent); //Finish tying to XML
+        EditText customIntent = (EditText) findViewById(R.id.customIntent);
+        Button removeSituation = (Button) findViewById(R.id.eraseCustomSituation);//Finish tying to XML
 
         //Initial onCreate setup
-        MyQuitPlanHelper.pushBaseList(getApplicationContext(), MyQuitPlanHelper.baseList);
-        callAllListeners(nextButton, backButton, statusBar, suggestOne, customIntent, showSituation, 0);
+        if(dialogPosition == 0){
+            MyQuitPlanHelper.pushBaseList(getApplicationContext(), MyQuitPlanHelper.baseList);
+        }
+        callAllListeners(nextButton, backButton, statusBar, suggestOne,
+                customIntent, showSituation,removeSituation, dialogPosition);
 
 
 
@@ -283,6 +334,148 @@ public class MyQuitPlans extends Activity  {
                     }
                 }
             });
+            return v;
+        }
+    }
+
+    public static class CustomIntentFragmentDialog extends DialogFragment {
+        int position;
+
+
+        static CustomIntentFragmentDialog newInstance(int currentPosition) {
+            CustomIntentFragmentDialog tdf = new CustomIntentFragmentDialog();
+
+            Bundle args = new Bundle();
+            args.putInt("position", currentPosition);
+            tdf.setArguments(args);
+
+            return tdf;
+        }
+
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            position = getArguments().getInt("position");
+            getDialog().setTitle(Html.fromHtml("<font color='#004D40'>If I am...</font>"));
+            View v = inflater.inflate(R.layout.fragment_custom_intent, container, false);
+            final EditText editNewIntent = (EditText) v.findViewById(R.id.editNewCustomIntent);
+            Button cancelCustomIntent = (Button) v.findViewById(R.id.cancelCustomIntent);
+            final Button acceptCustomIntent = (Button) v.findViewById(R.id.acceptCustomIntent);
+
+            MyQuitPlanHelper.extendBaseListOne(getActivity());
+
+            cancelCustomIntent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MyQuitPlanHelper.shrinkBaseList(getActivity(),position+1);
+                    getDialog().dismiss();
+                }
+            });
+
+            editNewIntent.setHint("If I am...");
+            editNewIntent.setImeOptions(EditorInfo.IME_ACTION_DONE);
+            editNewIntent.setSingleLine(true);
+            TextView.OnEditorActionListener customListener = new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) ||
+                            (actionId == EditorInfo.IME_ACTION_DONE)) {
+                        if(MyQuitPlanHelper.pushLabelBaseList(v.getContext(),position+1,editNewIntent
+                                .getText().toString())) {
+                            MyQuitPlanHelper.pushLabelBaseList(v.getContext(),position+1,editNewIntent
+                                    .getText().toString());
+                            InputMethodManager MyQuitInput = (InputMethodManager)
+                                    getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            MyQuitInput.hideSoftInputFromWindow(getActivity().getCurrentFocus()
+                                            .getWindowToken(),
+                                    InputMethodManager.HIDE_NOT_ALWAYS);
+                        }
+                        else {
+                            InputMethodManager MyQuitInput = (InputMethodManager)
+                                    getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            MyQuitInput.hideSoftInputFromWindow(getActivity().getCurrentFocus()
+                                            .getWindowToken(),
+                                    InputMethodManager.HIDE_NOT_ALWAYS);
+                        }
+                    }
+                    return true;
+                }
+            };
+            editNewIntent.setOnEditorActionListener(customListener);
+
+
+            acceptCustomIntent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String[] pullFull = MyQuitPlanHelper.pullBaseList(getActivity()).
+                            get(position+1);
+                     if(pullFull[0].length()>5){
+                        Intent reLaunchCustom = new Intent(getActivity(), MyQuitPlans.class);
+                        reLaunchCustom.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        reLaunchCustom.putExtra("Custom Position",(position+1));
+                        getDialog().dismiss();
+                        getActivity().finish();
+                        startActivity(reLaunchCustom);
+                    }
+                    else {
+                        Toast.makeText(getActivity(),"Please enter longer label or press Done.",Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            });
+            return v;
+        }
+    }
+
+    public static class RemoveCustomSituationFragmentDialog extends DialogFragment {
+        int position;
+
+
+        static RemoveCustomSituationFragmentDialog newInstance(int currentPosition) {
+            RemoveCustomSituationFragmentDialog tdf = new RemoveCustomSituationFragmentDialog();
+
+            Bundle args = new Bundle();
+            args.putInt("position", currentPosition);
+            tdf.setArguments(args);
+
+            return tdf;
+        }
+
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            position = getArguments().getInt("position");
+            getDialog().setTitle(Html.fromHtml("<font color='#004D40'>Really remove situation?</font>"));
+            View v = inflater.inflate(R.layout.fragment_remove_custom, container, false);
+            Button cancelErase = (Button) v.findViewById(R.id.eraseCancel);
+            Button acceptErase = (Button) v.findViewById(R.id.eraseConfirm);
+
+
+            cancelErase.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getDialog().dismiss();
+                }
+            });
+
+            acceptErase.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MyQuitPlanHelper.shrinkBaseList(getActivity(), position);
+                    Intent reLaunchCustom = new Intent(getActivity(), MyQuitPlans.class);
+                    reLaunchCustom.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    reLaunchCustom.putExtra("Custom Position",(position-1));
+                    getDialog().dismiss();
+                    getActivity().finish();
+                    startActivity(reLaunchCustom);
+                }
+            });
+
+
             return v;
         }
     }

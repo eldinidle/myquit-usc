@@ -49,9 +49,52 @@ public class MyQuitPlanHelper {
             offerCigarette, nonSmokingVenue, wakeUpActivity, mealFinished, coffeeOrTea, onABreak,
             inACarActivity, bedTimeActivity);
 
+    public static boolean pushLabelBaseList(Context context, int position, String specifyItem) {
+        String fileName = "ACTIVITY_PAIRING" + ".csv";
+        try {
+            List<String[]> pullAll = pullBaseList(context);
+            int length = pullAll.size();
+            int count = 0;
+            ArrayList<String[]> newPush = new ArrayList<>();
+            for(String[] allPulled: pullAll) {
+                Log.d("MQU","Position is" + position + "count is" + count +"size is"+length);
+                Log.d("MQU","Pulled" + allPulled[0]);
+                if(count==position){
+                    Log.d("MQU","Changed" + allPulled[0]);
+                    allPulled[0] = specifyItem;
+                    allPulled[1] = "If I am " + specifyItem;
+                    newPush.add(allPulled);
+                }
+                else {
+                    Log.d("MQU","Pushed" + allPulled[0]);
+                    newPush.add(allPulled);
+                }
+                count++;
+            }
+            CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.calPath + fileName));
+            writer.writeAll(newPush);
+            writer.close();
+            return true;
+        }
+        catch(IOException eo) {
+            Toast.makeText(context,"Please restart app and try again",Toast.LENGTH_LONG).show();
+            return false;
+        }
+    }
 
-    //TODO: Add code to allow for custom events
-    // public static void addCustomIntent(Context context, )
+
+    public static void extendBaseListOne(Context context) {
+        List<String[]> pullAll = pullBaseList(context);
+        pullAll.add(new String[] {"","",""});
+        pushBaseList(context,pullAll);
+    }
+
+    public static void shrinkBaseList(Context context, int positionToDelete) {
+        List<String[]> pullAll = pullBaseList(context);
+        pullAll.remove(positionToDelete);
+        pushBaseList(context,pullAll);
+    }
+
 
     public static String[] pullIntentsList(Context context) {
         String fileName = "ACTIVITY_PAIRING" + ".csv";

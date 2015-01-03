@@ -93,4 +93,17 @@
         android:layout_centerHorizontal="true"
         android:background="@color/Teal200" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Remove custom situation"
+        android:id="@+id/eraseCustomSituation"
+        android:background="@color/Teal200"
+        android:layout_below="@+id/suggestButton"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:layout_centerHorizontal="true"
+        android:layout_alignLeft="@+id/suggestButton"
+        android:layout_alignRight="@+id/suggestButton" />
+
 </RelativeLayout>

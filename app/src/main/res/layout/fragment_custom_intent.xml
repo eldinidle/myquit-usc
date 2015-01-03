@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editNewCustomIntent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editNewCustomIntent"
+        android:layout_centerHorizontal="true">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:id="@+id/cancelCustomIntent"
+            android:layout_weight="1"
+            android:background="@color/Teal200"
+            android:textColor="@color/Teal900" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="OK"
+            android:id="@+id/acceptCustomIntent"
+            android:layout_weight="1"
+            android:textColor="@color/Teal900"
+            android:background="@color/Teal200" />
+    </LinearLayout>
+</RelativeLayout>

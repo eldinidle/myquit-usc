@@ -23,18 +23,27 @@ public class MyQuitTasksActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final String[] NEW_TASKS_LIST = MyQuitPlanHelper.pullTasksList(getApplicationContext());
+        final String[] NEW_TASKS_LIST = MyQuitPlanHelper.taperPullBaseList(getApplicationContext(), 11, 17); // MyQuitPlanHelper.pullTasksList(getApplicationContext());
 
         Intent calendarCall = getIntent();
         final String timeTitle = calendarCall.getStringExtra("timeCode");
         final int positionTitle = calendarCall.getIntExtra("positionTime",0);
         final String callingDate = calendarCall.getStringExtra("calledDate");
+        final boolean prePlanCall = calendarCall.getBooleanExtra("PrePlan",false);
+        final boolean weekEnd = calendarCall.getBooleanExtra("Weekend",false);
         try {
             pulledTimes = MyQuitCSVHelper.pullDateTimes(callingDate);
         } catch (IOException e) {
             Toast.makeText(getApplicationContext(),"Warning: Please reinsert your SD card",Toast.LENGTH_LONG).show();
-            Intent launchBack = new Intent(this, MyQuitCalendar.class);
-            launchBack.putExtra("Date",callingDate);
+            Intent launchBack = new Intent();
+            if(!prePlanCall) {
+                launchBack = new Intent(this, MyQuitCalendar.class);
+            }
+            else if(prePlanCall){
+                    launchBack = new Intent(this, MyQuitPrePlanCalendar.class);
+            }
+            launchBack.putExtra("Date", callingDate);
+            launchBack.putExtra("Weekend", weekEnd);
             launchBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             MyQuitTasksActivity.this.overridePendingTransition(R.anim.abc_slide_in_bottom,R.anim.abc_slide_out_top);
             startActivity(launchBack);
@@ -61,8 +70,15 @@ public class MyQuitTasksActivity extends Activity {
                     e.printStackTrace();
                     Toast.makeText(view.getContext(), "Warning: Not Synced", Toast.LENGTH_LONG);
                 }
-                Intent launchBack = new Intent(view.getContext(), MyQuitCalendar.class);
+                Intent launchBack = new Intent();
+                if(!prePlanCall) {
+                    launchBack = new Intent(view.getContext(), MyQuitCalendar.class);
+                }
+                else if(prePlanCall){
+                    launchBack = new Intent(view.getContext(), MyQuitPrePlanCalendar.class);
+                }
                 launchBack.putExtra("Date",callingDate);
+                launchBack.putExtra("Weekend",weekEnd);
                 launchBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 MyQuitTasksActivity.this.overridePendingTransition(R.anim.abc_slide_in_bottom,R.anim.abc_slide_out_top);
                 startActivity(launchBack);

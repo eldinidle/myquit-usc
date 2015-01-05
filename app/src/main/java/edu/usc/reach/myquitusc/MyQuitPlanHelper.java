@@ -41,13 +41,59 @@ public class MyQuitPlanHelper {
             "If I am in the car...",""};
     private static String[] bedTimeActivity = new String[] {"Going to bed",
             "If I am about to go to bed...",""};
+    private static String[] underStress = new String[] {"I'm feeling depressed",
+            "If I am feeling depressed...",""};
+    private static String[] feelingDepressed = new String[] {"I'm feeling angry/frustrated",
+            "If I am feeling angry or frustrated...",""};
+    private static String[] desireCig = new String[] {"I'm desiring a cigarette",
+            "If I am desiring a cigarette...",""};
+    private static String[] enjoyingSmoking = new String[] {"Someone is smoking and enjoying it",
+            "If I see someone smoking and enjoying it...",""};
+    private static String[] gainedWeight = new String[] {"I noticed I gained weight",
+            "If I noticed that I have gained weight...",""};
+    private static String[] iAmBored = new String[] {"I'm bored",
+            "If I am bored...",""};
+
 
 
 
 
     public static final List<String[]> baseList = Arrays.asList(outWithFriends, partyBar,aroundSmokers,
             offerCigarette, nonSmokingVenue, wakeUpActivity, mealFinished, coffeeOrTea, onABreak,
-            inACarActivity, bedTimeActivity);
+            inACarActivity, bedTimeActivity, underStress, feelingDepressed, desireCig,
+            enjoyingSmoking, gainedWeight, iAmBored);
+
+    public static String[] taperPullBaseList(Context context, int positionEndOfListOne, int positionBeginListTwo) {
+        List<String[]> pullAll = pullBaseList(context);
+        int length = pullAll.size();
+
+        if((length)!=positionBeginListTwo) {
+            List<String[]> pullAllOne = pullAll.subList(0,positionEndOfListOne);
+            List<String[]> pullAllTwo = pullAll.subList((positionBeginListTwo),(length));
+            for(String[] lineBy: pullAllTwo) {
+                pullAllOne.add(lineBy);
+            }
+            int lengthnew = pullAllOne.size();
+            int count = 0;
+            String[] newPush = new String[lengthnew];
+            for(String[] allPulled: pullAllOne) {
+                newPush[count] = allPulled[0];
+                count++;
+            }
+            return newPush;
+        }
+        else {
+            List<String[]> pullAllNew = pullAll.subList(0,positionEndOfListOne);
+            int lengthnew = pullAllNew.size();
+            int count = 0;
+            String[] newPush = new String[lengthnew];
+            for(String[] allPulled: pullAllNew) {
+                newPush[count] = allPulled[0];
+                count++;
+            }
+            return newPush;
+        }
+    }
 
     public static boolean pushLabelBaseList(Context context, int position, String specifyItem) {
         String fileName = "ACTIVITY_PAIRING" + ".csv";
@@ -126,14 +172,14 @@ public class MyQuitPlanHelper {
     public static String[] pullTasksList(Context context) {
         String fileName = "ACTIVITY_PAIRING" + ".csv";
         List<String[]> pullAll = pullBaseList(context);
-            int length = pullAll.size();
-            int count = 0;
-            String[] newPush = new String[length];
-            for(String[] allPulled: pullAll) {
-                newPush[count] = allPulled[0];
-                count++;
-            }
-            return newPush;
+        int length = pullAll.size();
+        int count = 0;
+        String[] newPush = new String[length];
+        for(String[] allPulled: pullAll) {
+            newPush[count] = allPulled[0];
+            count++;
+        }
+        return newPush;
     }
 
     public static boolean pushIntentBaseList(Context context, int position, String specifyItem) {

@@ -51,7 +51,7 @@ public class MyQuitPlans extends Activity  {
 
     private void setRemoveCustomButton(Button removeCustomSituation, int indexPosition) {
         final int oldPosition = indexPosition;
-        if(oldPosition>10){
+        if(oldPosition>16){
             removeCustomSituation.setVisibility(View.VISIBLE);
             removeCustomSituation.setClickable(true);
             removeCustomSituation.setOnClickListener(new View.OnClickListener() {
@@ -222,9 +222,9 @@ public class MyQuitPlans extends Activity  {
                 public void onClick(View v) {
                     //if(MyQuitPlanHelper.pushBaseList(getApplicationContext(),MyQuitPlanHelper.baseList)){
                         Intent homeLaunch = new Intent(v.getContext(), MyQuitPrePlanCalendar.class);
+                        homeLaunch.putExtra("Date","DEFAULT_WEEKDAY");
                         homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        MyQuitCSVHelper.logLoginEvents("completedPlans",MyQuitCSVHelper.getFulltime());
                         finish();
                         startActivity(homeLaunch);
                    // }

@@ -4,8 +4,12 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:allowBackup="true"
@@ -51,8 +55,7 @@
         <receiver
             android:name=".MyQuitReceiver"
             android:enabled="true"
-            android:exported="false"
-            >
+            android:exported="false" >
         </receiver>
 
         <service
@@ -64,7 +67,7 @@
         <activity
             android:name=".MyQuitEMA"
             android:label="@string/title_activity_my_quit_em"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
 
         <receiver
@@ -76,6 +79,17 @@
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name=".MyQuitLoginActivity"
+            android:label="@string/title_activity_my_quit_login"
+            android:windowSoftInputMode="adjustResize|stateHidden" >
+        </activity>
+        <activity
+            android:name=".MyQuitIntentPrompt"
+            android:label="@string/title_activity_my_quit_intent_prompt"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

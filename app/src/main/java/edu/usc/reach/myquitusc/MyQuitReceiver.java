@@ -56,6 +56,7 @@ public class MyQuitReceiver extends BroadcastReceiver {
         mNotificationManager.notify(1, myQuitSFTPNotify);
 
         MyQuitEMAHelper.decideEMA(context);
+        MyQuitCalendarHelper.decideCalendar(context);
         /*
         if (MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("intentPresented")) {
             Intent launchService = new Intent(context, MyQuitService.class);

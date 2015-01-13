@@ -9,7 +9,7 @@
     <CalendarView
         android:layout_width="fill_parent"
         android:layout_height="250dp"
-        android:id="@+id/calendarView"
+        android:id="@+id/calendarViewOut"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="false"
         android:layout_alignParentEnd="false"
@@ -19,14 +19,15 @@
         android:weekNumberColor="@color/Teal200"
         android:shownWeekCount="4"
         android:showWeekNumber="false"
-         />
+        android:measureAllChildren="false" />
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/calendarView"
-        android:background="@color/Teal50">
+        android:layout_below="@+id/calendarViewOut"
+        android:background="@color/Teal50"
+        android:id="@+id/linearLayout2">
 
         <LinearLayout
             android:orientation="vertical"
@@ -40,7 +41,7 @@
                 android:layout_height="0dp"
                 android:text="MyQuit Plans"
                 android:id="@+id/quitPlans"
-                android:layout_below="@+id/calendarView"
+                android:layout_below="@+id/calendarViewOut"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_columnSpan="1"
@@ -77,8 +78,8 @@
                 android:text="Progress"
                 android:id="@+id/progressButton"
                 android:layout_alignTop="@+id/quitPlans"
-                android:layout_alignRight="@+id/calendarView"
-                android:layout_alignEnd="@+id/calendarView"
+                android:layout_alignRight="@+id/calendarViewOut"
+                android:layout_alignEnd="@+id/calendarViewOut"
                 android:layout_columnSpan="1"
                 android:layout_rowSpan="1"
                 android:layout_weight="1"
@@ -91,8 +92,8 @@
                 android:text="I want to smoke now."
                 android:id="@+id/smokeNow"
                 android:layout_alignParentBottom="true"
-                android:layout_alignRight="@+id/calendarView"
-                android:layout_alignEnd="@+id/calendarView"
+                android:layout_alignRight="@+id/calendarViewOut"
+                android:layout_alignEnd="@+id/calendarViewOut"
                 android:layout_columnSpan="1"
                 android:layout_rowSpan="1"
                 android:layout_weight="1"

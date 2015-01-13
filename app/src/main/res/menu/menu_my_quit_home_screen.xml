@@ -5,4 +5,6 @@
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/renewFolders" android:title="Reinstall Files"
         android:orderInCategory="200" app:showAsAction="never" />
+    <item android:id="@+id/loginToApp" android:title="Login"
+        android:orderInCategory="300" app:showAsAction="never" />
 </menu>

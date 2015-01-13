@@ -6,8 +6,8 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Html;
@@ -17,13 +17,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,7 +54,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
         }
 
 
-        CalendarView calendarView = (CalendarView) findViewById(R.id.calendarView);
+        CalendarView calendarView = (CalendarView) findViewById(R.id.calendarViewOut);
         calendarView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -201,6 +199,11 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             finish();
             return true;
         }
+        if (id == R.id.loginToApp) {
+            Intent launchLogin = new Intent(this, MyQuitLoginActivity.class);
+            startActivity(launchLogin);
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -281,4 +284,30 @@ public class MyQuitHomeScreen extends ActionBarActivity {
         }
     }
 
+    public static class RogueButtonDialog extends DialogFragment {
+        // String timeTitle;
+
+        static RogueButtonDialog newInstance() {
+            RogueButtonDialog tdf = new RogueButtonDialog();
+
+            //  Bundle args = new Bundle();
+            //  args.putString("timeCode", timeCode);
+            //  tdf.setArguments(args);
+            return tdf;
+        }
+
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            //timeTitle = getArguments().getString("timeCode");
+
+            View v = inflater.inflate(R.layout.fragment_rogue_event, container, false);
+
+            getDialog().setTitle(Html.fromHtml("<font color='#004D40'>What were you doing?</font>"));
+
+
+            return v;
+        }
+    }
 }

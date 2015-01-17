@@ -47,9 +47,15 @@ public class MyQuitCalendarHelper {
 
     }
 
-    public static String returnIntentFromSituation(Context context) {
+    public static String returnIntentFromSituation(Context context)  {
         String hourSituation = unassignHoursArray()[assignArrayPosition()];
-        String parsedHourSituation = hourSituation.substring(3);
+        String parsedHourSituation;
+        try {
+             parsedHourSituation = hourSituation.substring(3);
+        }
+        catch(StringIndexOutOfBoundsException soeo) {
+            return "No Match";
+        }
         Log.d("MQU-CH","cast Situation position string is " + parsedHourSituation);
         String[] checkSituationArrayList = MyQuitPlanHelper.pullTasksList(context);
         int index = -1;
@@ -108,9 +114,10 @@ public class MyQuitCalendarHelper {
     }
 
     public static void decideCalendar (Context context) {
-            if (isWithinXNextHour(59)) {
+            if (isWithinXNextHour(59) & !returnIntentFromSituation(context).equalsIgnoreCase("No Match")) {
                 pushActionCalendar(context);
             }
+
     }
 
 

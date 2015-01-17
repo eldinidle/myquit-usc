@@ -6,10 +6,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
-import java.io.IOException;
 import java.util.Calendar;
-import org.apache.commons.net.ftp.FTPClient;
 
 public class MyQuitReceiver extends BroadcastReceiver {
    // static final int KEY_NUM_REPROMPTS = 3;
@@ -17,29 +16,7 @@ public class MyQuitReceiver extends BroadcastReceiver {
     public MyQuitReceiver() {
     }
 
-    public static boolean sftpUpload(String userName, String filePath) {
-        FTPClient uscHost = new FTPClient();
 
-        try {
-            uscHost.connect("ftp://mysmoke.usc.edu", 22);
-            uscHost.login("MyQuitUSCMobilePhone", "thisisthepassword");
-            MyQuitCSVHelper.logEMAEvents("Login success", MyQuitCSVHelper.getFulltime());
-            try {
-                uscHost.changeWorkingDirectory("/" + userName);
-                MyQuitCSVHelper.logEMAEvents("Directory change success", MyQuitCSVHelper.getFulltime());
-            }
-            catch (Exception de) {
-                uscHost.makeDirectory("/" + userName);
-                uscHost.changeWorkingDirectory("/" + userName);
-                MyQuitCSVHelper.logEMAEvents("Made directory success", MyQuitCSVHelper.getFulltime());
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return true;
-    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -57,6 +34,8 @@ public class MyQuitReceiver extends BroadcastReceiver {
 
         MyQuitEMAHelper.decideEMA(context);
         MyQuitCalendarHelper.decideCalendar(context);
+        MyQuitPHP.decidePHPPost();
+        Log.d("MQU-PHP", "Finished deciding");
         /*
         if (MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("intentPresented")) {
             Intent launchService = new Intent(context, MyQuitService.class);

@@ -7,4 +7,6 @@
         android:orderInCategory="200" app:showAsAction="never" />
     <item android:id="@+id/loginToApp" android:title="Login"
         android:orderInCategory="300" app:showAsAction="never" />
+    <item android:id="@+id/runCalledAction" android:title="Don't Click"
+        android:orderInCategory="300" app:showAsAction="never" />
 </menu>

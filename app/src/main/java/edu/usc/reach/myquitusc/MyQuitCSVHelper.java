@@ -1,25 +1,20 @@
 package edu.usc.reach.myquitusc;
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.os.Environment;
-import android.widget.Toast;
 
 import com.opencsv.*;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Eldin on 12/26/14.
+ * Created by Eldin Dzubur on 12/26/14.
  */
 public class MyQuitCSVHelper{
     /*
@@ -40,7 +35,7 @@ public class MyQuitCSVHelper{
     private static final String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/";
     public static final String calPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/Calendars/";
     public static final String emaPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/EMA/";
-    private static final String logPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/Logs/";
+    public static final String logPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/Logs/";
 
 
     final public static String[] defaultTimes =
@@ -119,23 +114,20 @@ public class MyQuitCSVHelper{
     public static String getTimeOnly() {
         Calendar emptyCal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        String fullTime = sdf.format(emptyCal.getTime());
-        return fullTime;
+        return sdf.format(emptyCal.getTime());
     }
 
     public static String getFullDate() {
         Calendar emptyCal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        String fullTime = sdf.format(emptyCal.getTime());
-        return fullTime;
+        return sdf.format(emptyCal.getTime());
     }
 
 
     public static String getFulltime() {
         Calendar emptyCal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-        String fullTime = sdf.format(emptyCal.getTime());
-        return fullTime;
+        return sdf.format(emptyCal.getTime());
     }
 
     public static int pullCigarette(String calledDate) throws IOException {
@@ -277,6 +269,12 @@ public class MyQuitCSVHelper{
         return(path.delete());
     }
 
+    /*
+    @implementation: DELETES ALL DATA and recreates structure
+    @parameter:     boolean to confirm data deletion
+                    integer password to confirm data deletion
+    @return: none
+    */
     public static void deleteAndRefresh(Boolean confirmYes,int passwordInClass) {
         /*
         The password is 495030.
@@ -294,6 +292,11 @@ public class MyQuitCSVHelper{
         }
     }
 
+    /*
+    @implementation: creates a complete structure necessary for the application to function
+    @parameter: none
+    @return: true if structure is successfully created
+    */
     public static boolean createStructure () {
         File newDirectory = new File(filePath);
         File newCalendar = new File(calPath);
@@ -326,6 +329,12 @@ public class MyQuitCSVHelper{
     }
 
 
+    /*
+    @implementation: saves array of new times for a given date to a CSV into calendar path
+    @parameter:     SimpleDateFormat String in MM/dd/YYYY
+                    String array of new times and activities assigned to times
+    @return: none
+    */
     public static void pushDateTimes(String calledDate, String[] newTimes) throws IOException {
         String stepDate = calledDate.replaceAll("/", "_");
         String fileName = stepDate + ".csv";
@@ -335,6 +344,10 @@ public class MyQuitCSVHelper{
         writer.close();
     }
 
+    /*
+    @parameter: SimpleDateFormat String in MM/dd/YYYY
+    @return: String array of calendar entries of called date
+    */
     public static String[] pullDateTimes(String calledDate) throws IOException {
         String stepDate = calledDate.replaceAll("/", "_");
         String fileName = stepDate + ".csv";
@@ -343,27 +356,14 @@ public class MyQuitCSVHelper{
         reader.close();
         return pullTimes;
     }
-// TODO: Is this useful? Fix.
-    public static void pushEMATimes(String calledDate, String calledTime, String emaState, int sessionID) throws IOException {
-        String stepDate = calledDate.replaceAll("/", "_");
-        String fileName = stepDate + ".csv";
-        CSVWriter writer = new CSVWriter(new FileWriter(emaPath + fileName));
-        String[] pushTimes = new String[] { calledDate, calledTime, emaState, String.valueOf(sessionID)};
-        writer.writeNext(pushTimes);
-        writer.close();
+
+    /*
+    @implementation:
+     */
+
+    public static String[] retrieveCigsToServer() {
+        return null;
     }
-
-// TODO:EMA section for pull
-    public static String[] pullEMATimes(String calledDate, String calledTime) throws IOException {
-        String stepDate = calledDate.replaceAll("/", "_");
-        String fileName = stepDate + ".csv";
-        CSVReader reader = new CSVReader(new FileReader(emaPath + fileName));
-        String[] pullTimes = reader.readNext();
-        reader.close();
-        return pullTimes;
-    }
-
-
 
 
 }

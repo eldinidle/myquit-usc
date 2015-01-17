@@ -1,7 +1,6 @@
 package edu.usc.reach.myquitusc;
 
 import android.app.Activity;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,7 +27,8 @@ public class MyQuitIntentPrompt extends Activity {
         });
 
 
-        intentView.setText(MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext()));
+        intentView.setText("Instead of smoking, let's try " +
+                MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext()));
 
     }
 

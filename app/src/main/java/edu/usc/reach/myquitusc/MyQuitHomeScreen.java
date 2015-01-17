@@ -98,16 +98,17 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 if(MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
-                    Calendar smokeDate = Calendar.getInstance();
-                    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-                    try {
-                        MyQuitCSVHelper.pushCigarette(sdf.format(smokeDate.getTime()), MyQuitCSVHelper.getFulltime());
-                        MyQuitCSVHelper.logRogueEvent(MyQuitCSVHelper.getFulltime());
-                        Toast.makeText(getApplicationContext(), ("Thank you for reporting your smoking."), Toast.LENGTH_LONG).show();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Toast.makeText(getApplicationContext(), "Please insert SD card or restart application.", Toast.LENGTH_LONG).show();
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    Fragment older = getFragmentManager().findFragmentByTag("rogueintent");
+                    if (older != null) {
+                        ft.remove(older);
                     }
+                    ft.addToBackStack(null);
+
+                    // Create and show the dialog.
+                    DialogFragment rogueIntent = RogueButtonDialog.newInstance();
+                    //  MyQuitCSVHelper.logEMAEvents("intentPresented", MyQuitCSVHelper.getFulltime());
+                    rogueIntent.show(ft, "rogueintent");
                 }
                 else {
                     Toast.makeText(getApplicationContext(),"Please complete your MyQuit 15 Plan first!",Toast.LENGTH_SHORT).show();
@@ -203,6 +204,9 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             Intent launchLogin = new Intent(this, MyQuitLoginActivity.class);
             startActivity(launchLogin);
             return true;
+        }
+        if (id == R.id.runCalledAction) {
+            MyQuitPHP.decidePHPPost();
         }
 
         return super.onOptionsItemSelected(item);
@@ -301,10 +305,43 @@ public class MyQuitHomeScreen extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             //timeTitle = getArguments().getString("timeCode");
+            final String[] NEW_TASKS_LIST = MyQuitPlanHelper.pullTasksList(getActivity());
+            final String[] NEW_INTENTS_LIST = MyQuitPlanHelper.pullIntentsList(getActivity());
 
             View v = inflater.inflate(R.layout.fragment_rogue_event, container, false);
 
             getDialog().setTitle(Html.fromHtml("<font color='#004D40'>What were you doing?</font>"));
+
+            ListView intentsRogue = (ListView) v.findViewById(R.id.rogueIntentList);
+
+            ArrayAdapter<String> tasksArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_activated_1, NEW_TASKS_LIST);
+            if(NEW_TASKS_LIST==null) {
+                tasksArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_activated_1, MyQuitTasksActivity.TASKS_LIST);
+            }
+
+            intentsRogue.setAdapter(tasksArrayAdapter);
+            intentsRogue.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Calendar smokeDate = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                    try {
+                        MyQuitCSVHelper.pushCigarette(sdf.format(smokeDate.getTime()), MyQuitCSVHelper.getFulltime());
+                        MyQuitCSVHelper.logRogueEvent(MyQuitCSVHelper.getFulltime());
+                        if(NEW_TASKS_LIST!=null) {
+                            MyQuitPHP.postRogueEvent("testusername", NEW_TASKS_LIST[position], MyQuitCSVHelper.getFulltime());
+                        }
+                        else if(NEW_TASKS_LIST==null) {
+                            MyQuitPHP.postRogueEvent("testusername", MyQuitTasksActivity.TASKS_LIST[position], MyQuitCSVHelper.getFulltime());
+                        }
+                        Toast.makeText(view.getContext(), ("Thank you for reporting your smoking."), Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(view.getContext(), "Please insert SD card or restart application.", Toast.LENGTH_LONG).show();
+                    }
+                    getDialog().dismiss();
+                }
+            });
 
 
             return v;

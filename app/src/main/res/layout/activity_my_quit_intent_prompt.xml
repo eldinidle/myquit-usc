@@ -14,10 +14,10 @@
         android:text="try something else instead."
         android:id="@+id/intentPromptText"
         android:textAlignment="center"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentTop="false"
         android:layout_alignParentRight="false"
         android:layout_alignParentEnd="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerInParent="true" />
 
     <Button
         android:layout_width="match_parent"

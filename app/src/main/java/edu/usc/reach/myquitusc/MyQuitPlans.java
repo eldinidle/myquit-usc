@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.KeyEvent;
@@ -14,8 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputConnection;
-import android.view.inputmethod.InputConnectionWrapper;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,10 +21,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
-
-import java.io.IOException;
 
 
 public class MyQuitPlans extends Activity  {
@@ -51,7 +44,7 @@ public class MyQuitPlans extends Activity  {
 
     private void setRemoveCustomButton(Button removeCustomSituation, int indexPosition) {
         final int oldPosition = indexPosition;
-        if(oldPosition>16){
+        if(oldPosition>17){
             removeCustomSituation.setVisibility(View.VISIBLE);
             removeCustomSituation.setClickable(true);
             removeCustomSituation.setOnClickListener(new View.OnClickListener() {

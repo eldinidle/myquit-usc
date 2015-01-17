@@ -53,6 +53,8 @@ public class MyQuitPlanHelper {
             "If I noticed that I have gained weight...",""};
     private static String[] iAmBored = new String[] {"I'm bored",
             "If I am bored...",""};
+    private static String[] iAmDrinking = new String[] {"I'm drinking",
+            "If I am drinking...",""};
 
 
 
@@ -61,7 +63,7 @@ public class MyQuitPlanHelper {
     public static final List<String[]> baseList = Arrays.asList(outWithFriends, partyBar,aroundSmokers,
             offerCigarette, nonSmokingVenue, wakeUpActivity, mealFinished, coffeeOrTea, onABreak,
             inACarActivity, bedTimeActivity, underStress, feelingDepressed, desireCig,
-            enjoyingSmoking, gainedWeight, iAmBored);
+            enjoyingSmoking, gainedWeight, iAmBored,iAmDrinking);
 
     public static String[] taperPullBaseList(Context context, int positionEndOfListOne, int positionBeginListTwo) {
         List<String[]> pullAll = pullBaseList(context);
@@ -143,7 +145,7 @@ public class MyQuitPlanHelper {
 
 
     public static String[] pullIntentsList(Context context) {
-        String fileName = "ACTIVITY_PAIRING" + ".csv";
+       // String fileName = "ACTIVITY_PAIRING" + ".csv";
         List<String[]> pullAll = pullBaseList(context);
         int length = pullAll.size();
         int count = 0;

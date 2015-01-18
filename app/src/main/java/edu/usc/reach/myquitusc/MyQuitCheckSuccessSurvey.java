@@ -14,7 +14,7 @@ public class MyQuitCheckSuccessSurvey {
     public static final int KEY_SURVEY_LENGTH = 6;
 
 
-    public static final String[] didFollow = {"Did you follow through with the intervention?", "Yes", "No"};
+    public static final String[] didFollow = {"Did you follow through with the intention/plan/reminder?", "Yes", "No"};
     public static final String[] howHelpful = {"How helpful was the intervention?", "Extremely helpful",
             "Quite helpful", "Somewhat helpful", "A little helpful", "Not at all helpful"};
     public static final String[] didSmokeY = {"Did you smoke a cigarette?", "Yes", "No"};

@@ -37,47 +37,46 @@ public class MyQuitHomeScreen extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_quit_home_screen);
         boolean creatStruc = MyQuitCSVHelper.createStructure();
-
-        if(MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
-            AlarmManager alarmMgr;
-            PendingIntent alarmIntent;
-            alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            Intent loopAlarm = new Intent(this, MyQuitReceiver.class);
-            alarmIntent = PendingIntent.getBroadcast(this, 0, loopAlarm, 0);
-            Calendar currentTime = Calendar.getInstance();
-            alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, currentTime.getTimeInMillis(),
-                    1000 * 60 * 2, alarmIntent);
-        }
-
-        if (!creatStruc) {
-            Toast.makeText(getApplicationContext(), "Warning: Directory not created", Toast.LENGTH_LONG).show();
-        }
-
-
-        CalendarView calendarView = (CalendarView) findViewById(R.id.calendarViewOut);
-        calendarView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
-                    Intent todayLaunch = new Intent(v.getContext(), MyQuitCalendar.class);
-                    Calendar todayDate = Calendar.getInstance();
-                    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-                    String todayDateSDF = sdf.format(todayDate.getTime());
-                    todayLaunch.putExtra("Date", todayDateSDF);
-                    MyQuitHomeScreen.this.overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
-                    startActivity(todayLaunch);
-                }
-                else {
-                    Toast.makeText(getApplicationContext(),"Please complete your MyQuit 15 Plan first!",Toast.LENGTH_SHORT).show();
-                }
-
+        if(MyQuitCSVHelper.pullLoginStatus("UserName") !=null) {
+            if (MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
+                AlarmManager alarmMgr;
+                PendingIntent alarmIntent;
+                alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                Intent loopAlarm = new Intent(this, MyQuitReceiver.class);
+                alarmIntent = PendingIntent.getBroadcast(this, 0, loopAlarm, 0);
+                Calendar currentTime = Calendar.getInstance();
+                alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, currentTime.getTimeInMillis(),
+                        1000 * 60 * 2, alarmIntent);
             }
-        });
+
+            if (!creatStruc) {
+                Toast.makeText(getApplicationContext(), "Warning: Directory not created", Toast.LENGTH_LONG).show();
+            }
+
+
+            CalendarView calendarView = (CalendarView) findViewById(R.id.calendarViewOut);
+            calendarView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
+                        Intent todayLaunch = new Intent(v.getContext(), MyQuitCalendar.class);
+                        Calendar todayDate = Calendar.getInstance();
+                        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                        String todayDateSDF = sdf.format(todayDate.getTime());
+                        todayLaunch.putExtra("Date", todayDateSDF);
+                        MyQuitHomeScreen.this.overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
+                        startActivity(todayLaunch);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Please complete your MyQuit 15 Plan first!", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            });
 
             calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
                 @Override
                 public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
-                    if(MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
+                    if (MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
                         Intent otherLaunch = new Intent(view.getContext(), MyQuitCalendar.class);
                         String stringYear = String.format("%04d", year);
                         String stringMonth = String.format("%02d", (month + 1));
@@ -86,93 +85,92 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                         otherLaunch.putExtra("Date", otherDateSDF);
                         MyQuitHomeScreen.this.overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
                         startActivity(otherLaunch);
-                    }
-                    else {
-                        Toast.makeText(getApplicationContext(),"Please complete your MyQuit 15 Plan first!",Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Please complete your MyQuit 15 Plan first!", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
 
-        Button oopsSmoke = (Button) findViewById(R.id.oopsSmoked);
-        oopsSmoke.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
-                    FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    Fragment older = getFragmentManager().findFragmentByTag("rogueintent");
-                    if (older != null) {
-                        ft.remove(older);
+            Button oopsSmoke = (Button) findViewById(R.id.oopsSmoked);
+            oopsSmoke.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        Fragment older = getFragmentManager().findFragmentByTag("rogueintent");
+                        if (older != null) {
+                            ft.remove(older);
+                        }
+                        ft.addToBackStack(null);
+
+                        // Create and show the dialog.
+                        DialogFragment rogueIntent = RogueButtonDialog.newInstance();
+                        //  MyQuitCSVHelper.logEMAEvents("intentPresented", MyQuitCSVHelper.getFulltime());
+                        rogueIntent.show(ft, "rogueintent");
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Please complete your MyQuit 15 Plan first!", Toast.LENGTH_SHORT).show();
                     }
-                    ft.addToBackStack(null);
+                }
+            });
 
-                    // Create and show the dialog.
-                    DialogFragment rogueIntent = RogueButtonDialog.newInstance();
-                    //  MyQuitCSVHelper.logEMAEvents("intentPresented", MyQuitCSVHelper.getFulltime());
-                    rogueIntent.show(ft, "rogueintent");
-                }
-                else {
-                    Toast.makeText(getApplicationContext(),"Please complete your MyQuit 15 Plan first!",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        Button progressTracker = (Button) findViewById(R.id.progressButton);
-        progressTracker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
-                    Intent openProgress = new Intent(getApplicationContext(), MyQuitProgress.class);
-                    MyQuitHomeScreen.this.overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
-                    startActivity(openProgress);
-                }
-                else {
-                    Toast.makeText(getApplicationContext(),"Please complete your MyQuit 15 Plan first!",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        Button gonnaSmoke = (Button) findViewById(R.id.smokeNow);
-        gonnaSmoke.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
-                    FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    Fragment older = getFragmentManager().findFragmentByTag("impintent");
-                    if (older != null) {
-                        ft.remove(older);
+            Button progressTracker = (Button) findViewById(R.id.progressButton);
+            progressTracker.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
+                        Intent openProgress = new Intent(getApplicationContext(), MyQuitProgress.class);
+                        MyQuitHomeScreen.this.overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
+                        startActivity(openProgress);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Please complete your MyQuit 15 Plan first!", Toast.LENGTH_SHORT).show();
                     }
-                    ft.addToBackStack(null);
-
-                    // Create and show the dialog.
-                    DialogFragment impIntent = ImpIntentDialog.newInstance();
-                  //  MyQuitCSVHelper.logEMAEvents("intentPresented", MyQuitCSVHelper.getFulltime());
-                    impIntent.show(ft, "impintent");
                 }
-                else {
-                    Toast.makeText(getApplicationContext(),"Please complete your MyQuit 15 Plan first!",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+            });
 
-        Button launchPlans = (Button) findViewById(R.id.quitPlans);
-        launchPlans.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
-                    Toast.makeText(getApplicationContext(),"You've already completed this portion of the study!",Toast.LENGTH_SHORT).show();;
-                }
-                else {
-                    Intent startPlan = new Intent(getApplicationContext(), MyQuitPlans.class);
-                    startPlan.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                            | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    MyQuitHomeScreen.this.overridePendingTransition(R.anim.abc_fade_in,R.anim.abc_fade_out);
-                    startActivity(startPlan);
-                    finish();
-                }
-            }
-        });
+            Button gonnaSmoke = (Button) findViewById(R.id.smokeNow);
+            gonnaSmoke.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        Fragment older = getFragmentManager().findFragmentByTag("impintent");
+                        if (older != null) {
+                            ft.remove(older);
+                        }
+                        ft.addToBackStack(null);
 
+                        // Create and show the dialog.
+                        DialogFragment impIntent = ImpIntentDialog.newInstance();
+                        //  MyQuitCSVHelper.logEMAEvents("intentPresented", MyQuitCSVHelper.getFulltime());
+                        impIntent.show(ft, "impintent");
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Please complete your MyQuit 15 Plan first!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
 
+            Button launchPlans = (Button) findViewById(R.id.quitPlans);
+            launchPlans.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
+                        Toast.makeText(getApplicationContext(), "You've already completed this portion of the study!", Toast.LENGTH_SHORT).show();
+                        ;
+                    } else {
+                        Intent startPlan = new Intent(getApplicationContext(), MyQuitPlans.class);
+                        startPlan.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        MyQuitHomeScreen.this.overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
+                        startActivity(startPlan);
+                        finish();
+                    }
+                }
+            });
+
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Please log in to the application from the menu.", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -206,7 +204,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             return true;
         }
         if (id == R.id.runCalledAction) {
-            MyQuitCalendarHelper.decideCalendar(getApplicationContext());
+           Toast.makeText(this,"I told you not to click this...",Toast.LENGTH_SHORT);
         }
 
         return super.onOptionsItemSelected(item);
@@ -329,10 +327,10 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                         MyQuitCSVHelper.pushCigarette(sdf.format(smokeDate.getTime()), MyQuitCSVHelper.getFulltime());
                         MyQuitCSVHelper.logRogueEvent(MyQuitCSVHelper.getFulltime());
                         if(NEW_TASKS_LIST!=null) {
-                            MyQuitPHP.postRogueEvent("testusername", NEW_TASKS_LIST[position], MyQuitCSVHelper.getFulltime());
+                            MyQuitPHP.postRogueEvent(MyQuitCSVHelper.pullLoginStatus("UserName"), NEW_TASKS_LIST[position], MyQuitCSVHelper.getFulltime());
                         }
                         else if(NEW_TASKS_LIST==null) {
-                            MyQuitPHP.postRogueEvent("testusername", MyQuitTasksActivity.TASKS_LIST[position], MyQuitCSVHelper.getFulltime());
+                            MyQuitPHP.postRogueEvent(MyQuitCSVHelper.pullLoginStatus("UserName"), MyQuitTasksActivity.TASKS_LIST[position], MyQuitCSVHelper.getFulltime());
                         }
                         Toast.makeText(view.getContext(), ("Thank you for reporting your smoking."), Toast.LENGTH_LONG).show();
                     } catch (IOException e) {

@@ -4,8 +4,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -16,19 +20,32 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 
@@ -36,6 +53,7 @@ import java.util.List;
  * A login screen that offers login via email/password.
  */
 public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cursor> {
+
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -104,7 +122,14 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
             mClickToSetDate.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    Fragment older = getFragmentManager().findFragmentByTag("quitdate");
+                    if (older != null) {
+                        ft.remove(older);
+                    }
+                    ft.addToBackStack(null);
+                    DialogFragment quitDateIntent = QuitDateDialog.newInstance();
+                    quitDateIntent.show(ft, "quitdate");
 
                 }
             });
@@ -277,6 +302,8 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
 
         @Override
         protected Boolean doInBackground(Void... params) {
+
+            MyQuitCSVHelper.logLoginEvents("UserName",mEmail,MyQuitCSVHelper.getFulltime());
             // TODO: attempt authentication against a network service.
 
             try {
@@ -318,6 +345,72 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
         }
     }
 
+
+    public static class QuitDateDialog extends DialogFragment {
+        // String timeTitle;
+
+        static QuitDateDialog newInstance() {
+            QuitDateDialog tdf = new QuitDateDialog();
+
+            //  Bundle args = new Bundle();
+            //  args.putString("timeCode", timeCode);
+            //  tdf.setArguments(args);
+            return tdf;
+        }
+
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            //timeTitle = getArguments().getString("timeCode");
+
+            View v = inflater.inflate(R.layout.fragment_fragment_quit_date_picker, container, false);
+
+            getDialog().setTitle(Html.fromHtml("<font color='#004D40'>When will you quit smoking?</font>"));
+
+            final DatePicker quitDatePicker = (DatePicker) v.findViewById(R.id.datePicker);
+            Button confirmDate = (Button) v.findViewById(R.id.datePickerButton);
+
+
+            confirmDate.setText("Hold to confirm My Quit date!");
+            confirmDate.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    DecimalFormat doubleDec = new DecimalFormat("00");
+                    String month = doubleDec.format(quitDatePicker.getMonth()+1);
+                    String day = doubleDec.format(quitDatePicker.getDayOfMonth());
+                    String year = String.valueOf(quitDatePicker.getYear());
+                    String test = month + "/" + day + "/" + year;
+                    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                    try {
+                        Date selectedDate = sdf.parse(test);
+                        Calendar futureCal = Calendar.getInstance();
+                        futureCal.roll(Calendar.DAY_OF_MONTH,1);
+                        Date futureDate = futureCal.getTime();
+                        if(selectedDate.after(futureDate)){
+                            MyQuitCSVHelper.logLoginEvents("MyQuitDate",test,MyQuitCSVHelper.getFulltime());
+                            dismiss();
+                            getActivity().finish();
+                            Intent launchLogin = new Intent(v.getContext(), MyQuitLoginActivity.class);
+                            launchLogin.putExtra("DateSet", true);
+                            launchLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                    | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(launchLogin);                        }
+                        else {
+                            Toast.makeText(v.getContext(), "Please select a later date", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        Toast.makeText(v.getContext(), "Please select a later date", Toast.LENGTH_SHORT).show();
+                    }
+                    return false;
+                }
+            });
+
+
+            return v;
+        }
+    }
 
 }
 

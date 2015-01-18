@@ -188,19 +188,17 @@ public class MyQuitCSVHelper{
     public static String pullLoginStatus(String logMessage) {
         try {
             CSVReader reader = new CSVReader(new FileReader(logPath + "LoginEvents.csv"));
-            String[] report;
-            String pulledTime = null;
+            List<String[]> runThrough = reader.readAll();
+            reader.close();
+            String pulledLog = null;
             String pulledMessage;
-            while((report = reader.readNext()) != null) {
-                pulledMessage = report[0];
+            for(String[] pulledReport: runThrough) {
+                pulledMessage = pulledReport[0];
                 if (pulledMessage.equalsIgnoreCase(logMessage)) {
-                    pulledTime = report[1];
-                }
-                else {
-                    pulledTime = null;
+                    pulledLog = pulledReport[1];
                 }
             }
-            return pulledTime;
+            return pulledLog;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -242,6 +240,17 @@ public class MyQuitCSVHelper{
 
     public static void logLoginEvents(String logMessage, String fullTime) {
         String[] pushEvent = new String [] {logMessage, fullTime};
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter(logPath + "LoginEvents.csv", true));
+            writer.writeNext(pushEvent);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void logLoginEvents(String logMessage, String logMessageSupp, String fullTime) {
+        String[] pushEvent = new String [] {logMessage, logMessageSupp, fullTime};
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(logPath + "LoginEvents.csv", true));
             writer.writeNext(pushEvent);

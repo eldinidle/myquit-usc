@@ -2,6 +2,7 @@ package edu.usc.reach.myquitusc;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,6 +11,10 @@ import android.widget.TextView;
 
 
 public class MyQuitIntentPrompt extends Activity {
+
+    void dropWindow() {
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,16 +27,31 @@ public class MyQuitIntentPrompt extends Activity {
         closeImp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                dropWindow();
             }
         });
 
 
-     //   intentView.setText("Instead of smoking, let's try " +
-       //         MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext()));
+        if (MyQuitCalendarHelper.isWithinXNextHour(10) & !MyQuitCalendarHelper.isWithinXAfterHour(20)) {
+            intentView.setText("Instead of smoking, you said you would " +
+                    MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(), true));
+        }
+        else if (!MyQuitCalendarHelper.isWithinXNextHour(10) & MyQuitCalendarHelper.isWithinXAfterHour(20)) {
+            intentView.setText("Instead of smoking, you said you would " +
+                    MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(), false));
+        }
+
+
+
+
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        dropWindow();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

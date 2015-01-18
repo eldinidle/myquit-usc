@@ -206,7 +206,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             return true;
         }
         if (id == R.id.runCalledAction) {
-            MyQuitPHP.decidePHPPost();
+            MyQuitCalendarHelper.decideCalendar(getApplicationContext());
         }
 
         return super.onOptionsItemSelected(item);

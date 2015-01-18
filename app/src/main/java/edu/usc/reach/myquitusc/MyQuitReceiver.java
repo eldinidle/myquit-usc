@@ -33,9 +33,9 @@ public class MyQuitReceiver extends BroadcastReceiver {
         mNotificationManager.notify(1, myQuitSFTPNotify);
 
         MyQuitEMAHelper.decideEMA(context);
-        MyQuitCalendarHelper.decideCalendar(context);
+        //MyQuitCalendarHelper.decideCalendar(context);
         MyQuitPHP.decidePHPPost();
-        Log.d("MQU-PHP", "Finished deciding");
+        Log.d("MyQuitUSC", "Finished deciding");
         /*
         if (MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("intentPresented")) {
             Intent launchService = new Intent(context, MyQuitService.class);

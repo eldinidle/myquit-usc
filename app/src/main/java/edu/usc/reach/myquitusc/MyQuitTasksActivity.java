@@ -20,6 +20,7 @@ public class MyQuitTasksActivity extends Activity {
             new String[] { "Sleeping", "Clubbing"};
     String[] pulledTimes;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +44,7 @@ public class MyQuitTasksActivity extends Activity {
                     launchBack = new Intent(this, MyQuitPrePlanCalendar.class);
             }
             launchBack.putExtra("Date", callingDate);
+            launchBack.putExtra("FocusPosition",positionTitle);
             launchBack.putExtra("Weekend", weekEnd);
             launchBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             MyQuitTasksActivity.this.overridePendingTransition(R.anim.abc_slide_in_bottom,R.anim.abc_slide_out_top);
@@ -78,6 +80,7 @@ public class MyQuitTasksActivity extends Activity {
                     launchBack = new Intent(view.getContext(), MyQuitPrePlanCalendar.class);
                 }
                 launchBack.putExtra("Date",callingDate);
+                launchBack.putExtra("FocusPosition",positionTitle);
                 launchBack.putExtra("Weekend",weekEnd);
                 launchBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 MyQuitTasksActivity.this.overridePendingTransition(R.anim.abc_slide_in_bottom,R.anim.abc_slide_out_top);

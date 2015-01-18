@@ -4,11 +4,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
+
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Eldin on 1/10/15.
@@ -47,8 +55,36 @@ public class MyQuitCalendarHelper {
 
     }
 
-    public static String returnIntentFromSituation(Context context)  {
-        String hourSituation = unassignHoursArray()[assignArrayPosition()];
+    public static boolean isWithinXAfterHour(int minsAfterLimit) {
+        Calendar nowCal = Calendar.getInstance();
+        Date nowTime = nowCal.getTime();
+        SimpleDateFormat year = new SimpleDateFormat("MM/dd/yyyy");
+        SimpleDateFormat hour = new SimpleDateFormat("HH");
+        String revertTimeYear = year.format(nowTime);
+        String reverTimeHour = hour.format(nowTime);
+        Log.d("MQU-CH","revertYear and Hour is " + revertTimeYear + " and " + reverTimeHour);
+        String tenMinuteCheckTime = revertTimeYear + " " + reverTimeHour + ":" + (minsAfterLimit) + ":" + "00";
+        Log.d("MQU-CH","Ten minute check time is " + tenMinuteCheckTime);
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        try {
+            Date nextHourTime = sdf.parse(tenMinuteCheckTime);
+            Log.d("MQU-CH","nextHourTime is " + nextHourTime);
+            if(nowTime.before(nextHourTime)) {
+                Log.d("MQU-CH","return true beforenexthourTime");
+                return true;
+            }
+            else {
+                return false;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
+    public static String returnIntentFromSituation(Context context, boolean preTenMinutes)  {
+        String hourSituation = unassignHoursArray()[assignArrayPosition(preTenMinutes)];
         String parsedHourSituation;
         try {
              parsedHourSituation = hourSituation.substring(3);
@@ -94,30 +130,144 @@ public class MyQuitCalendarHelper {
         }
     }
 
-
-
-    public static int assignArrayPosition() {
+    private static int  castHour() {
         Calendar nowCal = Calendar.getInstance();
         Date nowTime = nowCal.getTime();
         SimpleDateFormat hour = new SimpleDateFormat("HH");
         String hourPull = hour.format(nowTime);
-        int hourCast = Integer.valueOf(hourPull);
-        if(hourCast == 23) {
-            Log.d("MQU-CH","cast hour position on NULL");
-            return 0;
+        return Integer.valueOf(hourPull);
+    }
+
+    public static int assignArrayPosition(boolean preTenMinutes) {
+        int hourCast = castHour();
+        if(preTenMinutes) {
+            if (hourCast == 23) {
+                Log.d("MQU-CH", "cast hour position on NULL");
+                return 0;
+            } else {
+                Log.d("MQU-CH", "cast hour position on " + hourCast);
+                return (hourCast + 1);
+            }
         }
         else {
-            Log.d("MQU-CH","cast hour position on " + hourCast);
-            return (hourCast + 1);
+            if (hourCast == 0) {
+                Log.d("MQU-CH", "cast hour position on NULL");
+                return 0; //TODO: Make this go back a day
+            } else {
+                Log.d("MQU-CH", "cast hour position on " + hourCast);
+                return (hourCast);
+            }
         }
 
     }
 
     public static void decideCalendar (Context context) {
-            if (isWithinXNextHour(59) & !returnIntentFromSituation(context).equalsIgnoreCase("No Match")) {
+            if (isWithinXNextHour(10) & !returnIntentFromSituation(context,true).
+                    equalsIgnoreCase("No Match") & !isWithinXAfterHour(20)) {
+                Log.d("MQU-CH","Decide Loop > 50 minutes");
+                setUpEMAPrompt(assignArrayPosition(true));
+                pushActionCalendar(context);
+            }
+            else if (!isWithinXNextHour(10) & !returnIntentFromSituation(context,false).
+                    equalsIgnoreCase("No Match") & isWithinXAfterHour(20)){
+                Log.d("MQU-CH","Decide Loop < 20 minutes");
+                setUpEMAPrompt(assignArrayPosition(false));
                 pushActionCalendar(context);
             }
 
+    }
+
+    public static int returnEMAPromptTime(int startPos) {
+        String[] checkHours = unassignHoursArray();
+        String[] situationList = new String[24];
+        int count = 0;
+        for(String oneSitu: checkHours){
+            situationList[count] = oneSitu;
+            count++;
+        }
+        List<Integer> integerArrayTable = new ArrayList<Integer>();
+        int counter = 0;
+        Log.d("MQU-CH","we're at situLoop with list size = " + situationList.length);
+        situLoop:
+        for(String oneSitu: situationList){
+            try {
+                oneSitu.substring(3);
+                if(counter<(startPos)){
+                    integerArrayTable.add(counter);
+                    Log.d("MQU-CH","begin counter at " + counter);
+                    counter++;
+                }
+                if(oneSitu.equalsIgnoreCase(situationList[startPos])
+                        & counter>(startPos-1)) {
+                    Log.d("MQU-CH","found current time at " + counter);
+                    integerArrayTable.add(counter);
+                    counter++;
+                }
+                else if(!oneSitu.equalsIgnoreCase(situationList[startPos])
+                        & counter>startPos) {
+                    break situLoop;
+                }
+            }
+            catch(StringIndexOutOfBoundsException soeo) {
+                if(!oneSitu.equalsIgnoreCase(situationList[startPos])
+                        & counter>startPos) {
+                    break situLoop;
+                }
+                else {
+                    integerArrayTable.add(counter);
+                    counter++;
+                }
+            }
+        }
+        logViewedHours(MyQuitCSVHelper.getFullDate(),integerArrayTable);
+        return integerArrayTable.size();
+    }
+
+    public static void setUpEMAPrompt(int emaStartPosition) {
+        int promptedHour = returnEMAPromptTime(emaStartPosition) - 1;
+        //SimpleDateFormat date = new SimpleDateFormat("MM/dd/yyyy");
+        //SimpleDateFormat newsdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        String calledFullTime = MyQuitCSVHelper.getFullDate() + new DecimalFormat("00").format(promptedHour)
+                + ":45:00";
+        String[] pushEvent = new String [] {calledFullTime};
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.emaPath + "CalendarEMATimes.csv", true));
+            writer.writeNext(pushEvent);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void logViewedHours(String calledDate, List<Integer> calledPositions) {
+        Log.d("MQU-CH","pushed lock is" + calledPositions.size());
+        String[] pushTimes = new String[calledPositions.size()];
+        for(int i = 0; i < calledPositions.size(); i++) {
+            pushTimes[i] = calledPositions.get(i).toString();
+        }
+        String stepDate = calledDate.replaceAll("/", "_");
+        String fileName = stepDate + ".csv";
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.calPath + "CADT" + fileName));
+            writer.writeNext(pushTimes);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static int returnLockedHour(String calledDate) {
+        String stepDate = calledDate.replaceAll("/", "_");
+        String fileName = stepDate + ".csv";
+        try {
+            CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.calPath + "CADT" + fileName));
+            String[] lineRead = reader.readNext();
+            reader.close();
+            return lineRead.length;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 
 

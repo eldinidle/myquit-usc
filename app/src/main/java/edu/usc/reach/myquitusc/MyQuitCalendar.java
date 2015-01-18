@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,12 +38,17 @@ public class MyQuitCalendar extends Activity   {
 
     String[] pulledTimes;
 
+    private static boolean isPositionTimeDisabled(int position) {
+        return false;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_quit_calendar);
         Intent pickupDate = getIntent();
         final String calledDate = pickupDate.getStringExtra("Date");
+        final int focusPosition = pickupDate.getIntExtra("FocusPosition",0);
         try {
             pulledTimes = MyQuitCSVHelper.pullDateTimes(calledDate);
         } catch (IOException e) {
@@ -74,17 +80,24 @@ public class MyQuitCalendar extends Activity   {
         ListView todayView = (ListView) findViewById(R.id.listView);
         timeArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, pulledTimes);
         todayView.setAdapter(timeArrayAdapter);
+        todayView.setSelection(focusPosition);
         todayView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent taskLaunch = new Intent(view.getContext(), MyQuitTasksActivity.class);
-                taskLaunch.putExtra("timeCode", pulledTimes[position]);
-                taskLaunch.putExtra("positionTime", position);
-                taskLaunch.putExtra("calledDate", calledDate);
-                MyQuitCalendar.this.overridePendingTransition(R.anim.abc_slide_in_bottom,R.anim.abc_slide_out_top);
-                startActivity(taskLaunch);
-                //DialogFragment tasksFragment = TasksFragmentDialog.newInstance(pulledTimes[position], position, calledDate);
-                //tasksFragment.show(getFragmentManager(), "dialog");
+                Log.d("MQU-CH","lock is" + MyQuitCalendarHelper.returnLockedHour(calledDate));
+                if ((position > MyQuitCalendarHelper.returnLockedHour(calledDate)-1)) {
+                    Intent taskLaunch = new Intent(view.getContext(), MyQuitTasksActivity.class);
+                    taskLaunch.putExtra("timeCode", pulledTimes[position]);
+                    taskLaunch.putExtra("positionTime", position);
+                    taskLaunch.putExtra("calledDate", calledDate);
+                    MyQuitCalendar.this.overridePendingTransition(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_top);
+                    startActivity(taskLaunch);
+                    //DialogFragment tasksFragment = TasksFragmentDialog.newInstance(pulledTimes[position], position, calledDate);
+                    //tasksFragment.show(getFragmentManager(), "dialog");
+                }
+                else {
+                    Toast.makeText(getApplicationContext(),"You can't edit this time anymore",Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

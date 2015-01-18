@@ -27,8 +27,8 @@ public class MyQuitIntentPrompt extends Activity {
         });
 
 
-        intentView.setText("Instead of smoking, let's try " +
-                MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext()));
+     //   intentView.setText("Instead of smoking, let's try " +
+       //         MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext()));
 
     }
 

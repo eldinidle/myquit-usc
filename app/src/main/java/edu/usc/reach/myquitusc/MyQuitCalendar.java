@@ -35,6 +35,7 @@ import java.util.Dictionary;
 public class MyQuitCalendar extends Activity   {
 
     static ArrayAdapter<String> timeArrayAdapter;
+    //Testing commit
 
     String[] pulledTimes;
 

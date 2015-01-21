@@ -163,15 +163,17 @@ public class MyQuitCalendarHelper {
 
     public static void decideCalendar (Context context) {
             if (isWithinXNextHour(10) & !returnIntentFromSituation(context,true).
-                    equalsIgnoreCase("No Match") & !isWithinXAfterHour(20)) {
+                    equalsIgnoreCase("No Match") & !isWithinXAfterHour(20) & !lastSessionRead()) {
                 Log.d("MQU-CH","Decide Loop > 50 minutes");
-                setUpEMAPrompt(assignArrayPosition(true));
+               // setUpEMAPrompt(assignArrayPosition(true));
+                setSession(context,true,false);
                 pushActionCalendar(context);
             }
             else if (!isWithinXNextHour(10) & !returnIntentFromSituation(context,false).
-                    equalsIgnoreCase("No Match") & isWithinXAfterHour(20)){
+                    equalsIgnoreCase("No Match") & isWithinXAfterHour(20) & !lastSessionRead()){
                 Log.d("MQU-CH","Decide Loop < 20 minutes");
-                setUpEMAPrompt(assignArrayPosition(false));
+               // setUpEMAPrompt(assignArrayPosition(false));
+                setSession(context,false,false);
                 pushActionCalendar(context);
             }
 
@@ -253,6 +255,32 @@ public class MyQuitCalendarHelper {
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void setSession(Context context, boolean preTenMinutes, boolean setSessionRead) {
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.calPath + "CalIntentSessions.csv"));
+            //TODO: Implement session system
+            String intention = returnIntentFromSituation(context, preTenMinutes);
+            String viewed = String.valueOf(setSessionRead);
+            String[] pushNext = new String[] { intention, viewed,};
+            writer.writeNext(pushNext);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean lastSessionRead() {
+        try {
+            CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.calPath + "CalIntentSessions.csv"));
+            String[] lineRead = reader.readNext();
+            reader.close();
+            return Boolean.getBoolean(lineRead[1]);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 

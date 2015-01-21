@@ -33,7 +33,7 @@ public class MyQuitReceiver extends BroadcastReceiver {
         mNotificationManager.notify(1, myQuitSFTPNotify);
 
         MyQuitEMAHelper.decideEMA(context);
-        //MyQuitCalendarHelper.decideCalendar(context);
+        MyQuitCalendarHelper.decideCalendar(context);
         MyQuitPHP.decidePHPPost();
         Log.d("MyQuitUSC", "Finished deciding");
         /*

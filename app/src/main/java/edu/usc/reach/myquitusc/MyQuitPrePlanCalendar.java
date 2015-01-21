@@ -38,6 +38,7 @@ public class MyQuitPrePlanCalendar extends Activity {
         setContentView(R.layout.activity_my_quit_calendar);
         Intent pickupDate = getIntent();
         final String calledDate = pickupDate.getStringExtra("Date");
+        final int focusPosition = pickupDate.getIntExtra("FocusPosition",0);
         final boolean weekEnd = pickupDate.getBooleanExtra("Weekend",false);
         try {
             pulledTimes = MyQuitCSVHelper.pullDateTimes(calledDate);
@@ -63,6 +64,7 @@ public class MyQuitPrePlanCalendar extends Activity {
         ListView todayView = (ListView) findViewById(R.id.listView);
         timeArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, pulledTimes);
         todayView.setAdapter(timeArrayAdapter);
+        todayView.setSelection(focusPosition);
         todayView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

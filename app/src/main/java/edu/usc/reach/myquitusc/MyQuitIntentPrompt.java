@@ -13,6 +13,18 @@ import android.widget.TextView;
 public class MyQuitIntentPrompt extends Activity {
 
     void dropWindow() {
+        if (MyQuitCalendarHelper.isWithinXNextHour(10) & !MyQuitCalendarHelper.
+                returnIntentFromSituation(getApplicationContext(),true).
+                equalsIgnoreCase("No Match") & !MyQuitCalendarHelper.isWithinXAfterHour(20)) {
+            MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(true));
+            MyQuitCalendarHelper.setSession(getApplicationContext(),true,true);
+        }
+        else if (!MyQuitCalendarHelper.isWithinXNextHour(10) & !MyQuitCalendarHelper.
+                returnIntentFromSituation(getApplicationContext(),false).
+                equalsIgnoreCase("No Match") & MyQuitCalendarHelper.isWithinXAfterHour(20)){
+            MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(false));
+            MyQuitCalendarHelper.setSession(getApplicationContext(),false,true);
+        }
         finish();
     }
 
@@ -40,6 +52,7 @@ public class MyQuitIntentPrompt extends Activity {
             intentView.setText("Instead of smoking, you said you would " +
                     MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(), false));
         }
+
 
 
 

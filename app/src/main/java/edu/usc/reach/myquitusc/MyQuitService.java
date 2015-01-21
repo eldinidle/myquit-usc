@@ -86,7 +86,7 @@ public class MyQuitService extends Service {
             actionString = "Thank you for participating in the study.";
         }
         if (decisionAction.matches("Calendar")) {
-            actionString = "You are at risk for smoking.";
+            actionString = "Thank you for participating in the study.";
         }
         else {
             actionString = "Remember to record your smoking!";

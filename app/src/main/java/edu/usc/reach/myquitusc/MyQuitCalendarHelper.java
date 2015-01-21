@@ -176,6 +176,9 @@ public class MyQuitCalendarHelper {
                 setSession(context,false,false);
                 pushActionCalendar(context);
             }
+            else {
+                setSession(context,false,false);
+            }
 
     }
 
@@ -277,7 +280,7 @@ public class MyQuitCalendarHelper {
             CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.calPath + "CalIntentSessions.csv"));
             String[] lineRead = reader.readNext();
             reader.close();
-            return Boolean.getBoolean(lineRead[1]);
+            return Boolean.valueOf(lineRead[1]);
         } catch (IOException e) {
             e.printStackTrace();
             return false;

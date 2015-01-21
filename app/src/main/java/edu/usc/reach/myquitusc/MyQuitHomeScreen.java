@@ -204,7 +204,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             return true;
         }
         if (id == R.id.runCalledAction) {
-           Toast.makeText(this,"I told you not to click this...",Toast.LENGTH_SHORT);
+           Toast.makeText(this,"I told you not to click this..." + String.valueOf(MyQuitCalendarHelper.lastSessionRead()),Toast.LENGTH_SHORT).show();
         }
 
         return super.onOptionsItemSelected(item);

@@ -92,26 +92,34 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             });
 
             Button oopsSmoke = (Button) findViewById(R.id.oopsSmoked);
-            oopsSmoke.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
-                        FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        Fragment older = getFragmentManager().findFragmentByTag("rogueintent");
-                        if (older != null) {
-                            ft.remove(older);
-                        }
-                        ft.addToBackStack(null);
+            if((MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("intentPresented")) ||
+                    (MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("emaPrompted"))
+                    || (MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("emaReprompted"))){
+                oopsSmoke.setText("");
+            }
+            else {
+                oopsSmoke.setText("Oops I smoked");
+                oopsSmoke.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
+                            FragmentTransaction ft = getFragmentManager().beginTransaction();
+                            Fragment older = getFragmentManager().findFragmentByTag("rogueintent");
+                            if (older != null) {
+                                ft.remove(older);
+                            }
+                            ft.addToBackStack(null);
 
-                        // Create and show the dialog.
-                        DialogFragment rogueIntent = RogueButtonDialog.newInstance();
-                        //  MyQuitCSVHelper.logEMAEvents("intentPresented", MyQuitCSVHelper.getFulltime());
-                        rogueIntent.show(ft, "rogueintent");
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Please complete your MyQuit 15 Plan first!", Toast.LENGTH_SHORT).show();
+                            // Create and show the dialog.
+                            DialogFragment rogueIntent = RogueButtonDialog.newInstance();
+                            //  MyQuitCSVHelper.logEMAEvents("intentPresented", MyQuitCSVHelper.getFulltime());
+                            rogueIntent.show(ft, "rogueintent");
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Please complete your MyQuit 15 Plan first!", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }
-            });
+                });
+            }
 
             Button progressTracker = (Button) findViewById(R.id.progressButton);
             progressTracker.setOnClickListener(new View.OnClickListener() {
@@ -279,6 +287,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                 public void onClick(View v) {
                     MyQuitCSVHelper.logEMAEvents("intentPresented", MyQuitCSVHelper.getFulltime());
                     getDialog().dismiss();
+                    getActivity().finish();
                 }
             });
 

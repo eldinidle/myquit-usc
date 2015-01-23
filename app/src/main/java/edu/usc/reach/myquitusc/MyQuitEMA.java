@@ -29,9 +29,92 @@ import java.util.List;
 
 public class MyQuitEMA extends Activity {
 
+
     public static int retrieveSurveyLength(int surveyID) {
         switch(surveyID){
             case 1: return MyQuitCheckSuccessSurvey.KEY_SURVEY_LENGTH;
+            case 2: return MyQuitCalendarSuccessSurvey.KEY_SURVEY_LENGTH;
+            default: return 0;
+        }
+    }
+
+    void finalPushExitSurvey(int surveyID) throws IOException {
+        switch(surveyID) {
+            case 1: MyQuitEMAHelper.pushSpecificAnswer(MyQuitCSVHelper.getFullDate(),
+                    MyQuitCSVHelper.getTimeOnly(),
+                    MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS, "Completed", MyQuitCheckSuccessSurvey.KEY_END_SURVEY,
+                    false, MyQuitCheckSuccessSurvey.KEY_SURVEY_LENGTH);
+                    return;
+            default: return;
+        }
+    }
+    void pushTextForSurvey(int surveyID, int thisSession, EditText entryText, int qPosition) throws IOException {
+        switch(surveyID){
+            case 1: MyQuitEMAHelper.pushSpecificAnswer(MyQuitCSVHelper.getFullDate(),
+                    MyQuitCSVHelper.getTimeOnly(), thisSession, entryText.getText().toString(),
+                    qPosition, false, MyQuitCheckSuccessSurvey.KEY_SURVEY_LENGTH);
+            InputMethodManager MyQuitInput = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            MyQuitInput.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS);
+                return;
+        }
+    }
+
+    public static List<String[]> retrieveQuestionList(int surveyID) {
+        switch(surveyID){
+            case 1: return MyQuitCheckSuccessSurvey.getQuestions;
+            case 2: return MyQuitCalendarSuccessSurvey.getQuestions;
+            default: return MyQuitCheckSuccessSurvey.getQuestions;
+        }
+    }
+
+    public static int retrieveSurveyEnd(int surveyID) {
+        switch(surveyID){
+            case 1: return MyQuitCheckSuccessSurvey.KEY_END_SURVEY;
+            case 2: return MyQuitCalendarSuccessSurvey.KEY_END_SURVEY;
+            default: return 0;
+        }
+    }
+
+    private static String validateLengthTest(int surveyID, int sessionID, int position) {
+        switch (surveyID) {
+            case 1:
+                return MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position);
+            default:
+                return "";
+        }
+    }
+
+    private static int validatePrevious(int surveyID, int position) {
+        switch (surveyID) {
+            case 1:
+                return MyQuitCheckSuccessSurvey.validatePreviousPosition(position);
+            default:
+                return 0;
+        }
+    }
+
+    private static int validateNext(int surveyID, int position, int sessionID) {
+        switch (surveyID) {
+            case 1:
+                try {
+                    Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
+                    return MyQuitCheckSuccessSurvey.validateNextPosition(position,
+                            MyQuitEMAHelper.pullSpecificAnswer(MyQuitCSVHelper.getFullDate(), sessionID, position));
+                } catch (NumberFormatException nfe) {
+                    Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
+                    return MyQuitCheckSuccessSurvey.validateNextPosition(position,
+                            MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position));
+                }
+            default:
+                return 0;
+        }
+    }
+
+    private static int retrieveSessionID(int surveyID) {
+        switch(surveyID){
+            case 1: return MyQuitEMAHelper.pullLastSessionID(MyQuitCSVHelper.getFullDate(),
+                    MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS);
             default: return 0;
         }
     }
@@ -62,7 +145,7 @@ public class MyQuitEMA extends Activity {
                 public void onClick(View v) {
                    if(!textEntry) {
                        try {
-                           int test = MyQuitEMAHelper.pullSpecificAnswer(MyQuitCSVHelper.getFullDate(), surID, position);
+                         // int test = MyQuitEMAHelper.pullSpecificAnswer(MyQuitCSVHelper.getFullDate(), surID, position);
                            nextSurvey.putExtra("Survey", surveyKey);
                            nextSurvey.putExtra("SessionID", surID);
                            nextSurvey.putExtra("Position", position);
@@ -77,7 +160,7 @@ public class MyQuitEMA extends Activity {
                    }
                    if(textEntry){
                        try {
-                           String test = MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), surID, position);
+                           String test = validateLengthTest(surveyKey,surID,position);
                            if(test.length()>5) {
                                nextSurvey.putExtra("Survey", surveyKey);
                                nextSurvey.putExtra("SessionID", surID);
@@ -133,14 +216,14 @@ public class MyQuitEMA extends Activity {
         setContentView(R.layout.activity_my_quit_em);
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.cancel(2);
+        mNotificationManager.cancel(22222);
 
         Intent pickSurveyInfo = getIntent();
-        int survey = pickSurveyInfo.getIntExtra("Survey", 0);
+        final int survey = pickSurveyInfo.getIntExtra("Survey", 0);
         boolean receiver = pickSurveyInfo.getBooleanExtra("Receiver", true);
         int sessionID = 0;
         if (receiver) {
-            sessionID = MyQuitEMAHelper.pullLastSessionID(MyQuitCSVHelper.getFullDate(),MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS);
+            sessionID = retrieveSessionID(survey);
         }
         else if (!receiver) {
             sessionID = pickSurveyInfo.getIntExtra("SessionID", 0);
@@ -152,20 +235,11 @@ public class MyQuitEMA extends Activity {
         int position;
 
         if(previous) {
-            position = MyQuitCheckSuccessSurvey.validatePreviousPosition(pickSurveyInfo.getIntExtra("Position", 0));
+            position = validatePrevious(survey,pickSurveyInfo.getIntExtra("Position", 0));
             Log.d("MY-QUIT-USC","Overwriting survey position to " +position);
         }
         else if(next){
-            try {
-                position = MyQuitCheckSuccessSurvey.validateNextPosition(pickSurveyInfo.getIntExtra("Position", 0),
-                        MyQuitEMAHelper.pullSpecificAnswer(MyQuitCSVHelper.getFullDate(), sessionID, pickSurveyInfo.getIntExtra("Position", 0)));
-                Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
-            }
-            catch(NumberFormatException nfe) {
-                position = MyQuitCheckSuccessSurvey.validateNextPosition(pickSurveyInfo.getIntExtra("Position", 0),
-                        MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, pickSurveyInfo.getIntExtra("Position", 0)));
-                Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
-            }
+            position = validateNext(survey,pickSurveyInfo.getIntExtra("Position", 0),sessionID);
         }
         else {
             position = pickSurveyInfo.getIntExtra("Position", 0);
@@ -179,8 +253,7 @@ public class MyQuitEMA extends Activity {
 
 
         if (survey == MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS) {
-
-            List<String[]> Survey = MyQuitCheckSuccessSurvey.getQuestions;
+            List<String[]> Survey = retrieveQuestionList(survey);
             int surveyLength = Survey.size();
 
             RadioGroup answers = new RadioGroup(this);
@@ -230,7 +303,7 @@ public class MyQuitEMA extends Activity {
 
                     surveySetup.addView(question);
                     surveySetup.addView(answers);
-                    createLowerButtons(this, sessionID, false, answers, MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS, position,MyQuitCheckSuccessSurvey.KEY_SURVEY_LENGTH);
+                    createLowerButtons(this, sessionID, false, answers, survey, position,retrieveSurveyLength(survey));
                 } else if (questionString[1].equalsIgnoreCase("TEXT_ENTRY")) {
                     surveySetup.addView(question);
                     final EditText entryText = new EditText(this);
@@ -244,12 +317,15 @@ public class MyQuitEMA extends Activity {
                             if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) ||
                                     (actionId == EditorInfo.IME_ACTION_DONE)) {
                                 try {
+                                    pushTextForSurvey(survey,thisSession,entryText,qPosition);
+                                    /* TODO: Deprecate
                                     MyQuitEMAHelper.pushSpecificAnswer(MyQuitCSVHelper.getFullDate(),
                                             MyQuitCSVHelper.getTimeOnly(), thisSession, entryText.getText().toString(),
                                             qPosition, false, MyQuitCheckSuccessSurvey.KEY_SURVEY_LENGTH);
                                             InputMethodManager MyQuitInput = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                                             MyQuitInput.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                                             InputMethodManager.HIDE_NOT_ALWAYS);
+                                            */
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -260,7 +336,7 @@ public class MyQuitEMA extends Activity {
                     entryText.setOnEditorActionListener(listener);
 
                     surveySetup.addView(entryText);
-                    createLowerButtons(this, sessionID, true, answers, MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS, position,MyQuitCheckSuccessSurvey.KEY_SURVEY_LENGTH);
+                    createLowerButtons(this, sessionID, true, answers, survey, position,retrieveSurveyLength(survey));
                 }
             }
             else {
@@ -275,10 +351,13 @@ public class MyQuitEMA extends Activity {
                     public void onClick(View v) {
                         MyQuitCSVHelper.logEMAEvents("emaFinished", MyQuitCSVHelper.getFulltime());
                         try {
+                            finalPushExitSurvey(survey);
+                            /* TODO: Deprecate
                             MyQuitEMAHelper.pushSpecificAnswer(MyQuitCSVHelper.getFullDate(),
                                     MyQuitCSVHelper.getTimeOnly(),
                                     MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS, "Completed", MyQuitCheckSuccessSurvey.KEY_END_SURVEY,
                                     false, MyQuitCheckSuccessSurvey.KEY_SURVEY_LENGTH);
+                                    */
                         } catch (IOException e) {
                             Log.d("MY-QUIT-USC","Something's wrong here...");
                             e.printStackTrace();
@@ -288,7 +367,6 @@ public class MyQuitEMA extends Activity {
                 });
 
             }
-
 
         }
     }

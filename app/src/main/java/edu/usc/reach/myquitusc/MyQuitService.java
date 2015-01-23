@@ -64,7 +64,7 @@ public class MyQuitService extends Service {
         else {
             MyQuitCSVHelper.logEMAEvents("emaPrompted", MyQuitCSVHelper.getFulltime());
         }
-        mNotificationManager.notify(2, emaNotify);
+        mNotificationManager.notify(22222, emaNotify);
     }
 
 

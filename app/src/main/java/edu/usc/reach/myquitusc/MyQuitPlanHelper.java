@@ -20,41 +20,41 @@ import java.util.List;
 public class MyQuitPlanHelper {
 
     private static String[] outWithFriends = new String[] {"Going out with friends",
-            "If I am going out with friends...",""};
+            "If I am going out with friends, I will...",""};
     private static String[] partyBar = new String[] {"Party or bar",
-            "If I am at a party or a bar...",""};
+            "If I am at a party or a bar, I will...",""};
     private static String[] aroundSmokers = new String[] {"Around other smokers",
-            "If I am around other people who smoke...",""};
+            "If I am around other people who smoke, I will...",""};
     private static String[] offerCigarette = new String[] {"Someone will offer cigarette",
-            "If someone offers me a cigarette...",""};
+            "If someone offers me a cigarette, I will...",""};
     private static String[] nonSmokingVenue = new String[] {"At a non-smoking venue",
-            "If I am about to go to places where smoking is not allowed...",""};
+            "If I am about to go to places where smoking is not allowed, I will...",""};
     private static String[] wakeUpActivity = new String[] {"Waking up",
-            "If I get up in the morning...",""};
+            "If I get up in the morning, I will...",""};
     private static String[] mealFinished = new String[] {"Eating a meal",
-            "If I just finished a meal...",""};
+            "If I just finished a meal, I will...",""};
     private static String[] coffeeOrTea = new String[] {"Having coffee or tea",
-            "If I am having coffee or tea...",""};
+            "If I am having coffee or tea, I will...",""};
     private static String[] onABreak = new String[] {"On a break",
-            "If I am having a break...",""};
+            "If I am having a break, I will...",""};
     private static String[] inACarActivity = new String[] {"In a car",
-            "If I am in the car...",""};
+            "If I am in the car, I will...",""};
     private static String[] bedTimeActivity = new String[] {"Going to bed",
-            "If I am about to go to bed...",""};
+            "If I am about to go to bed, I will...",""};
     private static String[] underStress = new String[] {"I'm feeling depressed",
-            "If I am feeling depressed...",""};
+            "If I am feeling depressed, I will...",""};
     private static String[] feelingDepressed = new String[] {"I'm feeling angry/frustrated",
-            "If I am feeling angry or frustrated...",""};
+            "If I am feeling angry or frustrated, I will...",""};
     private static String[] desireCig = new String[] {"I'm desiring a cigarette",
-            "If I am desiring a cigarette...",""};
+            "If I am desiring a cigarette, I will...",""};
     private static String[] enjoyingSmoking = new String[] {"Someone is smoking and enjoying it",
-            "If I see someone smoking and enjoying it...",""};
+            "If I see someone smoking and enjoying it, I will...",""};
     private static String[] gainedWeight = new String[] {"I noticed I gained weight",
-            "If I noticed that I have gained weight...",""};
+            "If I noticed that I have gained weight, I will...",""};
     private static String[] iAmBored = new String[] {"I'm bored",
-            "If I am bored...",""};
+            "If I am bored, I will...",""};
     private static String[] iAmDrinking = new String[] {"I'm drinking",
-            "If I am drinking...",""};
+            "If I am drinking, I will...",""};
 
 
 

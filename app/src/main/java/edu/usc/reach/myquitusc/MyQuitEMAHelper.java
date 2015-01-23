@@ -1,5 +1,6 @@
 package edu.usc.reach.myquitusc;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -53,7 +54,12 @@ public class MyQuitEMAHelper {
             MyQuitCSVHelper.logEMAEvents("emaMissedSurvey", MyQuitCSVHelper.getFulltime());
         } else if ((MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("emaPrompted") | MyQuitCSVHelper.pullLastEvent()[0].substring(0, 11).equalsIgnoreCase("emaReprompt")) & MyQuitCSVHelper.isLastEventPastXMinutes(3)) {
             pushActionEMA(context);
-        } else if ((MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("emaFinished"))) {
+        } else if (MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("emaMissedSurvey")){
+            NotificationManager mNotificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.cancel(22222);
+        }
+          else if ((MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("emaFinished"))) {
         }
     }
     catch (NullPointerException neo){

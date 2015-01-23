@@ -91,10 +91,17 @@ public class MyQuitService extends Service {
         else {
             actionString = "Remember to record your smoking!";
         }
+        PendingIntent homeScreen;
+        Intent launchHomeScreen = new Intent(this, MyQuitHomeScreen.class);
+        launchHomeScreen.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+        launchHomeScreen.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        launchHomeScreen.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        homeScreen = PendingIntent.getActivity(this, 0, launchHomeScreen, 0);
         NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle("MyQuit USC")
                 .setContentText("Compliance; 100%")
                 .setContentText(actionString)
+                .setContentIntent(homeScreen)
                 .setSmallIcon(R.drawable.ic_launcher);
         Notification myQuitSFTPNotify = notifBuilder.build();
         startForeground(999, myQuitSFTPNotify);

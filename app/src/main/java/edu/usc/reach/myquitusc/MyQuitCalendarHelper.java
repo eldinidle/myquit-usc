@@ -176,7 +176,7 @@ public class MyQuitCalendarHelper {
                 setSession(context,false,false);
                 pushActionCalendar(context);
             }
-            else {
+            else if (!isWithinXNextHour(10) & !isWithinXAfterHour(20) & lastSessionRead()){
                 setSession(context,false,false);
             }
 

@@ -270,7 +270,15 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                    getDialog().setTitle(Html.fromHtml("<font color='#004D40'>Instead of smoking...</font>"));
                     ArrayAdapter<String> blankAA = new ArrayAdapter<>(getActivity(),
                             android.R.layout.simple_list_item_activated_1, new String[] {""});
-                activityList.setAdapter(blankAA);
+                    try {
+                        pulledActivity = NEW_TASKS_LIST[position];
+                    }
+                    catch (Exception neo) {
+                        pulledActivity = MyQuitTasksActivity.TASKS_LIST[position];
+                    }
+                    String intentLister = NEW_INTENTS_LIST[position];
+                    MyQuitCSVHelper.logEMAEvents("intentPresented", MyQuitCSVHelper.getFulltime(),pulledActivity,intentLister);
+                    activityList.setAdapter(blankAA);
                     activityList.setClickable(false);
                    activityList.setVisibility(View.INVISIBLE);
                  intentView.setText(NEW_INTENTS_LIST[position]);
@@ -285,7 +293,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             closeImp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MyQuitCSVHelper.logEMAEvents("intentPresented", MyQuitCSVHelper.getFulltime());
+                    //MyQuitCSVHelper.logEMAEvents("intentPresented", MyQuitCSVHelper.getFulltime());
                     getDialog().dismiss();
                     getActivity().finish();
                 }

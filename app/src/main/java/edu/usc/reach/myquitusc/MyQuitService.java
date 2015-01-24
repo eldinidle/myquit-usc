@@ -18,20 +18,43 @@ public class MyQuitService extends Service {
     public MyQuitService() {
     }
 
-    private void decisionEMA(int decisionSessionID) {
+
+    private void choosePromptingSequence(int decisionSessionID, int surveyID) {
+        if (MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("emaPrompted")) {
+            MyQuitCSVHelper.logEMAEvents("emaReprompt1", MyQuitCSVHelper.getFulltime(),
+                    MyQuitCSVHelper.pullLastEvent()[2],MyQuitCSVHelper.pullLastEvent()[3]);
+        }
+        else if (MyQuitCSVHelper.pullLastEvent()[0].substring(0,11).equalsIgnoreCase("emaReprompt")) {
+            int suffix = MyQuitCSVHelper.convertRepromptChar();
+            suffix++;
+            String label = "emaReprompt" + suffix;
+            MyQuitCSVHelper.logEMAEvents(label, MyQuitCSVHelper.getFulltime(),
+                    MyQuitCSVHelper.pullLastEvent()[2],MyQuitCSVHelper.pullLastEvent()[3]);
+        }
+        else {
+            MyQuitCSVHelper.logEMAEvents("emaPrompted", MyQuitCSVHelper.getFulltime(),
+                    MyQuitCSVHelper.pullLastEvent()[2],MyQuitCSVHelper.pullLastEvent()[3]);
+        }
+    }
+
+    private void decisionEMA(int decisionSessionID, int surveyID) {
         PendingIntent emaIntent;
         Intent launchEMA = new Intent(this, MyQuitEMA.class);
-        launchEMA.putExtra("Survey",MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS);
-        MyQuitEMAHelper.pushLastSessionID(MyQuitCSVHelper.getFullDate(),MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS,decisionSessionID);
+        launchEMA.putExtra("Survey",surveyID);
+        MyQuitEMAHelper.pushLastSessionID(MyQuitCSVHelper.getFullDate(),surveyID,decisionSessionID);
         //launchEMA.putExtra("Position",0);
         //launchEMA.putExtra("SessionID",decisionSessionID);
         //String decID = String.valueOf(decisionSessionID);
         //launchEMA.putExtra("StringSessionID",decID);
-        Log.d("MY-QUIT-USC","pushed session ID is" + MyQuitEMAHelper.pullLastSessionID(MyQuitCSVHelper.getFullDate(),MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS));
+        Log.d("MY-QUIT-USC","pushed session ID is" + MyQuitEMAHelper.pullLastSessionID(MyQuitCSVHelper.getFullDate(),
+                surveyID));
         try {
             MyQuitEMAHelper.pushSpecificAnswer(MyQuitCSVHelper.getFullDate(),
                     MyQuitCSVHelper.getTimeOnly(),
-                    decisionSessionID, 9999, 0, true, MyQuitEMA.retrieveSurveyLength(MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS));
+                    decisionSessionID, 9999, 0, true, MyQuitEMA.retrieveSurveyLength(surveyID),
+                    surveyID);
+                    //decisionSessionID, 9999, 0, true, MyQuitEMA.retrieveSurveyLength(MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS),
+                    //MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS);
         } catch (IOException e) {
             e.printStackTrace();
             Log.d("MY-QUIT-USC", "Something's wrong...");
@@ -52,18 +75,7 @@ public class MyQuitService extends Service {
         Notification emaNotify = emaNotification.build();
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("emaPrompted")) {
-            MyQuitCSVHelper.logEMAEvents("emaReprompt1", MyQuitCSVHelper.getFulltime());
-        }
-        else if (MyQuitCSVHelper.pullLastEvent()[0].substring(0,11).equalsIgnoreCase("emaReprompt")) {
-            int suffix = MyQuitCSVHelper.convertRepromptChar();
-            suffix++;
-            String label = "emaReprompt" + suffix;
-            MyQuitCSVHelper.logEMAEvents(label, MyQuitCSVHelper.getFulltime());
-        }
-        else {
-            MyQuitCSVHelper.logEMAEvents("emaPrompted", MyQuitCSVHelper.getFulltime());
-        }
+        choosePromptingSequence(decisionSessionID, surveyID);
         mNotificationManager.notify(22222, emaNotify);
     }
 
@@ -71,8 +83,10 @@ public class MyQuitService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String decisionAction;
+        int surveyID = 0;
         try {
             decisionAction = intent.getStringExtra("Action");
+            surveyID = intent.getIntExtra("Survey",1);
         }
         catch(Exception e) {
             decisionAction = "Do Nothing";
@@ -82,10 +96,10 @@ public class MyQuitService extends Service {
         if (decisionAction.matches("SFTP")) {
             actionString = "Uploading data to the cloud...";
         }
-        if (decisionAction.matches("EMA")) {
+        else if (decisionAction.matches("EMA")) {
             actionString = "Thank you for participating in the study.";
         }
-        if (decisionAction.matches("Calendar")) {
+        else if (decisionAction.matches("Calendar")) {
             actionString = "Thank you for participating in the study.";
         }
         else {
@@ -107,57 +121,9 @@ public class MyQuitService extends Service {
         startForeground(999, myQuitSFTPNotify);
 
        if (decisionAction.matches("EMA")) {
-           decisionEMA(decisionSessionID);
-           /*
-            PendingIntent emaIntent;
-            Intent launchEMA = new Intent(this, MyQuitEMA.class);
-            launchEMA.putExtra("Survey",MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS);
-            MyQuitEMAHelper.pushLastSessionID(MyQuitCSVHelper.getFullDate(),MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS,decisionSessionID);
-            //launchEMA.putExtra("Position",0);
-            //launchEMA.putExtra("SessionID",decisionSessionID);
-           //String decID = String.valueOf(decisionSessionID);
-           //launchEMA.putExtra("StringSessionID",decID);
-            Log.d("MY-QUIT-USC","pushed session ID is" + MyQuitEMAHelper.pullLastSessionID(MyQuitCSVHelper.getFullDate(),MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS));
-           try {
-               MyQuitEMAHelper.pushSpecificAnswer(MyQuitCSVHelper.getFullDate(),
-                       MyQuitCSVHelper.getTimeOnly(),
-                       decisionSessionID, 9999, 0, true, MyQuitEMA.retrieveSurveyLength(MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS));
-           } catch (IOException e) {
-               e.printStackTrace();
-               Log.d("MY-QUIT-USC", "Something's wrong...");
-           }
-            launchEMA.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-            launchEMA.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            launchEMA.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            emaIntent = PendingIntent.getActivity(this, 0, launchEMA, 0);
-            Uri tone= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-            NotificationCompat.Builder emaNotification = new NotificationCompat.Builder(this)
-                    .setContentTitle("Click here!")
-                    .setContentText("New survey available")
-                    .setSmallIcon(R.drawable.ic_launcher)
-                    .setAutoCancel(true)
-                    .setSound(tone)
-                    .setContentIntent(emaIntent);
-                    ;
-            Notification emaNotify = emaNotification.build();
-            NotificationManager mNotificationManager =
-                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-           if (MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("emaPrompted")) {
-               MyQuitCSVHelper.logEMAEvents("emaReprompt1", MyQuitCSVHelper.getFulltime());
-           }
-           else if (MyQuitCSVHelper.pullLastEvent()[0].substring(0,11).equalsIgnoreCase("emaReprompt")) {
-               int suffix = MyQuitCSVHelper.convertRepromptChar();
-               suffix++;
-               String label = "emaReprompt" + suffix;
-               MyQuitCSVHelper.logEMAEvents(label, MyQuitCSVHelper.getFulltime());
-           }
-           else {
-               MyQuitCSVHelper.logEMAEvents("emaPrompted", MyQuitCSVHelper.getFulltime());
-           }
-           mNotificationManager.notify(2, emaNotify);
-           */
-
+           decisionEMA(decisionSessionID, surveyID);
        }
+
        else if (decisionAction.matches("Calendar")){
            PendingIntent calendarIntent;
            Intent launchCalendar = new Intent(this, MyQuitIntentPrompt.class);

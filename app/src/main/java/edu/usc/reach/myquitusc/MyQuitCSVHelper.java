@@ -238,6 +238,17 @@ public class MyQuitCSVHelper{
         }
     }
 
+    public static void logEMAEvents(String logMessage, String fullTime, String intent, String situation) {
+        String[] pushEvent = new String [] {logMessage, fullTime, intent, situation};
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter(logPath + "SystemEvents.csv", true));
+            writer.writeNext(pushEvent);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void logLoginEvents(String logMessage, String fullTime) {
         String[] pushEvent = new String [] {logMessage, fullTime};
         try {

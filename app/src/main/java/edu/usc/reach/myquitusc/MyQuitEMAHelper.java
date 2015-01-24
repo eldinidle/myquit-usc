@@ -22,10 +22,14 @@ import java.util.Random;
 public class MyQuitEMAHelper {
     static final int KEY_NUM_REPROMPTS = 3;
 
+    public static void decideTimeBasedEMA(Context context) {
+
+    }
 
     public static void pushActionEMA(Context context) {
         Intent launchService = new Intent(context, MyQuitService.class);
         launchService.putExtra("Action","EMA");
+        launchService.putExtra("Survey",1);
         try {
             launchService.putExtra("SessionID",createNewSessionID(MyQuitCSVHelper.getFullDate()));
             Log.d("MY-QUIT-USC", "added session ID is" + launchService.getIntExtra("SessionID", 0));
@@ -145,9 +149,11 @@ public class MyQuitEMAHelper {
         }
     }
 
-    public static void pushSpecificAnswer(String calledDate, String calledTime, int sessionID, int aID, int qPosition, boolean newSurvey, int surveyLength) throws IOException {
+    public static void pushSpecificAnswer(String calledDate, String calledTime, int sessionID,
+                                          int aID, int qPosition, boolean newSurvey,
+                                          int surveyLength, int surveyID) throws IOException {
         String stepDate = calledDate.replaceAll("/", "_");
-        String fileName = stepDate + sessionID + ".csv";
+        String fileName = stepDate + "_" + surveyID + "_" + sessionID + ".csv";
         String[] pushSurvey = new String[surveyLength+3];
         if(newSurvey) {
             CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.emaPath + fileName));
@@ -168,9 +174,11 @@ public class MyQuitEMAHelper {
         }
     }
 
-    public static void pushSpecificAnswer(String calledDate, String calledTime, int sessionID, String aID, int qPosition, boolean newSurvey, int surveyLength) throws IOException {
+    public static void pushSpecificAnswer(String calledDate, String calledTime, int sessionID,
+                                          String aID, int qPosition, boolean newSurvey,
+                                          int surveyLength, int surveyID) throws IOException {
         String stepDate = calledDate.replaceAll("/", "_");
-        String fileName = stepDate + sessionID + ".csv";
+        String fileName = stepDate + "_" + surveyID + "_" + sessionID + ".csv";
         String[] pushSurvey = new String[surveyLength+3];
         if(newSurvey) {
             CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.emaPath + fileName));
@@ -184,6 +192,7 @@ public class MyQuitEMAHelper {
         else {
             CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.emaPath + fileName));
             pushSurvey = reader.readNext();
+            reader.close();
             pushSurvey[qPosition] = aID;
             CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.emaPath + fileName));
             writer.writeNext(pushSurvey);
@@ -192,9 +201,9 @@ public class MyQuitEMAHelper {
     }
 
 
-    public static int pullSpecificAnswer(String calledDate, int sessionID, int qPosition) {
+    public static int pullSpecificAnswer(String calledDate, int sessionID, int qPosition, int surveyID) {
         String stepDate = calledDate.replaceAll("/", "_");
-        String fileName = stepDate + sessionID + ".csv";
+        String fileName = stepDate + surveyID + "_" +  sessionID + ".csv";
         try {
             CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.emaPath + fileName));
             String[] pullAll = reader.readNext();
@@ -208,9 +217,9 @@ public class MyQuitEMAHelper {
 
     }
 
-    public static String pullSpecificAnswerString(String calledDate, int sessionID, int qPosition) {
+    public static String pullSpecificAnswerString(String calledDate, int sessionID, int qPosition, int surveyID) {
         String stepDate = calledDate.replaceAll("/", "_");
-        String fileName = stepDate + sessionID + ".csv";
+        String fileName = stepDate + "_" + surveyID + "_" + sessionID + ".csv";
         try {
             CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.emaPath + fileName));
             String[] pullAll = reader.readNext();

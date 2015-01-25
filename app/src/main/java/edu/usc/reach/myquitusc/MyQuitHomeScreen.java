@@ -6,7 +6,6 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -219,8 +218,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             return true;
         }
         if (id == R.id.runCalledAction) {
-           Toast.makeText(this,"" + MyQuitEMAHelper.returnCalendarEMARow()[0] +
-                   MyQuitEMAHelper.returnCalendarEMARow()[1] + MyQuitEMAHelper.returnCalendarEMARow()[2] ,Toast.LENGTH_SHORT).show();
+           Toast.makeText(this,"You are running version 0.10",Toast.LENGTH_SHORT).show();
         }
 
         return super.onOptionsItemSelected(item);

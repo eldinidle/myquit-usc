@@ -87,21 +87,35 @@ public class MyQuitPrePlanCalendar extends Activity {
                   @Override
                   public boolean onLongClick(View v) {
                       if(weekEnd) {
-                          Intent homeLaunch = new Intent(v.getContext(), MyQuitHomeScreen.class);
-                          homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                                  | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                          MyQuitPrePlanCalendar.this.overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
-                          MyQuitCSVHelper.logLoginEvents("completedPlans",MyQuitCSVHelper.getFulltime());
-                          startActivity(homeLaunch);
+                          if(MyQuitAutoAssign.minimumLabelConfirm("DEFAULT_WEEKEND")) {
+                              Intent homeLaunch = new Intent(v.getContext(), MyQuitHomeScreen.class);
+                              homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                      | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                              MyQuitPrePlanCalendar.this.overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
+                              MyQuitCSVHelper.logLoginEvents("completedPlans", MyQuitCSVHelper.getFulltime());
+                              startActivity(homeLaunch);
+                          }
+                          else {
+                              Toast.makeText(v.getContext(),"Please enter at least " +
+                                      MyQuitAutoAssign.minimumLabels + " labels in the day",
+                                      Toast.LENGTH_LONG).show();
+                          }
                       }
                       if(!weekEnd){
-                          Intent homeLaunch = new Intent(v.getContext(), MyQuitPrePlanCalendar.class);
-                          homeLaunch.putExtra("Date","DEFAULT_WEEKEND");
-                          homeLaunch.putExtra("Weekend",true);
-                          homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                                  | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                          finish();
-                          startActivity(homeLaunch);
+                          if(MyQuitAutoAssign.minimumLabelConfirm("DEFAULT_WEEKDAY")) {
+                              Intent homeLaunch = new Intent(v.getContext(), MyQuitPrePlanCalendar.class);
+                              homeLaunch.putExtra("Date", "DEFAULT_WEEKEND");
+                              homeLaunch.putExtra("Weekend", true);
+                              homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                      | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                              finish();
+                              startActivity(homeLaunch);
+                          }
+                          else {
+                              Toast.makeText(v.getContext(),"Please enter at least " +
+                                              MyQuitAutoAssign.minimumLabels + " labels in the day",
+                                      Toast.LENGTH_LONG).show();
+                          }
                       }
                       return false;
                   }

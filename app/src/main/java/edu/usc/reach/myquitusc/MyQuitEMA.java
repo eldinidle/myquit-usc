@@ -74,18 +74,15 @@ public class MyQuitEMA extends Activity {
     }
 
     private static String validateLengthTest(int surveyID, int sessionID, int position) {
-        switch (surveyID) {
-            case 1:
-                return MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID);
-            default:
-                return "";
-        }
+        return MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID);
     }
 
     private static int validatePrevious(int surveyID, int position) {
         switch (surveyID) {
             case 1:
                 return MyQuitCheckSuccessSurvey.validatePreviousPosition(position);
+            case 2:
+                return MyQuitCalendarSuccessSurvey.validatePreviousPosition(position);
             default:
                 return 0;
         }
@@ -109,6 +106,22 @@ public class MyQuitEMA extends Activity {
                     return MyQuitCheckSuccessSurvey.validateNextPosition(position,
                             MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
                 }
+            case 2:
+                try {
+                    Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
+                    int sendAId =  Integer.valueOf(MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
+                    Log.d("MY-QUIT-USC", "New is" + MyQuitCalendarSuccessSurvey.validateNextPosition(position,
+                            MyQuitEMAHelper.pullSpecificAnswer(MyQuitCSVHelper.getFullDate(), sessionID, position,surveyID)));
+                    return MyQuitCalendarSuccessSurvey.validateNextPosition(position,
+                            sendAId);
+                } catch (NumberFormatException nfe) {
+                    Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
+                    Log.d("MY-QUIT-USC", "Answer is " + MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
+                    Log.d("MY-QUIT-USC", "New is" + MyQuitCalendarSuccessSurvey.validateNextPosition(position,
+                            MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID)));
+                    return MyQuitCalendarSuccessSurvey.validateNextPosition(position,
+                            MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
+                }
             default:
                return 0;
         }
@@ -118,6 +131,10 @@ public class MyQuitEMA extends Activity {
         switch(surveyID){
             case 1: return MyQuitEMAHelper.pullLastSessionID(MyQuitCSVHelper.getFullDate(),
                     MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS);
+            case 2: return MyQuitEMAHelper.pullLastSessionID(MyQuitCSVHelper.getFullDate(),
+                    MyQuitCalendarSuccessSurvey.KEY_SURVEY_SUCCESS);
+            case 3: return MyQuitEMAHelper.pullLastSessionID(MyQuitCSVHelper.getFullDate(),
+                    MyQuitEndOfDaySurvey.KEY_SURVEY_SUCCESS);
             default: return 0;
         }
     }
@@ -355,7 +372,7 @@ public class MyQuitEMA extends Activity {
             nextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MyQuitCSVHelper.logEMAEvents("emaFinished", MyQuitCSVHelper.getFulltime());
+                    MyQuitCSVHelper.logEMAEvents(survey, "emaFinished", MyQuitCSVHelper.getFulltime());
                     try {
                         finalPushExitSurvey(survey, finalSessionID);
                         /* TODO: Deprecate

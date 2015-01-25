@@ -166,6 +166,7 @@ public class MyQuitCalendarHelper {
                     equalsIgnoreCase("No Match") & !isWithinXAfterHour(20) & !lastSessionRead()) {
                 Log.d("MQU-CH","Decide Loop > 50 minutes");
                // setUpEMAPrompt(assignArrayPosition(true));
+
                 setSession(context,true,false);
                 pushActionCalendar(context);
             }
@@ -173,6 +174,7 @@ public class MyQuitCalendarHelper {
                     equalsIgnoreCase("No Match") & isWithinXAfterHour(20) & !lastSessionRead()){
                 Log.d("MQU-CH","Decide Loop < 20 minutes");
                // setUpEMAPrompt(assignArrayPosition(false));
+
                 setSession(context,false,false);
                 pushActionCalendar(context);
             }
@@ -228,19 +230,38 @@ public class MyQuitCalendarHelper {
         return integerArrayTable.size();
     }
 
-    public static void setUpEMAPrompt(int emaStartPosition) {
+    public static void setUpEMAPrompt(int emaStartPosition, String situation, String intention) {
         int promptedHour = returnEMAPromptTime(emaStartPosition) - 1;
         //SimpleDateFormat date = new SimpleDateFormat("MM/dd/yyyy");
         //SimpleDateFormat newsdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-        String calledFullTime = MyQuitCSVHelper.getFullDate() + new DecimalFormat("00").format(promptedHour)
+        String calledFullTime = MyQuitCSVHelper.getFullDate() + " " + new DecimalFormat("00").format(promptedHour)
                 + ":45:00";
-        String[] pushEvent = new String [] {calledFullTime};
+        String[] pushEvent = new String [] {calledFullTime, situation, intention};
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.emaPath + "CalendarEMATimes.csv", true));
+            String stepDate = MyQuitCSVHelper.getFullDate().replaceAll("/", "_");
+            String fileName = "CalendarEMATimes" + stepDate + ".csv";
+            CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.emaPath +
+                    fileName, true));
             writer.writeNext(pushEvent);
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static List<String[]> returnCalendarEMA() {
+        try {
+            String stepDate = MyQuitCSVHelper.getFullDate().replaceAll("/", "_");
+            String fileName = "CalendarEMATimes" + stepDate + ".csv";
+            CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.emaPath +
+                    fileName));
+            List<String[]> returner = reader.readAll();
+            reader.close();
+            return returner;
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d("MQU-CH","No EMA Calendar data");
+            return null;
         }
     }
 

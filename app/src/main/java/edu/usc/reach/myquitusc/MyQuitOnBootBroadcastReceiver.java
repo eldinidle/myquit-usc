@@ -17,7 +17,7 @@ public class MyQuitOnBootBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.d("MY-QUIT-USC", "Boot broadcasted, starting MyQuitReceiver...");
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
-            if(MyQuitCSVHelper.pullLastEvent("loginSuccess") == null) {
+            if(MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
                 AlarmManager alarmMgr;
                 PendingIntent alarmIntent;
                 alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -30,7 +30,7 @@ public class MyQuitOnBootBroadcastReceiver extends BroadcastReceiver {
             Log.d("MY-QUIT-USC", "Success, receiver started.");
         }
         if (intent.getAction().equals("android.intent.action.QUICKBOOT_POWERON")) {
-            if(MyQuitCSVHelper.pullLastEvent("loginSuccess") == null) {
+            if(MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
                 AlarmManager alarmMgr;
                 PendingIntent alarmIntent;
                 alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

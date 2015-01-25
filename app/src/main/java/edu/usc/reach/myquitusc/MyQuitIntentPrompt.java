@@ -1,6 +1,7 @@
 package edu.usc.reach.myquitusc;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,13 +17,33 @@ public class MyQuitIntentPrompt extends Activity {
         if (MyQuitCalendarHelper.isWithinXNextHour(10) & !MyQuitCalendarHelper.
                 returnIntentFromSituation(getApplicationContext(),true).
                 equalsIgnoreCase("No Match") & !MyQuitCalendarHelper.isWithinXAfterHour(20)) {
-            MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(true));
+            String hourSituation = MyQuitCalendarHelper.unassignHoursArray()[MyQuitCalendarHelper.assignArrayPosition(true)];
+            String parsedHourSituation;
+            try {
+                parsedHourSituation = hourSituation.substring(3);
+            }
+            catch(StringIndexOutOfBoundsException soeo) {
+                parsedHourSituation = "doing something";
+            }
+            MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(true),
+                    parsedHourSituation, MyQuitCalendarHelper.
+                            returnIntentFromSituation(getApplicationContext(),true));
             MyQuitCalendarHelper.setSession(getApplicationContext(),true,true);
         }
         else if (!MyQuitCalendarHelper.isWithinXNextHour(10) & !MyQuitCalendarHelper.
                 returnIntentFromSituation(getApplicationContext(),false).
                 equalsIgnoreCase("No Match") & MyQuitCalendarHelper.isWithinXAfterHour(20)){
-            MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(false));
+            String hourSituation = MyQuitCalendarHelper.unassignHoursArray()[MyQuitCalendarHelper.assignArrayPosition(false)];
+            String parsedHourSituation;
+            try {
+                parsedHourSituation = hourSituation.substring(3);
+            }
+            catch(StringIndexOutOfBoundsException soeo) {
+                parsedHourSituation = "doing something";
+            }
+            MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(false),
+                   parsedHourSituation, MyQuitCalendarHelper.
+                            returnIntentFromSituation(getApplicationContext(),false));
             MyQuitCalendarHelper.setSession(getApplicationContext(),false,true);
         }
         finish();
@@ -36,6 +57,7 @@ public class MyQuitIntentPrompt extends Activity {
         Button closeImp = (Button) findViewById(R.id.promptConfirmIntent);
         TextView intentView = (TextView) findViewById(R.id.intentPromptText);
 
+
         closeImp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,12 +67,28 @@ public class MyQuitIntentPrompt extends Activity {
 
 
         if (MyQuitCalendarHelper.isWithinXNextHour(10) & !MyQuitCalendarHelper.isWithinXAfterHour(20)) {
-            intentView.setText("Instead of smoking, you said you would " +
-                    MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(), true));
+            String hourSituation = MyQuitCalendarHelper.unassignHoursArray()[MyQuitCalendarHelper.assignArrayPosition(true)];
+            String parsedHourSituation;
+            try {
+                parsedHourSituation = hourSituation.substring(3);
+            }
+            catch(StringIndexOutOfBoundsException soeo) {
+                parsedHourSituation = "doing something";
+            }
+            intentView.setText("Instead of smoking when " + parsedHourSituation + ", you said you would "
+                    + MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(), true));
         }
         else if (!MyQuitCalendarHelper.isWithinXNextHour(10) & MyQuitCalendarHelper.isWithinXAfterHour(20)) {
-            intentView.setText("Instead of smoking, you said you would " +
-                    MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(), false));
+            String hourSituation = MyQuitCalendarHelper.unassignHoursArray()[MyQuitCalendarHelper.assignArrayPosition(false)];
+            String parsedHourSituation;
+            try {
+                parsedHourSituation = hourSituation.substring(3);
+            }
+            catch(StringIndexOutOfBoundsException soeo) {
+                parsedHourSituation = "doing something";
+            }
+            intentView.setText("Instead of smoking when " + parsedHourSituation + ", you said you would "
+                    + MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(), false));
         }
 
 
@@ -62,7 +100,6 @@ public class MyQuitIntentPrompt extends Activity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         dropWindow();
     }
 

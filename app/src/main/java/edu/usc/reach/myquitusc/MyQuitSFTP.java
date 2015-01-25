@@ -14,15 +14,15 @@ public class MyQuitSFTP {
         try {
             uscHost.connect("ftp://mysmoke.usc.edu", 22);
             uscHost.login("MyQuitUSCMobilePhone", "thisisthepassword");
-            MyQuitCSVHelper.logEMAEvents("Login success", MyQuitCSVHelper.getFulltime());
+            //MyQuitCSVHelper.logEMAEvents("Login success", MyQuitCSVHelper.getFulltime());
             try {
                 uscHost.changeWorkingDirectory("/" + userName);
-                MyQuitCSVHelper.logEMAEvents("Directory change success", MyQuitCSVHelper.getFulltime());
+               // MyQuitCSVHelper.logEMAEvents("Directory change success", MyQuitCSVHelper.getFulltime());
             }
             catch (Exception de) {
                 uscHost.makeDirectory("/" + userName);
                 uscHost.changeWorkingDirectory("/" + userName);
-                MyQuitCSVHelper.logEMAEvents("Made directory success", MyQuitCSVHelper.getFulltime());
+              //  MyQuitCSVHelper.logEMAEvents("Made directory success", MyQuitCSVHelper.getFulltime());
             }
 
         } catch (IOException e) {

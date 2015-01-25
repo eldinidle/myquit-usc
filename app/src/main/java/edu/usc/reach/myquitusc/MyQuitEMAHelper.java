@@ -12,7 +12,11 @@ import com.opencsv.CSVWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -22,14 +26,74 @@ import java.util.Random;
 public class MyQuitEMAHelper {
     static final int KEY_NUM_REPROMPTS = 3;
 
-    public static void decideTimeBasedEMA(Context context) {
+    private static final SimpleDateFormat newsdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
+
+    public static String[] returnCalendarEMARow() {
+        List<String[]> events = MyQuitCalendarHelper.returnCalendarEMA();
+        Date now = Calendar.getInstance().getTime();
+        String[] returnRow = new String[3];
+        try {
+        for(String[] row: events) {
+            try {
+                Date promptTime = newsdf.parse(row[0]);
+                Calendar rolledPrompt = Calendar.getInstance();
+                rolledPrompt.setTime(promptTime);
+                rolledPrompt.add(Calendar.MINUTE,15);
+                Date rolledPromptTime = rolledPrompt.getTime();
+                if(now.after(promptTime) && now.before(rolledPromptTime)){
+                    returnRow = row;
+                }
+            } catch (ParseException e) {
+                Log.d("MQU-EMA","Can't parse NEWSDF Date");
+                e.printStackTrace();
+            }
+        }
+        }
+        catch (NullPointerException neo) {
+            neo.printStackTrace();
+            Log.d("MQU-EMA","Null returns");
+            return returnRow;
+        }
+        return returnRow;
     }
 
-    public static void pushActionEMA(Context context) {
+    public static void setUpCalendarEMA() {
+        String[] returnRow = returnCalendarEMARow();
+        if(returnRow[0]!=null) {
+            try {
+                Log.d("MQU-EMA", "ROW 0 is" + returnRow[0]);
+                Log.d("MQU-EMA", "ROW 1 is" + returnRow[1]);
+                Log.d("MQU-EMA", "ROW 2 is" + returnRow[2]);
+                try {
+                    String last = MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.CALENDAR_EMA_KEY)[0];
+                    Log.d("MQU-EMA", "LAST is" + last);
+                    if (!last.equalsIgnoreCase("intentPresented") &&
+                            MyQuitCSVHelper.isLastEventPastXMinutesTrue(MyQuitCSVHelper.CALENDAR_EMA_KEY, 15)) {
+                        Log.d("MQU-EMA", "WARNING IN IP LOOP" + last);
+                        MyQuitCSVHelper.logEMAEvents(MyQuitCSVHelper.CALENDAR_EMA_KEY,
+                                "intentPresented", MyQuitCSVHelper.getFulltime(),
+                                returnRow[1], returnRow[2]);
+                    }
+                } catch (NullPointerException neo) {
+                    Log.d("MQU-EMA", "New file today, responding");
+                    MyQuitCSVHelper.logEMAEvents(MyQuitCSVHelper.CALENDAR_EMA_KEY,
+                            "intentPresented", MyQuitCSVHelper.getFulltime(),
+                            returnRow[1], returnRow[2]);
+                    neo.printStackTrace();
+                }
+
+            } catch (NullPointerException neo) {
+                Log.d("MQU-EMA", "OUTSIDE OF WINDOW");
+                neo.printStackTrace();
+            }
+        }
+    }
+
+    public static void pushActionEMA(Context context, int emaType) {
         Intent launchService = new Intent(context, MyQuitService.class);
         launchService.putExtra("Action","EMA");
-        launchService.putExtra("Survey",1);
+        launchService.putExtra("Survey",emaType);
         try {
             launchService.putExtra("SessionID",createNewSessionID(MyQuitCSVHelper.getFullDate()));
             Log.d("MY-QUIT-USC", "added session ID is" + launchService.getIntExtra("SessionID", 0));
@@ -39,10 +103,11 @@ public class MyQuitEMAHelper {
             createDummySurvey(MyQuitCSVHelper.getFullDate());
             try {
                 launchService.putExtra("SessionID",createNewSessionID(MyQuitCSVHelper.getFullDate()));
-                Log.d("MY-QUIT-USC","added session ID is" + launchService.getIntExtra("SessionID",0));
+                Log.d("MY-QUIT-USC","new added session ID is" + launchService.getIntExtra("SessionID",0));
                 launchService.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startService(launchService);
             } catch (IOException e1) {
+                Log.d("MY-QUIT-USC","added session ID ERROR");
                 e1.printStackTrace();
             }
             e.printStackTrace();
@@ -50,20 +115,21 @@ public class MyQuitEMAHelper {
 
     }
 
-    public static void decideEMA (Context context) {
+
+    public static void decideEMA (Context context, int emaType) {
     try {
-        if (MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("intentPresented")) {
-            pushActionEMA(context);
-        } else if (MyQuitCSVHelper.pullLastEvent()[0].substring(0, 11).equalsIgnoreCase("emaReprompt") & (MyQuitCSVHelper.convertRepromptChar() > KEY_NUM_REPROMPTS)) {
-            MyQuitCSVHelper.logEMAEvents("emaMissedSurvey", MyQuitCSVHelper.getFulltime());
-        } else if ((MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("emaPrompted") | MyQuitCSVHelper.pullLastEvent()[0].substring(0, 11).equalsIgnoreCase("emaReprompt")) & MyQuitCSVHelper.isLastEventPastXMinutes(3)) {
-            pushActionEMA(context);
-        } else if (MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("emaMissedSurvey")){
+        if (MyQuitCSVHelper.pullLastEvent(emaType)[0].equalsIgnoreCase("intentPresented")) {
+            pushActionEMA(context, emaType);
+        } else if (MyQuitCSVHelper.pullLastEvent(emaType)[0].substring(0, 11).equalsIgnoreCase("emaReprompt") & (MyQuitCSVHelper.convertRepromptChar(emaType) > KEY_NUM_REPROMPTS)) {
+            MyQuitCSVHelper.logEMAEvents(emaType, "emaMissedSurvey", MyQuitCSVHelper.getFulltime());
+        } else if ((MyQuitCSVHelper.pullLastEvent(emaType)[0].equalsIgnoreCase("emaPrompted") | MyQuitCSVHelper.pullLastEvent(emaType)[0].substring(0, 11).equalsIgnoreCase("emaReprompt")) & MyQuitCSVHelper.isLastEventPastXMinutes(emaType,3)) {
+            pushActionEMA(context, emaType);
+        } else if (MyQuitCSVHelper.pullLastEvent(emaType)[0].equalsIgnoreCase("emaMissedSurvey")){
             NotificationManager mNotificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.cancel(22222);
         }
-          else if ((MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("emaFinished"))) {
+          else if ((MyQuitCSVHelper.pullLastEvent(emaType)[0].equalsIgnoreCase("emaFinished"))) {
         }
     }
     catch (NullPointerException neo){
@@ -107,9 +173,9 @@ public class MyQuitEMAHelper {
 
     public static void pushLastSessionID(String calledDate, int surveyID, int sessionID) {
         String stepDate = calledDate.replaceAll("/", "_");
-        String fileName = stepDate + "_Sessions.csv";
+        String fileName = stepDate +"_" + surveyID +  "_Sessions.csv";
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.emaPath + fileName));
+            CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.emaPath + fileName, true));
             Log.d("MQU","Logging ID for " + sessionID);
             writer.writeNext(new String[] {calledDate,String.valueOf(surveyID),String.valueOf(sessionID)});
             writer.close();
@@ -121,7 +187,7 @@ public class MyQuitEMAHelper {
 
     public static int pullLastSessionID(String calledDate, int surveyID) {
         String stepDate = calledDate.replaceAll("/", "_");
-        String fileName = stepDate + "_Sessions.csv";
+        String fileName = stepDate + "_" + surveyID + "_Sessions.csv";
         try {
             CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.emaPath + fileName));
             List<String[]> pullAll = reader.readAll();
@@ -136,8 +202,9 @@ public class MyQuitEMAHelper {
                     Log.d("MQU","Logging failed check");
                 }
             }
-            Log.d("MQU","Logging success final" + lastLine[2]);
+
               try {
+                  Log.d("MQU","Logging success final" + lastLine[2]);
                   return Integer.valueOf(lastLine[2]);
               }
               catch (NullPointerException neo) {

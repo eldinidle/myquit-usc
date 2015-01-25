@@ -92,9 +92,16 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             });
 
             Button oopsSmoke = (Button) findViewById(R.id.oopsSmoked);
-            if((MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("intentPresented")) ||
-                    (MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("emaPrompted"))
-                    || (MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("emaReprompted"))){
+            String checkLastEvent = "NA";
+            try {
+                checkLastEvent = MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[0];
+            }
+            catch (NullPointerException neo) {
+                neo.printStackTrace();
+            }
+            if((checkLastEvent.equalsIgnoreCase("intentPresented") ||
+                    checkLastEvent.equalsIgnoreCase("emaPrompted") ||
+                    checkLastEvent.equalsIgnoreCase("emaReprompted"))){
                 oopsSmoke.setText("");
             }
             else {
@@ -212,7 +219,8 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             return true;
         }
         if (id == R.id.runCalledAction) {
-           Toast.makeText(this,"I told you not to click this..." + String.valueOf(MyQuitCalendarHelper.lastSessionRead()),Toast.LENGTH_SHORT).show();
+           Toast.makeText(this,"" + MyQuitEMAHelper.returnCalendarEMARow()[0] +
+                   MyQuitEMAHelper.returnCalendarEMARow()[1] + MyQuitEMAHelper.returnCalendarEMARow()[2] ,Toast.LENGTH_SHORT).show();
         }
 
         return super.onOptionsItemSelected(item);
@@ -277,7 +285,8 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                         pulledActivity = MyQuitTasksActivity.TASKS_LIST[position];
                     }
                     String intentLister = NEW_INTENTS_LIST[position];
-                    MyQuitCSVHelper.logEMAEvents("intentPresented", MyQuitCSVHelper.getFulltime(),pulledActivity,intentLister);
+                    MyQuitCSVHelper.logEMAEvents(MyQuitCSVHelper.ROGUE_EMA_KEY,"intentPresented",
+                            MyQuitCSVHelper.getFulltime(),pulledActivity,intentLister);
                     activityList.setAdapter(blankAA);
                     activityList.setClickable(false);
                    activityList.setVisibility(View.INVISIBLE);

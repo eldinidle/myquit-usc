@@ -19,25 +19,25 @@ public class MyQuitService extends Service {
     }
 
 
-    private void choosePromptingSequence(int decisionSessionID, int surveyID) {
-        if (MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("emaPrompted")) {
-            MyQuitCSVHelper.logEMAEvents("emaReprompt1", MyQuitCSVHelper.getFulltime(),
-                    MyQuitCSVHelper.pullLastEvent()[2],MyQuitCSVHelper.pullLastEvent()[3]);
+    private void choosePromptingSequence(int emaType, int decisionSessionID, int surveyID) {
+        if (MyQuitCSVHelper.pullLastEvent(emaType)[0].equalsIgnoreCase("emaPrompted")) {
+            MyQuitCSVHelper.logEMAEvents(emaType, "emaReprompt1", MyQuitCSVHelper.getFulltime(),
+                    MyQuitCSVHelper.pullLastEvent(emaType)[2],MyQuitCSVHelper.pullLastEvent(emaType)[3]);
         }
-        else if (MyQuitCSVHelper.pullLastEvent()[0].substring(0,11).equalsIgnoreCase("emaReprompt")) {
-            int suffix = MyQuitCSVHelper.convertRepromptChar();
+        else if (MyQuitCSVHelper.pullLastEvent(emaType)[0].substring(0,11).equalsIgnoreCase("emaReprompt")) {
+            int suffix = MyQuitCSVHelper.convertRepromptChar(emaType);
             suffix++;
             String label = "emaReprompt" + suffix;
-            MyQuitCSVHelper.logEMAEvents(label, MyQuitCSVHelper.getFulltime(),
-                    MyQuitCSVHelper.pullLastEvent()[2],MyQuitCSVHelper.pullLastEvent()[3]);
+            MyQuitCSVHelper.logEMAEvents(emaType, label, MyQuitCSVHelper.getFulltime(),
+                    MyQuitCSVHelper.pullLastEvent(emaType)[2],MyQuitCSVHelper.pullLastEvent(emaType)[3]);
         }
         else {
-            MyQuitCSVHelper.logEMAEvents("emaPrompted", MyQuitCSVHelper.getFulltime(),
-                    MyQuitCSVHelper.pullLastEvent()[2],MyQuitCSVHelper.pullLastEvent()[3]);
+            MyQuitCSVHelper.logEMAEvents(emaType, "emaPrompted", MyQuitCSVHelper.getFulltime(),
+                    MyQuitCSVHelper.pullLastEvent(emaType)[2],MyQuitCSVHelper.pullLastEvent(emaType)[3]);
         }
     }
 
-    private void decisionEMA(int decisionSessionID, int surveyID) {
+    private void decisionEMA(int emaType, int decisionSessionID, int surveyID) {
         PendingIntent emaIntent;
         Intent launchEMA = new Intent(this, MyQuitEMA.class);
         launchEMA.putExtra("Survey",surveyID);
@@ -75,7 +75,7 @@ public class MyQuitService extends Service {
         Notification emaNotify = emaNotification.build();
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        choosePromptingSequence(decisionSessionID, surveyID);
+        choosePromptingSequence(emaType, decisionSessionID, surveyID);
         mNotificationManager.notify(22222, emaNotify);
     }
 
@@ -91,6 +91,7 @@ public class MyQuitService extends Service {
         catch(Exception e) {
             decisionAction = "Do Nothing";
         }
+        int emaType = surveyID;
         int decisionSessionID = intent.getIntExtra("SessionID",0);
         String actionString = "Processing...";
         if (decisionAction.matches("SFTP")) {
@@ -121,7 +122,7 @@ public class MyQuitService extends Service {
         startForeground(999, myQuitSFTPNotify);
 
        if (decisionAction.matches("EMA")) {
-           decisionEMA(decisionSessionID, surveyID);
+           decisionEMA(emaType, decisionSessionID, surveyID);
        }
 
        else if (decisionAction.matches("Calendar")){

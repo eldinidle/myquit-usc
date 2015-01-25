@@ -38,6 +38,10 @@ public class MyQuitCSVHelper{
     public static final String logPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyQuitUSC/Logs/";
 
 
+    public static final int ROGUE_EMA_KEY = 1;
+    public static final int CALENDAR_EMA_KEY = 2;
+    public static final int END_OF_DAY_EMA_KEY = 3;
+
     final public static String[] defaultTimes =
             new String[] { "12:00 AM", "01:00 AM", "02:00 AM", "03:00 AM", "04:00 AM", "05:00 AM",
                     "06:00 AM", "07:00 AM", "08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM",
@@ -46,8 +50,8 @@ public class MyQuitCSVHelper{
 
 
 
-    public static int convertRepromptChar() {
-        String testID = MyQuitCSVHelper.pullLastEvent()[0];
+    public static int convertRepromptChar(int emaType) {
+        String testID = MyQuitCSVHelper.pullLastEvent(emaType)[0];
         //int lengthFull = testID.length();
         //int lengthMin = lengthFull - 1;
         int bringBack = 0;
@@ -61,8 +65,8 @@ public class MyQuitCSVHelper{
               }
     }
 
-    public static boolean isLastEventPastXMinutes(int minutes){
-        String stringTime = MyQuitCSVHelper.pullLastEvent()[1];
+    public static boolean isLastEventPastXMinutes(int emaType, int minutes){
+        String stringTime = MyQuitCSVHelper.pullLastEvent(emaType)[1];
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
         Calendar now = Calendar.getInstance();
         Date timeNow = now.getTime();
@@ -76,9 +80,24 @@ public class MyQuitCSVHelper{
         }
     }
 
-    public static int compareEvents(String event1, String event2) {
-        String e1Time = pullLastEvent(event1);
-        String e2Time = pullLastEvent(event2);
+    public static boolean isLastEventPastXMinutesTrue(int emaType, int minutes){
+        String stringTime = MyQuitCSVHelper.pullLastEvent(emaType)[1];
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        Calendar now = Calendar.getInstance();
+        Date timeNow = now.getTime();
+        try {
+            Date timeThen = sdf.parse(stringTime);
+            long compareTime = timeNow.getTime() - timeThen.getTime();
+            return (compareTime > (minutes * 60 * 1000));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return true;
+        }
+    }
+
+    public static int compareEvents(String event1, String event2, int emaType) {
+        String e1Time = pullLastEvent(event1,emaType);
+        String e2Time = pullLastEvent(event2,emaType);
         if (e1Time == null & e2Time == null) {
             return 0;
         }
@@ -148,9 +167,16 @@ public class MyQuitCSVHelper{
         writer.close();
     }
 
-    public static String[] pullLastEvent() {
+    public static String[] pullLastEvent(int emaType) {
+        String fileName;
+        switch(emaType){
+            case CALENDAR_EMA_KEY: fileName = "CalEMAEvents.csv"; break;
+            case END_OF_DAY_EMA_KEY: fileName = "EODEMAEvents.csv"; break;
+            case ROGUE_EMA_KEY: fileName = "SystemEvents.csv"; break;
+            default: fileName = "SystemEvents.csv"; break;
+        }
         try {
-            CSVReader reader = new CSVReader(new FileReader(logPath + "SystemEvents.csv"));
+            CSVReader reader = new CSVReader(new FileReader(logPath + fileName));
             String[] report;
             String[] report2 = null;
             while((report = reader.readNext()) != null) {
@@ -163,9 +189,16 @@ public class MyQuitCSVHelper{
         }
     }
 
-    public static String pullLastEvent(String logMessage) {
+    public static String pullLastEvent(String logMessage, int emaType) {
+        String fileName;
+        switch(emaType){
+            case CALENDAR_EMA_KEY: fileName = "CalEMAEvents.csv"; break;
+            case END_OF_DAY_EMA_KEY: fileName = "EODEMAEvents.csv"; break;
+            case ROGUE_EMA_KEY: fileName = "SystemEvents.csv"; break;
+            default: fileName = "SystemEvents.csv"; break;
+        }
         try {
-            CSVReader reader = new CSVReader(new FileReader(logPath + "SystemEvents.csv"));
+            CSVReader reader = new CSVReader(new FileReader(logPath + fileName));
             String[] report;
             String pulledTime = null;
             String pulledMessage;
@@ -227,10 +260,17 @@ public class MyQuitCSVHelper{
         }
     }
 
-    public static void logEMAEvents(String logMessage, String fullTime) {
+    public static void logEMAEvents(int emaType, String logMessage, String fullTime) {
+        String fileName;
+        switch(emaType){
+            case CALENDAR_EMA_KEY: fileName = "CalEMAEvents.csv"; break;
+            case END_OF_DAY_EMA_KEY: fileName = "EODEMAEvents.csv"; break;
+            case ROGUE_EMA_KEY: fileName = "SystemEvents.csv"; break;
+            default: fileName = "SystemEvents.csv"; break;
+        }
         String[] pushEvent = new String [] {logMessage, fullTime};
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter(logPath + "SystemEvents.csv", true));
+            CSVWriter writer = new CSVWriter(new FileWriter(logPath + fileName, true));
             writer.writeNext(pushEvent);
             writer.close();
         } catch (IOException e) {
@@ -238,10 +278,18 @@ public class MyQuitCSVHelper{
         }
     }
 
-    public static void logEMAEvents(String logMessage, String fullTime, String intent, String situation) {
+    public static void logEMAEvents(int emaType, String logMessage, String fullTime,
+                                    String intent, String situation) {
+        String fileName;
+        switch(emaType){
+            case CALENDAR_EMA_KEY: fileName = "CalEMAEvents.csv"; break;
+            case END_OF_DAY_EMA_KEY: fileName = "EODEMAEvents.csv"; break;
+            case ROGUE_EMA_KEY: fileName = "SystemEvents.csv"; break;
+            default: fileName = "SystemEvents.csv"; break;
+        }
         String[] pushEvent = new String [] {logMessage, fullTime, intent, situation};
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter(logPath + "SystemEvents.csv", true));
+            CSVWriter writer = new CSVWriter(new FileWriter(logPath + fileName, true));
             writer.writeNext(pushEvent);
             writer.close();
         } catch (IOException e) {

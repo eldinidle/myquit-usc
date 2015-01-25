@@ -14,8 +14,11 @@ public class MyQuitCalendarSuccessSurvey {
     public static final int KEY_SURVEY_LENGTH = 7;
 
 
-    public static final String[] areContext = {"Were you in the situation noted below:", "Yes", "No"};
-    public static final String[] didFollow = {"Did you follow through with the intention/plan/reminder?", "Yes", "No"};
+    public static String[] areContext = {"Were you in the situation noted below:" +
+            System.getProperty("line.separator") +
+            MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.CALENDAR_EMA_KEY)[2], "Yes", "No"};
+    public static final String[] didFollow = {"Did you " +
+            MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.CALENDAR_EMA_KEY)[3] + "?", "Yes", "No"};
     public static final String[] howHelpful = {"How helpful was the intervention?", "Extremely helpful",
             "Quite helpful", "Somewhat helpful", "A little helpful", "Not at all helpful"};
     public static final String[] didSmokeY = {"Did you smoke a cigarette?", "Yes", "No"};
@@ -35,7 +38,7 @@ public class MyQuitCalendarSuccessSurvey {
             case 1:
                 switch (aID) {
                     case 1001: return 3;
-                    case 1002: return 2;
+                    case 1002: return 4;
                     default: return 0;
                 }
             case 2: return KEY_END_SURVEY;

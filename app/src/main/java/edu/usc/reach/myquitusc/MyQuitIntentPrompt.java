@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 public class MyQuitIntentPrompt extends Activity {
 
+
     void dropWindow() {
         if (MyQuitCalendarHelper.isWithinXNextHour(10) & !MyQuitCalendarHelper.
                 returnIntentFromSituation(getApplicationContext(),true).
@@ -24,6 +25,7 @@ public class MyQuitIntentPrompt extends Activity {
             }
             catch(StringIndexOutOfBoundsException soeo) {
                 parsedHourSituation = "doing something";
+                finish();
             }
             MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(true),
                     parsedHourSituation, MyQuitCalendarHelper.
@@ -40,6 +42,7 @@ public class MyQuitIntentPrompt extends Activity {
             }
             catch(StringIndexOutOfBoundsException soeo) {
                 parsedHourSituation = "doing something";
+                finish();
             }
             MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(false),
                    parsedHourSituation, MyQuitCalendarHelper.
@@ -74,6 +77,7 @@ public class MyQuitIntentPrompt extends Activity {
             }
             catch(StringIndexOutOfBoundsException soeo) {
                 parsedHourSituation = "doing something";
+                finish();
             }
             intentView.setText("Instead of smoking when " + parsedHourSituation + ", you said you would "
                     + MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(), true));
@@ -86,9 +90,13 @@ public class MyQuitIntentPrompt extends Activity {
             }
             catch(StringIndexOutOfBoundsException soeo) {
                 parsedHourSituation = "doing something";
+                finish();
             }
             intentView.setText("Instead of smoking when " + parsedHourSituation + ", you said you would "
                     + MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(), false));
+        }
+        else {
+            finish();
         }
 
 

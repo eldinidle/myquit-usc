@@ -369,7 +369,10 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
             getDialog().setTitle(Html.fromHtml("<font color='#004D40'>When will you quit smoking?</font>"));
 
             final DatePicker quitDatePicker = (DatePicker) v.findViewById(R.id.datePicker);
+            quitDatePicker.setCalendarViewShown(false);
+            quitDatePicker.setSpinnersShown(true);
             Button confirmDate = (Button) v.findViewById(R.id.datePickerButton);
+            //,,
 
 
             confirmDate.setText("Hold to confirm My Quit date!");

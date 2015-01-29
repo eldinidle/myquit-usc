@@ -100,6 +100,25 @@ public class MyQuitCalendar extends Activity   {
                 }
             }
         });
+        todayView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                pulledTimes[position] = MyQuitCSVHelper.defaultTimes[position];
+                try {
+                    MyQuitCSVHelper.pushDateTimes(calledDate, pulledTimes);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(view.getContext(), "Warning: Not Synced", Toast.LENGTH_LONG);
+                }
+                Intent launchBack = new Intent(view.getContext(), MyQuitCalendar.class);
+                launchBack.putExtra("Date",calledDate);
+                launchBack.putExtra("FocusPosition",position);
+                launchBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                MyQuitCalendar.this.overridePendingTransition(R.anim.abc_slide_in_bottom,R.anim.abc_slide_out_top);
+                startActivity(launchBack);
+                return false;
+            }
+        });
 
         Button homeButton = (Button) findViewById(R.id.calendarHome);
         homeButton.setOnClickListener(new View.OnClickListener() {

@@ -1,5 +1,6 @@
 package edu.usc.reach.myquitusc;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -180,6 +181,9 @@ public class MyQuitCalendarHelper {
             }
             else if (!isWithinXNextHour(10) & !isWithinXAfterHour(20) & lastSessionRead()){
                 setSession(context,false,false);
+                NotificationManager mNotificationManager =
+                        (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.cancel(3);
             }
 
     }

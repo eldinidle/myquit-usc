@@ -39,6 +39,13 @@ public class MyQuitEMA extends Activity {
         }
     }
 
+    void closeIfMissedSurvey(int surveyID) {
+        String[] pullLast = MyQuitCSVHelper.pullLastEvent(surveyID);
+        if(pullLast[0].equalsIgnoreCase("emaMissedSurvey")){
+            finish();
+        }
+    }
+
     void finalPushExitSurvey(int surveyID, int sessionID) throws IOException {
             MyQuitEMAHelper.pushSpecificAnswer(MyQuitCSVHelper.getFullDate(),
                     MyQuitCSVHelper.getTimeOnly(),
@@ -242,6 +249,7 @@ public class MyQuitEMA extends Activity {
         final int survey = pickSurveyInfo.getIntExtra("Survey", 0);
         boolean receiver = pickSurveyInfo.getBooleanExtra("Receiver", true);
         int sessionID = 0;
+        closeIfMissedSurvey(survey);
         if (receiver) {
             sessionID = retrieveSessionID(survey);
         }

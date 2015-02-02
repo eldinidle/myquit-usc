@@ -149,6 +149,30 @@ public class MyQuitCSVHelper{
         return sdf.format(emptyCal.getTime());
     }
 
+    public static int pullCigAvoided(String calledDate) throws IOException {
+        String stepDate = calledDate.replaceAll("/", "_");
+        String fileName = stepDate + "R" + ".csv";
+        CSVReader reader = new CSVReader(new FileReader(logPath + fileName));
+        List<String[]> pullCigs = reader.readAll();
+        reader.close();
+        return pullCigs.size();
+    }
+
+    public static void pushCigAvoided() {
+        String calledDate = MyQuitCSVHelper.getFullDate();
+        String fullTime = MyQuitCSVHelper.getFulltime();
+        String stepDate = calledDate.replaceAll("/", "_");
+        String fileName = stepDate + "R" + ".csv";
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter(logPath + fileName, true));
+            String[] pushTime = new String[] {fullTime};
+            writer.writeNext(pushTime);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static int pullCigarette(String calledDate) throws IOException {
         String stepDate = calledDate.replaceAll("/", "_");
         String fileName = stepDate + ".csv";
@@ -177,11 +201,9 @@ public class MyQuitCSVHelper{
         }
         try {
             CSVReader reader = new CSVReader(new FileReader(logPath + fileName));
-            String[] report;
-            String[] report2 = null;
-            while((report = reader.readNext()) != null) {
-                report2 = report;
-            }
+            List<String[]> report = reader.readAll();
+            reader.close();
+            String[] report2 = report.get(report.size()-1);
             return report2;
         } catch (IOException e) {
             e.printStackTrace();

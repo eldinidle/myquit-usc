@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
@@ -27,60 +29,9 @@ import java.util.Date;
 public class MyQuitProgress extends Activity {
 
 
-    public static String[] countWeekDays() {
-        String[] cigDateArray = new String[7];
-
-        Calendar todayCal = Calendar.getInstance();
-        int dayofWeek = todayCal.DAY_OF_WEEK;
-        todayCal.add(todayCal.DATE,(-1*(dayofWeek-1)));
-        SimpleDateFormat presentSDF = new SimpleDateFormat("MM/dd");
-        int count = 0;
-
-        while (count < 7) {
-            todayCal.add(todayCal.DATE,(count));
-            Date dayOfWeek = todayCal.getTime();
-            cigDateArray[count] = presentSDF.format(dayOfWeek);
-            todayCal.add(todayCal.DATE,(-1*count));
-            count++;
-        }
-        return cigDateArray;
-    }
-
-    public static int[] countWeeklyCigs() {
-        int[] cigSmokeArray = new int[7];
-
-        Calendar todayCal = Calendar.getInstance();
-        int dayofWeek = todayCal.DAY_OF_WEEK;
-        todayCal.add(todayCal.DATE,(-1*(dayofWeek-1)));
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-
-        int count = 0;
-
-        while (count < 7) {
-            todayCal.add(todayCal.DATE,(count));
-            Date dayOfWeek = todayCal.getTime();
-            try {
-                cigSmokeArray[count] = MyQuitCSVHelper.pullCigarette(sdf.format(dayOfWeek));
-                todayCal.add(todayCal.DATE,(-1*count));
-                count++;
-            } catch (IOException e) {
-                cigSmokeArray[count] = 0;
-                todayCal.add(todayCal.DATE,(-1*count));
-                count++;
-                e.printStackTrace();
-            }
-
-        }
-        return cigSmokeArray;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_quit_progress);
-        int[] smokedCigs = countWeeklyCigs();
+    private void runGraphView(int typePull){
+        int[] smokedCigs = countWeeklyCigs(typePull);
         String[] dateLabels = countWeekDays();
-
 
         GraphViewSeries exampleSeries = new GraphViewSeries(new GraphView.GraphViewData[] {
                 new GraphView.GraphViewData(1, (double) smokedCigs[0])
@@ -102,13 +53,122 @@ public class MyQuitProgress extends Activity {
                 return ""+((int) v);
             }
         });
-        graphView.getGraphViewStyle().setNumVerticalLabels(10);
+        graphView.getGraphViewStyle().setNumVerticalLabels(labelNums(getMax(smokedCigs)));
         graphView.setHorizontalLabels(dateLabels);
         graphView.addSeries(exampleSeries); // data
 
 
         LinearLayout progressUSC = (LinearLayout) findViewById(R.id.linearLayout);
         progressUSC.addView(graphView);
+    }
+
+    private static int labelNums(int maxCigs){
+        if(maxCigs>10){
+            return 10;
+        }
+        else {
+            return maxCigs+1;
+        }
+    }
+
+    private static int getMax(int[] smokedCigs) {
+        int count = 0;
+        for(int i:smokedCigs){
+            if(i>count){
+                count=i;
+            }
+        }
+        return count;
+    }
+
+    public static String[] countWeekDays() {
+        String[] cigDateArray = new String[7];
+
+        Calendar todayCal = Calendar.getInstance();
+        int dayofWeek = todayCal.DAY_OF_WEEK;
+        todayCal.add(todayCal.DATE,(-1*(dayofWeek-1)));
+        SimpleDateFormat presentSDF = new SimpleDateFormat("MM/dd");
+        int count = 0;
+
+        while (count < 7) {
+            todayCal.add(todayCal.DATE,(count));
+            Date dayOfWeek = todayCal.getTime();
+            cigDateArray[count] = presentSDF.format(dayOfWeek);
+            todayCal.add(todayCal.DATE,(-1*count));
+            count++;
+        }
+        return cigDateArray;
+    }
+
+    public static int[] countWeeklyCigs(int typeOfPull) {
+        int[] cigSmokeArray = new int[7];
+
+        Calendar todayCal = Calendar.getInstance();
+        int dayofWeek = todayCal.DAY_OF_WEEK;
+        todayCal.add(todayCal.DATE,(-1*(dayofWeek-1)));
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+
+        int count = 0;
+
+        while (count < 7) {
+            todayCal.add(todayCal.DATE,(count));
+            Date dayOfWeek = todayCal.getTime();
+            try {
+                switch(typeOfPull){
+                    case 1:
+                        cigSmokeArray[count] = MyQuitCSVHelper.pullCigarette(sdf.format(dayOfWeek));
+                        break;
+                    case 2:
+                        cigSmokeArray[count] = MyQuitCSVHelper.pullCigAvoided(sdf.format(dayOfWeek));
+                        break;
+                    default:
+                        cigSmokeArray[count] = MyQuitCSVHelper.pullCigarette(sdf.format(dayOfWeek));
+                        break;
+                }
+
+                todayCal.add(todayCal.DATE,(-1*count));
+                count++;
+            } catch (IOException e) {
+                cigSmokeArray[count] = 0;
+                todayCal.add(todayCal.DATE,(-1*count));
+                count++;
+                e.printStackTrace();
+            }
+
+        }
+        return cigSmokeArray;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_my_quit_progress);
+
+        runGraphView(1);
+
+        Button smokedCigs = (Button) findViewById(R.id.cigSmokeStatus);
+        Button avoidedCigs = (Button) findViewById(R.id.cigSavedStatus);
+
+
+        smokedCigs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayout progressUSC = (LinearLayout) findViewById(R.id.linearLayout);
+                progressUSC.removeAllViews();
+                runGraphView(1);
+            }
+        });
+
+        avoidedCigs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayout progressUSC = (LinearLayout) findViewById(R.id.linearLayout);
+                progressUSC.removeAllViews();
+                runGraphView(2);
+            }
+        });
+
+
     }
 
 

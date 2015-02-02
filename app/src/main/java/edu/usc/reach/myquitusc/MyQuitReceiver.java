@@ -32,11 +32,11 @@ public class MyQuitReceiver extends BroadcastReceiver {
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(1, myQuitSFTPNotify);
 
-         // MyQuitAutoAssign.autoAssignCalendar();
+        MyQuitAutoAssign.autoAssignCalendar();
         MyQuitEMAHelper.setUpCalendarEMA();
         MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.ROGUE_EMA_KEY);
         MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.CALENDAR_EMA_KEY);
-        MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.END_OF_DAY_EMA_KEY);
+        //MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.END_OF_DAY_EMA_KEY);
         MyQuitCalendarHelper.decideCalendar(context);
         MyQuitPHP.decidePHPPost();
         Log.d("MyQuitUSC", "Finished deciding");

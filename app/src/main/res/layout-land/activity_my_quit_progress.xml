@@ -9,7 +9,38 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/linearLayout"></LinearLayout>
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/linlay">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/linlay">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Cigarettes Smoked"
+            android:id="@+id/cigSmokeStatus"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentLeft="false"
+            android:layout_weight="1" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Cigarettes Resisted"
+            android:id="@+id/cigSavedStatus"
+            android:layout_alignParentBottom="false"
+            android:layout_toRightOf="@+id/cigSmokeStatus"
+            android:layout_alignParentRight="false"
+            android:layout_weight="1" />
+    </LinearLayout>
 
 </RelativeLayout>

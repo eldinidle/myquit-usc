@@ -17,7 +17,7 @@ public class MyQuitCalendarSuccessSurvey {
     public static String[] areContext = {"Were you in the situation noted below:" +
             System.getProperty("line.separator") +
             MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.CALENDAR_EMA_KEY)[2], "Yes", "No"};
-    public static final String[] didFollow = {"Did you " +
+    public static  String[] didFollow = {"Did you " +
             MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.CALENDAR_EMA_KEY)[3] + "?", "Yes", "No"};
     public static final String[] howHelpful = {"How helpful was the intervention?", "Extremely helpful",
             "Quite helpful", "Somewhat helpful", "A little helpful", "Not at all helpful"};
@@ -27,7 +27,7 @@ public class MyQuitCalendarSuccessSurvey {
     public static final String[] endMessage = {"Thank you for completing the survey"};
 
 
-    public static final List<String[]> getQuestions = Arrays.asList(areContext, didFollow,howHelpful,didSmokeY,
+    public  List<String[]> getQuestions = Arrays.asList(areContext, didFollow,howHelpful,didSmokeY,
             didSmokeN, doInstead,endMessage);
 
     public static int validateNextPosition(int qID, int aID) {
@@ -41,7 +41,9 @@ public class MyQuitCalendarSuccessSurvey {
                     case 1002: return 4;
                     default: return 0;
                 }
-            case 2: return KEY_END_SURVEY;
+            case 2:
+                MyQuitCSVHelper.pushCigAvoided();
+                return KEY_END_SURVEY;
             case 3:
                 switch (aID) {
                     case 1001: return KEY_END_SURVEY;
@@ -54,7 +56,8 @@ public class MyQuitCalendarSuccessSurvey {
                     case 1002: return 5;
                     default: return 0;
                 }
-            case 5: return KEY_END_SURVEY;
+            case 5:
+                return KEY_END_SURVEY;
             default: return 0;
         }
     }
@@ -62,7 +65,9 @@ public class MyQuitCalendarSuccessSurvey {
     public static int validateNextPosition(int qID, String aID) {
         Log.d("MQU-EMA","Received Qid" + qID + " and " + aID );
         switch(aID) {
-            default: return KEY_END_SURVEY;
+            default:
+                MyQuitCSVHelper.pushCigAvoided();
+                return KEY_END_SURVEY;
         }
     }
 

@@ -50,7 +50,8 @@ public class MyQuitPlans extends Activity  {
             removeCustomSituation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    RemoveCustomSituationFragmentDialog removeSituation  = new RemoveCustomSituationFragmentDialog()
+                    RemoveCustomSituationFragmentDialog removeSituation  =
+                            new RemoveCustomSituationFragmentDialog()
                             .newInstance(oldPosition);
                     removeSituation.show(getFragmentManager(), "removeSituation");
                 }
@@ -129,7 +130,6 @@ public class MyQuitPlans extends Activity  {
                                          final EditText customIntent, final TextView presentSituation,
                                          final Button removeCustom, int indexPosition) {
        if(indexPosition==(MyQuitPlanHelper.pullSizeBaseList(getApplicationContext())-1)){
-            // nextButton.setText("Add situation");//TODO: Add custom situation
             final int oldPosition = indexPosition;
             nextButton.setVisibility(View.VISIBLE);
             nextButton.setText("Add");

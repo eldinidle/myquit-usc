@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Eldin on 1/10/15.
@@ -163,24 +164,46 @@ public class MyQuitCalendarHelper {
     }
 
     public static void decideCalendar (Context context) {
-            if (isWithinXNextHour(10) & !returnIntentFromSituation(context,true).
-                    equalsIgnoreCase("No Match") & !isWithinXAfterHour(20) & !lastSessionRead()) {
-                Log.d("MQU-CH","Decide Loop > 50 minutes");
-               // setUpEMAPrompt(assignArrayPosition(true));
+            if (isWithinXNextHour(10) && !returnIntentFromSituation(context,true).
+                    equalsIgnoreCase("No Match") && !isWithinXAfterHour(20)) {
+                Log.d("MQU-CH", "Decide Loop > 50 minutes");
+                if(didLastReadPassMinutes(30)) {
+                    Log.d("MQU-CH", "50 minutes > YES");
+                    boolean prompt = Math.random() > 0.5;
+                    if (prompt) {
+                        setSession(context, true, false);
+                        pushActionCalendar(context);
+                    }
+                    else {
+                        setSession(context, true, true);
+                    }
+                }
+                else if(!lastSessionRead() & !didLastReadPassMinutes(30)){
+                    Log.d("MQU-CH", "50 minutes > No No");
+                    pushActionCalendar(context);
+                }
 
-                setSession(context,true,false);
-                pushActionCalendar(context);
             }
-            else if (!isWithinXNextHour(10) & !returnIntentFromSituation(context,false).
-                    equalsIgnoreCase("No Match") & isWithinXAfterHour(20) & !lastSessionRead()){
+            else if (!isWithinXNextHour(10) && !returnIntentFromSituation(context,false).
+                    equalsIgnoreCase("No Match") && isWithinXAfterHour(20)){
                 Log.d("MQU-CH","Decide Loop < 20 minutes");
-               // setUpEMAPrompt(assignArrayPosition(false));
-
-                setSession(context,false,false);
-                pushActionCalendar(context);
+                if(didLastReadPassMinutes(30)){
+                    Log.d("MQU-CH", "20 minutes > YES");
+                    boolean prompt = Math.random() > 0.5;
+                    if(prompt){
+                        setSession(context,false,false);
+                        pushActionCalendar(context);
+                    }
+                    else {
+                        setSession(context,false,true);
+                    }
+                }
+                else if(!lastSessionRead() & !didLastReadPassMinutes(30)){
+                    Log.d("MQU-CH", "20 minutes > No No");
+                    pushActionCalendar(context);
+                }
             }
-            else if (!isWithinXNextHour(10) & !isWithinXAfterHour(20) & lastSessionRead()){
-                setSession(context,false,false);
+            else if (!isWithinXNextHour(10) && !isWithinXAfterHour(20)){
                 NotificationManager mNotificationManager =
                         (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 mNotificationManager.cancel(3);
@@ -269,6 +292,12 @@ public class MyQuitCalendarHelper {
         }
     }
 
+    /**
+    *
+    * Logs hours viewed by the application.
+    *
+    *
+     */
     public static void logViewedHours(String calledDate, List<Integer> calledPositions) {
         Log.d("MQU-CH","pushed lock is" + calledPositions.size());
         String[] pushTimes = new String[calledPositions.size()];
@@ -286,13 +315,30 @@ public class MyQuitCalendarHelper {
         }
     }
 
+
+    public static boolean didLastReadPassMinutes(int minutes) {
+        Calendar nowCal = Calendar.getInstance();
+        nowCal.add(Calendar.MINUTE,(0-minutes));
+        Date testTime = nowCal.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        try {
+            Date thenTime = sdf.parse(lastSessionTime());
+            Log.d("MQU-CH","Compare Time is" + sdf.format(testTime));
+            Log.d("MQU-CH","Time is" + lastSessionTime());
+            return testTime.after(thenTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static void setSession(Context context, boolean preTenMinutes, boolean setSessionRead) {
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.calPath + "CalIntentSessions.csv"));
+            CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.calPath + "CalIntentSessions.csv", true));
             //TODO: Implement session system
             String intention = returnIntentFromSituation(context, preTenMinutes);
             String viewed = String.valueOf(setSessionRead);
-            String[] pushNext = new String[] { intention, viewed,};
+            String[] pushNext = new String[] { intention, viewed, MyQuitCSVHelper.getFulltime()};
             writer.writeNext(pushNext);
             writer.close();
         } catch (IOException e) {
@@ -300,15 +346,31 @@ public class MyQuitCalendarHelper {
         }
     }
 
+
     public static boolean lastSessionRead() {
         try {
             CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.calPath + "CalIntentSessions.csv"));
-            String[] lineRead = reader.readNext();
+            List<String[]> fullRead = reader.readAll();
             reader.close();
+            String[] lineRead = fullRead.get(fullRead.size()-1);
             return Boolean.valueOf(lineRead[1]);
         } catch (IOException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public static String lastSessionTime() {
+        try {
+            CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.calPath + "CalIntentSessions.csv"));
+            List<String[]> fullRead = reader.readAll();
+            reader.close();
+            String[] lineRead = fullRead.get(fullRead.size()-1);
+            Log.d("MQU-CH", "Time read tag is" + lineRead[2]);
+            return String.valueOf(lineRead[2]);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "09/29/1988 01:01:01";
         }
     }
 

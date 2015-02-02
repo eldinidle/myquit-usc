@@ -41,6 +41,7 @@ public class MyQuitService extends Service {
         PendingIntent emaIntent;
         Intent launchEMA = new Intent(this, MyQuitEMA.class);
         launchEMA.putExtra("Survey",surveyID);
+        Log.d("MQU-DECIDE","putted extra is" + surveyID);
         MyQuitEMAHelper.pushLastSessionID(MyQuitCSVHelper.getFullDate(),surveyID,decisionSessionID);
         //launchEMA.putExtra("Position",0);
         //launchEMA.putExtra("SessionID",decisionSessionID);
@@ -62,7 +63,7 @@ public class MyQuitService extends Service {
         launchEMA.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
         launchEMA.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         launchEMA.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        emaIntent = PendingIntent.getActivity(this, 0, launchEMA, 0);
+        emaIntent = PendingIntent.getActivity(this, 0, launchEMA, PendingIntent.FLAG_UPDATE_CURRENT);
         Uri tone= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         NotificationCompat.Builder emaNotification = new NotificationCompat.Builder(this)
                 .setContentTitle("Click here!")

@@ -24,7 +24,7 @@ public class MyQuitEndOfDaySurvey {
     public static final String[] endMessage = {"Thank you for completing the survey"};
 
 
-    public static final List<String[]> getQuestions = Arrays.asList(areContext, didFollow,howHelpful,didSmokeY,
+    public  List<String[]> getQuestions = Arrays.asList(areContext, didFollow,howHelpful,didSmokeY,
             didSmokeN, doInstead,endMessage);
 
     public static int validateNextPosition(int qID, int aID) {

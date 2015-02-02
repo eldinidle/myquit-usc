@@ -94,6 +94,7 @@ public class MyQuitEMAHelper {
         Intent launchService = new Intent(context, MyQuitService.class);
         launchService.putExtra("Action","EMA");
         launchService.putExtra("Survey",emaType);
+        Log.d("MQU-DECIDE","put extra is" + emaType);
         try {
             launchService.putExtra("SessionID",createNewSessionID(MyQuitCSVHelper.getFullDate()));
             Log.d("MY-QUIT-USC", "added session ID is" + launchService.getIntExtra("SessionID", 0));
@@ -117,19 +118,25 @@ public class MyQuitEMAHelper {
 
 
     public static void decideEMA (Context context, int emaType) {
+        Log.d("MQU-DECIDE","Decision on" + emaType);
     try {
         if (MyQuitCSVHelper.pullLastEvent(emaType)[0].equalsIgnoreCase("intentPresented")) {
             pushActionEMA(context, emaType);
+            Log.d("MQU-DECIDE","Decision is prompt");
         } else if (MyQuitCSVHelper.pullLastEvent(emaType)[0].substring(0, 11).equalsIgnoreCase("emaReprompt") & (MyQuitCSVHelper.convertRepromptChar(emaType) > KEY_NUM_REPROMPTS)) {
             MyQuitCSVHelper.logEMAEvents(emaType, "emaMissedSurvey", MyQuitCSVHelper.getFulltime());
+            Log.d("MQU-DECIDE","Decision is missed");
         } else if ((MyQuitCSVHelper.pullLastEvent(emaType)[0].equalsIgnoreCase("emaPrompted") | MyQuitCSVHelper.pullLastEvent(emaType)[0].substring(0, 11).equalsIgnoreCase("emaReprompt")) & MyQuitCSVHelper.isLastEventPastXMinutes(emaType,3)) {
             pushActionEMA(context, emaType);
+            Log.d("MQU-DECIDE","Decision is reprompt");
         } else if (MyQuitCSVHelper.pullLastEvent(emaType)[0].equalsIgnoreCase("emaMissedSurvey")){
             NotificationManager mNotificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.cancel(22222);
+            Log.d("MQU-DECIDE","Decision is cancel");
         }
           else if ((MyQuitCSVHelper.pullLastEvent(emaType)[0].equalsIgnoreCase("emaFinished"))) {
+            Log.d("MQU-DECIDE","Decision is finished");
         }
     }
     catch (NullPointerException neo){
@@ -184,6 +191,7 @@ public class MyQuitEMAHelper {
         }
 
     }
+
 
     public static int pullLastSessionID(String calledDate, int surveyID) {
         String stepDate = calledDate.replaceAll("/", "_");

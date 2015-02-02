@@ -28,8 +28,8 @@ public class MyQuitIntentPrompt extends Activity {
                 finish();
             }
             MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(true),
-                    parsedHourSituation, MyQuitCalendarHelper.
-                            returnIntentFromSituation(getApplicationContext(),true));
+                    parsedHourSituation,
+                    MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(),true));
             MyQuitCalendarHelper.setSession(getApplicationContext(),true,true);
         }
         else if (!MyQuitCalendarHelper.isWithinXNextHour(10) & !MyQuitCalendarHelper.

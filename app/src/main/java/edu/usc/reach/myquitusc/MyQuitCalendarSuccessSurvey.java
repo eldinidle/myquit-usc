@@ -14,10 +14,10 @@ public class MyQuitCalendarSuccessSurvey {
     public static final int KEY_SURVEY_LENGTH = 7;
 
 
-    public static String[] areContext = {"Were you in the situation noted below:" +
+    public String[] areContext = {"Were you in the situation noted below:" +
             System.getProperty("line.separator") +
             MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.CALENDAR_EMA_KEY)[2], "Yes", "No"};
-    public static  String[] didFollow = {"Did you " +
+    public  String[] didFollow = {"Did you " +
             MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.CALENDAR_EMA_KEY)[3] + "?", "Yes", "No"};
     public static final String[] howHelpful = {"How helpful was the intervention?", "Extremely helpful",
             "Quite helpful", "Somewhat helpful", "A little helpful", "Not at all helpful"};

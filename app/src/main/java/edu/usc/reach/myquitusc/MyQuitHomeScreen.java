@@ -53,6 +53,8 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             }
 
 
+
+
             CalendarView calendarView = (CalendarView) findViewById(R.id.calendarViewOut);
             calendarView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -101,10 +103,10 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             if((checkLastEvent.equalsIgnoreCase("intentPresented") ||
                     checkLastEvent.equalsIgnoreCase("emaPrompted") ||
                     checkLastEvent.equalsIgnoreCase("emaReprompted"))){
-                oopsSmoke.setText("");
+                oopsSmoke.setTextColor(getResources().getColor(R.color.Teal300));
             }
             else {
-                oopsSmoke.setText("Oops I smoked");
+                oopsSmoke.setTextColor(getResources().getColor(R.color.Teal900));
                 oopsSmoke.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -196,6 +198,47 @@ public class MyQuitHomeScreen extends ActionBarActivity {
     }
 
     @Override
+    protected void onResume(){
+        super.onResume();
+        Button oopsSmoke = (Button) findViewById(R.id.oopsSmoked);
+        String checkLastEvent = "NA";
+        try {
+            checkLastEvent = MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[0];
+        }
+        catch (NullPointerException neo) {
+            neo.printStackTrace();
+        }
+        if((checkLastEvent.equalsIgnoreCase("intentPresented") ||
+                checkLastEvent.equalsIgnoreCase("emaPrompted") ||
+                checkLastEvent.equalsIgnoreCase("emaReprompted"))){
+            oopsSmoke.setTextColor(getResources().getColor(R.color.Teal300));
+        }
+        else {
+            oopsSmoke.setTextColor(getResources().getColor(R.color.Teal900));
+            oopsSmoke.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        Fragment older = getFragmentManager().findFragmentByTag("rogueintent");
+                        if (older != null) {
+                            ft.remove(older);
+                        }
+                        ft.addToBackStack(null);
+
+                        // Create and show the dialog.
+                        DialogFragment rogueIntent = RogueButtonDialog.newInstance();
+                        //  MyQuitCSVHelper.logEMAEvents("intentPresented", MyQuitCSVHelper.getFulltime());
+                        rogueIntent.show(ft, "rogueintent");
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Please complete your MyQuit 15 Plan first!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -218,7 +261,9 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             return true;
         }
         if (id == R.id.runCalledAction) {
-           Toast.makeText(this,"You are running version 0.10",Toast.LENGTH_SHORT).show();
+            Intent launchLogin = new Intent(this, MyQuitPrePlanArray.class);
+            startActivity(launchLogin);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

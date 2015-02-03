@@ -12,5 +12,7 @@
     <string name="title_activity_my_quit_em">MyQuitEMA</string>
     <string name="title_activity_my_quit_intent_prompt">MyQuitIntentPrompt</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_my_quit_pre_plan_array">MyQuitPrePlanArray</string>
+    <string name="testtestest">MyQuitPradfadsfePlanArray</string>
 
 </resources>

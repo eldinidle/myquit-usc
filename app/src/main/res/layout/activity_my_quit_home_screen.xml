@@ -19,7 +19,9 @@
         android:weekNumberColor="@color/Teal200"
         android:shownWeekCount="4"
         android:showWeekNumber="false"
-        android:measureAllChildren="false" />
+        android:measureAllChildren="false"
+        android:selectedWeekBackgroundColor="@color/Teal100"
+        android:selectedDateVerticalBar="@color/Teal900" />
 
     <LinearLayout
         android:orientation="horizontal"

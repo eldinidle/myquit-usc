@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.usc.reach.myquitusc"
-    >
+    package="edu.usc.reach.myquitusc" >
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -90,6 +89,11 @@
         <activity
             android:name=".MyQuitIntentPrompt"
             android:label="@string/title_activity_my_quit_intent_prompt"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".MyQuitPrePlanArray"
+            android:label="@string/title_activity_my_quit_pre_plan_array"
             android:screenOrientation="portrait">
         </activity>
     </application>

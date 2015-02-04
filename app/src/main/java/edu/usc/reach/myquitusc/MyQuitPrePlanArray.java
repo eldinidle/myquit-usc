@@ -43,18 +43,12 @@ public class MyQuitPrePlanArray extends ActionBarActivity {
     private final String socialSituations = "Carefully think about SOCIAL situations where you are most likely to smoke a cigarette. " +
             "Choose all that apply or create your own if necessary.";
 
-    private static String[] outWithFriends = new String[] {"Going out with friends",
-            "If I am going out with friends, I will...",""};
-    private static String[] partyBar = new String[] {"Party or bar",
-            "If I am at a party or a bar, I will...",""};
-    private static String[] aroundSmokers = new String[] {"Around other smokers",
-            "If I am around other people who smoke, I will...",""};
-    private static String[] offerCigarette = new String[] {"Someone will offer cigarette",
-            "If someone offers me a cigarette, I will...",""};
-    private static String[] nonSmokingVenue = new String[] {"At a non-smoking venue",
-            "If I am about to go to places where smoking is not allowed, I will...",""};
-    private static String[] iAmDrinking = new String[] {"I'm drinking",
-            "If I am drinking, I will...",""};
+    private static String[] outWithFriends = MyQuitPlanHelper.outWithFriends;
+    private static String[] partyBar = MyQuitPlanHelper.partyBar;
+    private static String[] aroundSmokers = MyQuitPlanHelper.aroundSmokers;
+    private static String[] offerCigarette = MyQuitPlanHelper.offerCigarette;
+    private static String[] nonSmokingVenue = MyQuitPlanHelper.nonSmokingVenue;
+    private static String[] iAmDrinking = MyQuitPlanHelper.iAmDrinking;
 
     private static ArrayList<String[]> baseSocialList = new ArrayList(Arrays.asList(outWithFriends,partyBar,
             aroundSmokers,offerCigarette,nonSmokingVenue,iAmDrinking));
@@ -66,21 +60,17 @@ public class MyQuitPrePlanArray extends ActionBarActivity {
     private final String routineSituations = "Next, think about ROUTINE situations where you are most likely to smoke a cigarette. " +
             "Choose all that apply or create your own if necessary.";
 
-    private static String[] wakeUpActivity = new String[] {"Waking up",
-            "If I get up in the morning, I will...",""};
-    private static String[] mealFinished = new String[] {"Eating a meal",
-            "If I just finished a meal, I will...",""};
-    private static String[] coffeeOrTea = new String[] {"Having coffee or tea",
-            "If I am having coffee or tea, I will...",""};
-    private static String[] onABreak = new String[] {"On a break",
-            "If I am having a break, I will...",""};
-    private static String[] inACarActivity = new String[] {"In a car",
-            "If I am in the car, I will...",""};
-    private static String[] bedTimeActivity = new String[] {"Going to bed",
-            "If I am about to go to bed, I will...",""};
+    private static String[] wakeUpActivity = MyQuitPlanHelper.wakeUpActivity;
+    private static String[] mealFinished = MyQuitPlanHelper.mealFinished;
+    private static String[] coffeeOrTea = MyQuitPlanHelper.coffeeOrTea;
+    private static String[] onABreak = MyQuitPlanHelper.onABreak;
+    private static String[] inACarActivity = MyQuitPlanHelper.inACarActivity;
+    private static String[] bedTimeActivity = MyQuitPlanHelper.bedTimeActivity;
 
     private static ArrayList<String[]> baseRoutineList = new ArrayList(Arrays.asList(wakeUpActivity,mealFinished,
             coffeeOrTea,onABreak,inACarActivity, bedTimeActivity));
+
+
 
     /**
      * Emotion situations
@@ -89,18 +79,12 @@ public class MyQuitPrePlanArray extends ActionBarActivity {
     private final String emotionSituations = "Finally, think about moments of EMOTION where you are most likely to smoke a cigarette. " +
             "Choose all that apply or create your own if necessary.";
 
-    private static String[] underStress = new String[] {"I'm feeling depressed",
-            "If I am feeling depressed, I will...",""};
-    private static String[] feelingDepressed = new String[] {"I'm feeling angry/frustrated",
-            "If I am feeling angry or frustrated, I will...",""};
-    private static String[] desireCig = new String[] {"I'm desiring a cigarette",
-            "If I am desiring a cigarette, I will...",""};
-    private static String[] enjoyingSmoking = new String[] {"Someone is smoking and enjoying it",
-            "If I see someone smoking and enjoying it, I will...",""};
-    private static String[] gainedWeight = new String[] {"I noticed I gained weight",
-            "If I noticed that I have gained weight, I will...",""};
-    private static String[] iAmBored = new String[] {"I'm bored",
-            "If I am bored, I will...",""};
+    private static String[] underStress = MyQuitPlanHelper.underStress;
+    private static String[] feelingDepressed = MyQuitPlanHelper.feelingDepressed;
+    private static String[] desireCig = MyQuitPlanHelper.desireCig;
+    private static String[] enjoyingSmoking = MyQuitPlanHelper.enjoyingSmoking;
+    private static String[] gainedWeight = MyQuitPlanHelper.gainedWeight;
+    private static String[] iAmBored = MyQuitPlanHelper.iAmBored;
 
     private static ArrayList<String[]> baseEmotionList = new ArrayList(Arrays.asList(underStress,feelingDepressed,
             desireCig,enjoyingSmoking,gainedWeight, iAmBored));
@@ -183,7 +167,11 @@ public class MyQuitPrePlanArray extends ActionBarActivity {
             startActivity(launchLogin);
         }
         else if(getType()==END_KEY) {
-
+            Intent launchLogin = new Intent(this, MyQuitPlans.class);
+            launchLogin.putExtra("FinalList",finalBuiltArrayList);
+            MyQuitPlanHelper.pushBaseList(getApplicationContext(),finalBuiltArrayList);
+            finish();
+            startActivity(launchLogin);
         }
         else {
             Toast.makeText(getApplicationContext(),"Let's pick at least three!",Toast.LENGTH_LONG).show();
@@ -245,9 +233,9 @@ public class MyQuitPrePlanArray extends ActionBarActivity {
         situationList.setAdapter(situationAdapter);
         if(getType()==END_KEY){
             situationList.setChoiceMode(ListView.CHOICE_MODE_NONE);
+            Button customSituation = (Button) findViewById(R.id.submitOwn);
+            customSituation.setVisibility(View.GONE);
         }
-
-
 
 
 

@@ -7,6 +7,7 @@ import android.app.FragmentTransaction;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Html;
@@ -173,7 +174,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                         Toast.makeText(getApplicationContext(), "You've already completed this portion of the study!", Toast.LENGTH_SHORT).show();
                         ;
                     } else {
-                        Intent startPlan = new Intent(getApplicationContext(), MyQuitPlans.class);
+                        Intent startPlan = new Intent(getApplicationContext(), MyQuitPrePlanArray.class);
                         startPlan.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         MyQuitHomeScreen.this.overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
@@ -261,8 +262,13 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             return true;
         }
         if (id == R.id.runCalledAction) {
-            Intent launchLogin = new Intent(this, MyQuitPrePlanArray.class);
-            startActivity(launchLogin);
+            try {
+                String versionName = getApplicationContext().getPackageManager()
+                        .getPackageInfo(getApplicationContext().getPackageName(), 0).versionName;
+                Toast.makeText(getApplicationContext(),"You are running version " + versionName,Toast.LENGTH_LONG).show();
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
             return true;
         }
 

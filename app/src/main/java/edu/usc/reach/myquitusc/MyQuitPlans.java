@@ -1,8 +1,10 @@
 package edu.usc.reach.myquitusc;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
@@ -43,6 +45,7 @@ public class MyQuitPlans extends Activity  {
     }
 
     private void setRemoveCustomButton(Button removeCustomSituation, int indexPosition) {
+    /* // Disables add custom
         final int oldPosition = indexPosition;
         if(oldPosition>17){
             removeCustomSituation.setVisibility(View.VISIBLE);
@@ -61,6 +64,7 @@ public class MyQuitPlans extends Activity  {
             removeCustomSituation.setVisibility(View.INVISIBLE);
             removeCustomSituation.setClickable(false);
         }
+        */
     }
 
     private void setSituationTextView(TextView presentSituation, int indexPosition){
@@ -128,8 +132,8 @@ public class MyQuitPlans extends Activity  {
     private void setNextBaseListListener(final Button nextButton, final Button backButton,
                                          final Button statusBar, final Button suggestButton,
                                          final EditText customIntent, final TextView presentSituation,
-                                         final Button removeCustom, int indexPosition) {
-       if(indexPosition==(MyQuitPlanHelper.pullSizeBaseList(getApplicationContext())-1)){
+                                         final Button removeCustom, final int indexPosition) {
+      /* if(indexPosition==(MyQuitPlanHelper.pullSizeBaseList(getApplicationContext())-1)){
             final int oldPosition = indexPosition;
             nextButton.setVisibility(View.VISIBLE);
             nextButton.setText("Add");
@@ -147,28 +151,30 @@ public class MyQuitPlans extends Activity  {
             });
         }
 
-       /* if(indexPosition==(MyQuitPlanHelper.pullSizeBaseList(getApplicationContext())-1)){
+       */ if(indexPosition==(MyQuitPlanHelper.pullSizeBaseList(getApplicationContext())-1)){
             // nextButton.setText("Add situation");//TODO: Add custom situation
             nextButton.setVisibility(View.VISIBLE);
             nextButton.setText("Finish");
             nextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    callAllListeners(nextButton,backButton,statusBar,suggestButton,customIntent,presentSituation,
+                            removeCustom,indexPosition);
                     if(MyQuitPlanHelper.listDone(getApplicationContext())) {
-                        Intent homeLaunch = new Intent(getApplicationContext(), MyQuitPrePlanCalendar.class);
+                        Intent homeLaunch = new Intent(v.getContext(), MyQuitPrePlanCalendar.class);
+                        homeLaunch.putExtra("Date", "DEFAULT_WEEKDAY");
                         homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        MyQuitCSVHelper.logLoginEvents("completedPlans", MyQuitCSVHelper.getFulltime());
                         finish();
                         startActivity(homeLaunch);
                     }
                     else {
-                        Toast.makeText(getApplicationContext(),"Please enter longer answer.",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(),"Please review all answers.",Toast.LENGTH_LONG).show();
                     }
                 }
             });
         }
-        */
+
         else{
             nextButton.setVisibility(View.VISIBLE);
             nextButton.setText("Next");
@@ -245,13 +251,30 @@ public class MyQuitPlans extends Activity  {
         TextView showSituation = (TextView) findViewById(R.id.showSituation);
         EditText customIntent = (EditText) findViewById(R.id.customIntent);
         Button removeSituation = (Button) findViewById(R.id.eraseCustomSituation);//Finish tying to XML
+        TextView planTitle = (TextView) findViewById(R.id.plansTitle);
+        int numberOfThings = MyQuitPlanHelper.pullSizeBaseList(getApplicationContext());
+        planTitle.setText("MyQuit "+ numberOfThings);
+        removeSituation.setVisibility(View.INVISIBLE);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("We will now look at each of the " + numberOfThings + " situations " +
+                "you have selected and think about something you could do in each situation to " +
+                "stop yourself from smoking.")
+                .setPositiveButton("Got it!",new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).create().show();
+
+
 
         //Initial onCreate setup
-        if(dialogPosition == 0){
-            MyQuitPlanHelper.pushBaseList(getApplicationContext(), MyQuitPlanHelper.baseList);
-        }
+        //if(dialogPosition == 0){
+        //    MyQuitPlanHelper.pushBaseList(getApplicationContext(), MyQuitPlanHelper.baseList);
+        //}
         callAllListeners(nextButton, backButton, statusBar, suggestOne,
-                customIntent, showSituation,removeSituation, dialogPosition);
+                customIntent, showSituation, removeSituation, dialogPosition);
 
 
 
@@ -306,20 +329,21 @@ public class MyQuitPlans extends Activity  {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             position = getArguments().getInt("position");
+            final String[] suggestList = MyQuitPlanHelper.suggestList(getActivity(),position);
             getDialog().setTitle(Html.fromHtml("<font color='#004D40'>I will...</font>"));
             View v = inflater.inflate(R.layout.fragment_intents_list1, container, false);
             ListView intentsView = (ListView) v.findViewById(R.id.allIntentSuggestions);
             ArrayAdapter<String> tasksArrayAdapter = new ArrayAdapter<>(v.getContext(),
                     android.R.layout.simple_list_item_activated_1,
-                    MyQuitPlanHelper.suggestList);
+                    suggestList);
             intentsView.setAdapter(tasksArrayAdapter);
             intentsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int pposition, long id) {
                     if(MyQuitPlanHelper.pushIntentBaseList(getActivity(),
-                            position,MyQuitPlanHelper.suggestList[pposition])){
+                            position,suggestList[pposition])){
                         EditText rename = (EditText) getActivity().findViewById(R.id.customIntent);
-                        rename.setText(MyQuitPlanHelper.suggestList[pposition]);
+                        rename.setText(suggestList[pposition]);
                         getDialog().dismiss();
                     }
                     else {

@@ -16,18 +16,6 @@
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Let&apos;s work on some scenarios where you might find it difficult to refrain from smoking."
-        android:id="@+id/textView2"
-        android:layout_marginTop="34dp"
-        android:layout_below="@+id/plansTitle"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentTop="true" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"

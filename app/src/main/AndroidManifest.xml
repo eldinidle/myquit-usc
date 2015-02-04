@@ -94,6 +94,11 @@
         <activity
             android:name=".MyQuitPrePlanArray"
             android:label="@string/title_activity_my_quit_pre_plan_array"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".MyQuitNewPlans"
+            android:label="@string/title_activity_my_quit_new_plans"
             android:screenOrientation="portrait">
         </activity>
     </application>

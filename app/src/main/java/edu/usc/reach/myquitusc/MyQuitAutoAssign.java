@@ -30,7 +30,7 @@ public class MyQuitAutoAssign {
                     count++;
                 }
             }
-            return (count > minimumLabels);
+            return (count >= minimumLabels);
         }
         catch (IOException ioe) {
             ioe.printStackTrace();

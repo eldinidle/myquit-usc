@@ -60,7 +60,7 @@ public class MyQuitPlanHelper {
             "say that my throat is hurting or I am not feeling well"
     };
 
-    public static String[] nonSmokingVenue = new String[] {"At a non-smoking venue",
+    public static String[] nonSmokingVenue = new String[] {"At a place where smoking isn't allowed",
             "If I am about to go to places where smoking is not allowed, I will...",""};
     private static String[] helpNonSmokingVenue = new String[] {
             "bring a pack of gum",

@@ -171,8 +171,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                 @Override
                 public void onClick(View v) {
                     if (MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
-                        Toast.makeText(getApplicationContext(), "You've already completed this portion of the study!", Toast.LENGTH_SHORT).show();
-                        ;
+                        Toast.makeText(getApplicationContext(), "Clicking this will reset your plans, hold down the button to confirm", Toast.LENGTH_LONG).show();
                     } else {
                         Intent startPlan = new Intent(getApplicationContext(), MyQuitPrePlanArray.class);
                         startPlan.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
@@ -181,6 +180,27 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                         startActivity(startPlan);
                         finish();
                     }
+                }
+            });
+            launchPlans.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
+                        Intent startPlan = new Intent(getApplicationContext(), MyQuitPrePlanArray.class);
+                        startPlan.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        MyQuitHomeScreen.this.overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
+                        startActivity(startPlan);
+                        finish();
+                    } else {
+                        Intent startPlan = new Intent(getApplicationContext(), MyQuitPrePlanArray.class);
+                        startPlan.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        MyQuitHomeScreen.this.overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
+                        startActivity(startPlan);
+                        finish();
+                    }
+                    return false;
                 }
             });
 
@@ -354,6 +374,10 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                     //MyQuitCSVHelper.logEMAEvents("intentPresented", MyQuitCSVHelper.getFulltime());
                     getDialog().dismiss();
                     getActivity().finish();
+                    Intent startPlan = new Intent(getActivity(), MyQuitHomeScreen.class);
+                    startPlan.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(startPlan);
                 }
             });
 

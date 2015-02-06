@@ -25,8 +25,10 @@ import java.util.Random;
  */
 public class MyQuitEMAHelper {
     static final int KEY_NUM_REPROMPTS = 3;
+    static final int KEY_EOD_PROMPT_HOUR = 22;
 
     private static final SimpleDateFormat newsdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+
 
 
     public static String[] returnCalendarEMARow() {
@@ -56,6 +58,15 @@ public class MyQuitEMAHelper {
             return returnRow;
         }
         return returnRow;
+    }
+
+    public static void setUpEODEMA() {
+        Calendar nowTime = Calendar.getInstance();
+        if(nowTime.HOUR_OF_DAY >= KEY_EOD_PROMPT_HOUR &&
+                MyQuitCSVHelper.isLastEventPastXMinutesTrue(MyQuitCSVHelper.END_OF_DAY_EMA_KEY, (60*(24-KEY_EOD_PROMPT_HOUR)))){
+            MyQuitCSVHelper.logEMAEvents(MyQuitCSVHelper.END_OF_DAY_EMA_KEY,
+                    "intentPresented", MyQuitCSVHelper.getFulltime(),"","");
+        }
     }
 
     public static void setUpCalendarEMA() {

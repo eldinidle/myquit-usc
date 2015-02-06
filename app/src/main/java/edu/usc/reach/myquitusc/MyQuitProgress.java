@@ -2,6 +2,7 @@ package edu.usc.reach.myquitusc;
 
 import android.app.Activity;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,7 +19,9 @@ import com.jjoe64.graphview.CustomLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphViewDataInterface;
 import com.jjoe64.graphview.GraphViewSeries;
+import com.jjoe64.graphview.GraphViewStyle;
 import com.jjoe64.graphview.LineGraphView;
+import com.jjoe64.graphview.ValueDependentColor;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -29,9 +32,15 @@ import java.util.Date;
 public class MyQuitProgress extends Activity {
 
 
-    private void runGraphView(int typePull){
+    private void runGraphView(final int typePull){
         int[] smokedCigs = countWeeklyCigs(typePull);
         String[] dateLabels = countWeekDays();
+        String label = "My Progress";
+        switch(typePull){
+            case 1: label = "Cigarettes Smoked"; break;
+            case 2: label = "Cigarettes Resisted"; break;
+            default: label = "My Progress";
+        }
 
         GraphViewSeries exampleSeries = new GraphViewSeries(new GraphView.GraphViewData[] {
                 new GraphView.GraphViewData(1, (double) smokedCigs[0])
@@ -45,8 +54,22 @@ public class MyQuitProgress extends Activity {
 
         GraphView graphView = new BarGraphView(
                 this // context
-                , "My Progress" // heading
+                , label // heading
         );
+        exampleSeries.getStyle().setValueDependentColor(new ValueDependentColor() {
+            @Override
+            public int get(GraphViewDataInterface graphViewDataInterface) {
+                if(typePull==1) {
+                    return Color.RED;
+                }
+                else if(typePull==2){
+                    return Color.BLUE;
+                }
+                else {
+                    return 0;
+                }
+            }
+        });
         graphView.setCustomLabelFormatter(new CustomLabelFormatter() {
             @Override
             public String formatLabel(double v, boolean b) {

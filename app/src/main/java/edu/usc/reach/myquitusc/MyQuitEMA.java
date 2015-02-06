@@ -17,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TableLayout;
@@ -29,6 +30,29 @@ import java.util.List;
 
 public class MyQuitEMA extends Activity {
 
+    protected static final int KEY_SINGLE_CHOICE = 1;
+    protected static final int KEY_TEXT_ENTRY = 2;
+    protected static final int KEY_NUMERICAL_ENTRY = 3;
+
+    @SuppressWarnings("ResourceType")
+    void addButtonBeyondTwo(int qstring, RadioGroup answers, RadioButton buttonName, String[] questionString, int sessionID, int aID, int position, boolean receiver,
+                            int surveyLength, int survey) {
+        buttonName.setText(questionString[qstring]);
+        buttonName.setId(aID);
+            radioButtonListenerAdapter(buttonName, sessionID, aID, position, receiver, surveyLength, survey);
+            answers.addView(buttonName);
+    }
+
+    void numericalDecision(LinearLayout surveySetup, TextView question,int sessionID, int position,
+                           final int survey) {
+        surveySetup.addView(question);
+        final NumberPicker numberPicker = new NumberPicker(this);
+        numberPicker.setValue(-1);
+        numberPicker.setMinValue(0);
+        numberPicker.setMaxValue(96);
+        surveySetup.addView(numberPicker);
+        createLowerButtons(this, sessionID, KEY_NUMERICAL_ENTRY, numberPicker, survey, position,retrieveSurveyLength(survey));
+    }
 
     void textDecision(LinearLayout surveySetup, TextView question,int sessionID, int position,
                       final int survey, RadioGroup answers) {
@@ -63,7 +87,7 @@ public class MyQuitEMA extends Activity {
         entryText.setOnEditorActionListener(listener);
 
         surveySetup.addView(entryText);
-        createLowerButtons(this, sessionID, true, answers, survey, position,retrieveSurveyLength(survey));
+        createLowerButtons(this, sessionID, KEY_TEXT_ENTRY, answers, survey, position,retrieveSurveyLength(survey));
     }
 
     void elseDecision(final int finalSessionID, final int survey, LinearLayout surveySetup, TextView question) {
@@ -162,6 +186,8 @@ public class MyQuitEMA extends Activity {
                 return MyQuitCheckSuccessSurvey.validatePreviousPosition(position);
             case 2:
                 return MyQuitCalendarSuccessSurvey.validatePreviousPosition(position);
+            case 3:
+                return MyQuitEndOfDaySurvey.validatePreviousPosition(position);
             default:
                 return 0;
         }
@@ -201,6 +227,22 @@ public class MyQuitEMA extends Activity {
                     return MyQuitCalendarSuccessSurvey.validateNextPosition(position,
                             MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
                 }
+            case 3:
+                try {
+                    Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
+                    int sendAId =  Integer.valueOf(MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
+                    Log.d("MY-QUIT-USC", "New is" + MyQuitEndOfDaySurvey.validateNextPosition(position,
+                            MyQuitEMAHelper.pullSpecificAnswer(MyQuitCSVHelper.getFullDate(), sessionID, position,surveyID)));
+                    return MyQuitEndOfDaySurvey.validateNextPosition(position,
+                            sendAId);
+                } catch (NumberFormatException nfe) {
+                    Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
+                    Log.d("MY-QUIT-USC", "Answer is " + MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
+                    Log.d("MY-QUIT-USC", "New is" + MyQuitEndOfDaySurvey.validateNextPosition(position,
+                            MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID)));
+                    return MyQuitEndOfDaySurvey.validateNextPosition(position,
+                            MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
+                }
             default:
                return 0;
         }
@@ -235,14 +277,71 @@ public class MyQuitEMA extends Activity {
         });
     }
 
-    public void createLowerButtons(Context context, final int surID, final boolean textEntry, RadioGroup answerSelection, final int surveyKey, final int position, final int surveyLength){
+    public void createLowerButtons(Context context, final int surID, final int questionKey, final NumberPicker answerSelection,
+                                   final int surveyKey, final int position, final int surveyLength){
+        final Intent nextSurvey = new Intent(this, MyQuitEMA.class);
+        final Intent previousSurvey = new Intent(this, MyQuitEMA.class);
+        Button nextButton = (Button) findViewById(R.id.nextEMA);
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int aID = answerSelection.getValue();
+                if(aID>-1){
+                    try {
+                        MyQuitEMAHelper.pushSpecificAnswer(MyQuitCSVHelper.getFullDate(),MyQuitCSVHelper.getTimeOnly(),surID,aID,position,false,surveyLength,surveyKey);
+                        nextSurvey.putExtra("Survey", surveyKey);
+                        nextSurvey.putExtra("SessionID", surID);
+                        nextSurvey.putExtra("Position", position);
+                        nextSurvey.putExtra("Receiver", false);
+                        nextSurvey.putExtra("Next", true);
+                        finish();
+                        startActivity(nextSurvey);
+                        Log.d("MY-QUIT-USC", "Sending survey" + surveyKey + " position " + position + " receiver false next");
+                    } catch (IOException e) {
+                        Toast.makeText(getApplicationContext(), "Please select an answer.", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Please select an answer.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        Button previousButton = (Button) findViewById(R.id.prevousEMA);
+        previousButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                previousSurvey.putExtra("Survey", surveyKey);
+                previousSurvey.putExtra("SessionID", surID);
+                previousSurvey.putExtra("Position", position);
+                previousSurvey.putExtra("Receiver", false);
+                previousSurvey.putExtra("Previous", true);
+                previousSurvey.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                try {
+                    MyQuitEMAHelper.pushSpecificAnswer(MyQuitCSVHelper.getFullDate(),
+                            MyQuitCSVHelper.getTimeOnly(),
+                            surID, 9999, position, false, surveyLength, surveyKey);
+                } catch (IOException e) {
+                    Log.d("MY-QUIT-USC","Something's wrong...");
+                    e.printStackTrace();
+                }
+                startActivity(previousSurvey);
+                Log.d("MY-QUIT-USC", "Sending survey" + surveyKey + " position " + position + " receiver false previous");
+            }
+        });
+    }
+
+    public void createLowerButtons(Context context, final int surID, final int questionKey, RadioGroup answerSelection,
+                                   final int surveyKey, final int position, final int surveyLength){
             final Intent nextSurvey = new Intent(this, MyQuitEMA.class);
             final Intent previousSurvey = new Intent(this, MyQuitEMA.class);
             Button nextButton = (Button) findViewById(R.id.nextEMA);
             nextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                   if(!textEntry) {
+                   if(questionKey == KEY_SINGLE_CHOICE) {
                        try {
                            int test = Integer.valueOf(MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), surID, position, surveyKey));
                            if(test<2000) {
@@ -262,7 +361,7 @@ public class MyQuitEMA extends Activity {
                            Toast.makeText(getApplicationContext(), "Please select an answer.", Toast.LENGTH_SHORT).show();
                        }
                    }
-                   if(textEntry){
+                   if(questionKey == KEY_TEXT_ENTRY){
                        try {
                            String test = validateLengthTest(surveyKey,surID,position);
                            if(test.length()>5) {
@@ -284,7 +383,6 @@ public class MyQuitEMA extends Activity {
                            Toast.makeText(getApplicationContext(), "Please enter a longer answer and press Done on keyboard.", Toast.LENGTH_SHORT).show();
                        }
                    }
-
                 }
             });
 
@@ -370,52 +468,46 @@ public class MyQuitEMA extends Activity {
         question.setText(questionString[0]);
 
         if (questionString.length > 1) {
-            if (!questionString[1].equalsIgnoreCase("TEXT_ENTRY")) {
+            Log.d("MQU-MQU","questionstring is" + questionString[1]);
+            if (!questionString[1].equalsIgnoreCase("TEXT_ENTRY") & !questionString[1].equalsIgnoreCase("NUMERICAL_ENTRY") ) {
                 RadioButton answer1 = new RadioButton(this);
                 answer1.setText(questionString[1]);
                 answer1.setId(1001);
                 radioButtonListenerAdapter(answer1, sessionID, 1001, position, receiver, surveyLength, survey);
                 answers.addView(answer1);
                 RadioButton answer2 = new RadioButton(this);
+                Log.d("MQU-MQU","questionstring is wrong " + questionString[1]);
                 answer2.setText(questionString[2]);
                 answer2.setId(1002);
                 radioButtonListenerAdapter(answer2, sessionID, 1002, position, receiver, surveyLength, survey);
                 answers.addView(answer2);
                 try {
                     RadioButton answer3 = new RadioButton(this);
-                    answer3.setText(questionString[3]);
-                    answer3.setId(1003);
-                    radioButtonListenerAdapter(answer3, sessionID, 1003, position, receiver, surveyLength, survey);
-                    answers.addView(answer3);
-                    try {
-                        RadioButton answer4 = new RadioButton(this);
-                        answer4.setText(questionString[4]);
-                        answer4.setId(1004);
-                        radioButtonListenerAdapter(answer4, sessionID, 1004, position, receiver, surveyLength, survey);
-                        answers.addView(answer4);
-                        try {
-                            RadioButton answer5 = new RadioButton(this);
-                            answer5.setText(questionString[5]);
-                            answer5.setId(1005);
-                            radioButtonListenerAdapter(answer5, sessionID, 1005, position, receiver, surveyLength, survey);
-                            answers.addView(answer5);
-                        } catch (Exception abc) {
-
-                        }
-                    } catch (Exception ab) {
-
-                    }
-                } catch (Exception a) {
-
-                }
-
+                    addButtonBeyondTwo(3, answers,answer3,questionString,sessionID,1003,position,receiver,surveyLength,survey);
+                    RadioButton answer4 = new RadioButton(this);
+                    addButtonBeyondTwo(4, answers,answer4,questionString,sessionID,1004,position,receiver,surveyLength,survey);
+                    RadioButton answer5 = new RadioButton(this);
+                    addButtonBeyondTwo(5, answers,answer5,questionString,sessionID,1005,position,receiver,surveyLength,survey);
+                    RadioButton answer6 = new RadioButton(this);
+                    addButtonBeyondTwo(6, answers,answer6,questionString,sessionID,1006,position,receiver,surveyLength,survey);
+                    RadioButton answer7 = new RadioButton(this);
+                    addButtonBeyondTwo(7, answers,answer7,questionString,sessionID,1007,position,receiver,surveyLength,survey);
+                    RadioButton answer8 = new RadioButton(this);
+                    addButtonBeyondTwo(8, answers,answer8,questionString,sessionID,1008,position,receiver,surveyLength,survey);
+                    RadioButton answer9 = new RadioButton(this);
+                    addButtonBeyondTwo(9, answers,answer9,questionString,sessionID,1009,position,receiver,surveyLength,survey);
+                    RadioButton answer10 = new RadioButton(this);
+                    addButtonBeyondTwo(10, answers,answer10,questionString,sessionID,1010,position,receiver,surveyLength,survey);
+                } catch (Exception a) {}
                 surveySetup.addView(question);
                 surveySetup.addView(answers);
-                createLowerButtons(this, sessionID, false, answers, survey, position,retrieveSurveyLength(survey));
+                createLowerButtons(this, sessionID, KEY_SINGLE_CHOICE, answers, survey, position,retrieveSurveyLength(survey));
             } else if (questionString[1].equalsIgnoreCase("TEXT_ENTRY")) {
                 textDecision(surveySetup, question, sessionID, position, survey, answers);
             }
-
+            else if (questionString[1].equalsIgnoreCase("NUMERICAL_ENTRY")) {
+                numericalDecision(surveySetup, question, sessionID, position, survey);
+            }
         }
         else {
             elseDecision(sessionID,survey,surveySetup,question);

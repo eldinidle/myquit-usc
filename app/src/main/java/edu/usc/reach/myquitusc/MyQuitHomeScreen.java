@@ -206,7 +206,8 @@ public class MyQuitHomeScreen extends ActionBarActivity {
 
         }
         else {
-            Toast.makeText(getApplicationContext(), "Please log in to the application from the menu.", Toast.LENGTH_SHORT).show();
+            Intent launchLogin = new Intent(this, MyQuitLoginActivity.class);
+            startActivity(launchLogin);
         }
     }
 

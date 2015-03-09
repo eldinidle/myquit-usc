@@ -65,10 +65,10 @@ public class MyQuitPrePlanArray extends ActionBarActivity {
     private static String[] coffeeOrTea = MyQuitPlanHelper.coffeeOrTea;
     private static String[] onABreak = MyQuitPlanHelper.onABreak;
     private static String[] inACarActivity = MyQuitPlanHelper.inACarActivity;
-    private static String[] bedTimeActivity = MyQuitPlanHelper.bedTimeActivity;
+    //private static String[] bedTimeActivity = MyQuitPlanHelper.bedTimeActivity;
 
     private static ArrayList<String[]> baseRoutineList = new ArrayList(Arrays.asList(wakeUpActivity,mealFinished,
-            coffeeOrTea,onABreak,inACarActivity, bedTimeActivity));
+            coffeeOrTea,onABreak,inACarActivity));
 
 
 

@@ -112,6 +112,7 @@ public class MyQuitEMAHelper {
             launchService.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startService(launchService);
         } catch (IOException e) {
+            //TODO: Adjust dummy survey to use intent presented + sessionID
             createDummySurvey(MyQuitCSVHelper.getFullDate());
             try {
                 launchService.putExtra("SessionID",createNewSessionID(MyQuitCSVHelper.getFullDate()));

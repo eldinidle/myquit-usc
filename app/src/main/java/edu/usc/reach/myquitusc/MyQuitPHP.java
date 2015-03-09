@@ -32,12 +32,16 @@ import java.util.List;
  */
 public class MyQuitPHP {
 
-    protected final static int phpAllowInteger = 1265;
+    private final static int phpAllowInteger = 1265;
 
-
+    private final static String rogueSuccessTable = "RoguePushSuccessTable.csv";
+    private final static String emaSuccessTable = "EMAPushSuccessTable.csv";
+    private final static String unPlannedSuccessTable = "UnplannedPushSuccessTable.csv";
 
     private static final String urlPostRogueEvent = "http://myquitadmin.usc.edu/data.php";
+    private static final String urlPostEMAEvent = "http://myquit.usc.edu/postema.php";
     private static final String urlPostUnplannedEvent = "http://myquit.usc.edu/postunplanned.php";
+
 
    // static JSONParser jsonParser = new JSONParser();
 
@@ -88,11 +92,65 @@ public class MyQuitPHP {
         }
     }
 
+    /**
+     * Parameter order is explicit.
+     * The main parameter is a String[] with 5 appended items in addition to the EMA survey.
+     * 1: Date
+     * 2: Time
+     * 3: SessionID
+     * 4: Username
+     * 5: Survey type key
+     *
+     */
+    static class PostEMAEvent extends AsyncTask<String[],String,String> {
+
+        @Override
+        protected String doInBackground(String[]... params) {
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost(urlPostEMAEvent);
+            List<NameValuePair> emaParams = new ArrayList<NameValuePair>();
+            int fullLength = params[0].length;
+            String datetime = params[0][fullLength-5] + " " + params[0][fullLength-4];
+            emaParams.add(new BasicNameValuePair("username",params[0][fullLength-2]));
+            emaParams.add(new BasicNameValuePair("surveytype",params[0][fullLength-1]));
+            emaParams.add(new BasicNameValuePair("sessionid",params[0][fullLength-3]));
+            emaParams.add(new BasicNameValuePair("datetime",datetime));
+            emaParams.add(new BasicNameValuePair("allowed",String.valueOf(phpAllowInteger)));
+
+            try {
+                httpPost.setEntity(new UrlEncodedFormEntity(emaParams));
+                Log.d("MQU-PHP","URL is now encoded");
+
+            } catch (UnsupportedEncodingException e)
+            {
+                e.printStackTrace();
+            }
+
+            try {
+                HttpResponse response = httpClient.execute(httpPost);
+                // write response to log
+                Log.d("MQU-PHP", "Http Post Response:" + response.toString());
+            } catch (ClientProtocolException e) {
+                // Log exception
+                Log.d("MQU-PHP", "Http Post Response CPE error");
+                e.printStackTrace();
+                postEMAStatus(emaParams);
+            } catch (IOException e) {
+                Log.d("MQU-PHP", "Http Post Response IO error");
+                // Log exception
+                e.printStackTrace();
+                postEMAStatus(emaParams);
+            }
+
+            return null;
+        }
+    }
+
     static class SyncRogueEvent extends AsyncTask<String,String,String> {
 
         @Override
         protected String doInBackground(String... params) {
-            String fileName = "RoguePushSuccessTable.csv";
+            String fileName = rogueSuccessTable;
             try {
                 CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.logPath + fileName));
                 List<String[]> pullTimes = reader.readAll();
@@ -119,9 +177,90 @@ public class MyQuitPHP {
         }
     }
 
+    static class SyncEMAEvent extends AsyncTask<String[],String,String> {
+
+        @Override
+        protected String doInBackground(String[]... params) {
+            String fileName = emaSuccessTable;
+            try {
+                CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.logPath + fileName));
+                List<String[]> pullTimes = reader.readAll();
+                reader.close();
+                Log.d("MQU-PHP","Pulled" + pullTimes.size());
+                List<String[]> newPush = new ArrayList<String[]>();
+                for(String[] row: pullTimes){
+                    if(!syncEMAEvent(row)){
+                        Log.d("MQU-PHP","Adding" + row[row.length-1] + row[row.length-2] + row[row.length-3]);
+                        newPush.add(row);
+                        Log.d("MQU-PHP","Added" + row[row.length-1] + row[row.length-2] + row[row.length-3]);
+                    }
+                }
+                CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.logPath + fileName));
+                writer.writeAll(newPush);
+                writer.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+    }
+
     public static void postRogueEvent(String userName, String rogueSituation, String calledDateTime)  {
         String fixedSituation = rogueSituation.replace("'","");
         new PostRogueEvent().execute(userName, fixedSituation, calledDateTime);
+    }
+
+    public static void postEMAEvent(String[] surveyParams) {
+       String[] fixedParams = new String[surveyParams.length];
+       int count = 0;
+       for(String iter: surveyParams){
+           fixedParams[count] = iter.replace("'","");
+           count++;
+       }
+       new PostEMAEvent().execute(fixedParams);
+    }
+
+    public static boolean syncEMAEvent(String[] params)  {
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(urlPostEMAEvent);
+        List<NameValuePair> emaParams = new ArrayList<NameValuePair>();
+        int fullLength = params.length;
+        String datetime = params[fullLength-5] + " " + params[fullLength-4];
+        emaParams.add(new BasicNameValuePair("username",params[fullLength-2]));
+        emaParams.add(new BasicNameValuePair("surveytype",params[fullLength-1]));
+        emaParams.add(new BasicNameValuePair("sessionid",params[fullLength-3]));
+        emaParams.add(new BasicNameValuePair("datetime",datetime));
+        emaParams.add(new BasicNameValuePair("allowed",String.valueOf(phpAllowInteger)));
+        Log.d("MQU-PHP","Caught" + params[fullLength-2] + params[fullLength-1] + params[fullLength-3]);
+
+        try {
+            httpPost.setEntity(new UrlEncodedFormEntity(emaParams));
+            Log.d("MQU-PHP","URL is now encoded");
+        } catch (UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+
+        try {
+            HttpResponse response = httpClient.execute(httpPost);
+            // write response to log
+            Log.d("MQU-PHP", "Http Post Response:" + response.toString());
+            return true;
+        } catch (ClientProtocolException e) {
+            // Log exception
+            Log.d("MQU-PHP", "Http Post Response CPE error");
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            Log.d("MQU-PHP", "Http Post Response IO error");
+            // Log exception
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static boolean syncRogueEvent(String userName, String rogueSituation, String calledDateTime)  {
@@ -162,7 +301,7 @@ public class MyQuitPHP {
     }
 
     public static void postRogueStatus(String userName, String rogueSituation, String calledDateTime) {
-        String fileName = "RoguePushSuccessTable.csv";
+        String fileName = rogueSuccessTable;
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.logPath + fileName,true));
             String[] pushRow = new String[] {userName, rogueSituation, calledDateTime};
@@ -175,8 +314,26 @@ public class MyQuitPHP {
 
     }
 
+    public static void postEMAStatus(List<NameValuePair>  emaParamList) {
+        String fileName = emaSuccessTable;
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.logPath + fileName,true));
+            String[] pushRow = new String[emaParamList.size()];
+            int count = 0;
+            for(NameValuePair iterate: emaParamList){
+                pushRow[count] = iterate.getValue().toString();
+            }
+            writer.writeNext(pushRow);
+            writer.close();
+        } catch (IOException e) {
+            Log.e("MyQuitUSC","EMAPushSuccess table write failure");
+            e.printStackTrace();
+        }
+
+    }
+
     public static void loopThroughRogueEvents() {
-        String fileName = "RoguePushSuccessTable.csv";
+        String fileName = rogueSuccessTable;
         try {
             CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.logPath + fileName));
             List<String[]> pullTimes = reader.readAll();
@@ -249,12 +406,10 @@ public class MyQuitPHP {
             writeLastFileUpload();
             Log.d("MQU-PHP", "Wrote last file upload");
             new SyncRogueEvent().execute();
+            //new SyncEMAEvent().execute();
             Log.d("MQU-PHP", "Finished looping");
         }
     }
 
-    public static void postUnplannedEvent(String userName, String unplannedSituation, String presentedIntent, String calledDate) {
-
-    }
 
 }

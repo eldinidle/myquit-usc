@@ -164,8 +164,9 @@ public class MyQuitCalendarHelper {
     }
 
     public static void decideCalendar (Context context) {
-            if (isWithinXNextHour(10) && !returnIntentFromSituation(context,true).
-                    equalsIgnoreCase("No Match") && !isWithinXAfterHour(20)) {
+            if (isWithinXNextHour(10) && (!returnIntentFromSituation(context,true).
+                    equalsIgnoreCase("No Match") || !returnIntentFromSituation(context,true).
+                    equalsIgnoreCase("Waking up")) && !isWithinXAfterHour(20)) {
                 Log.d("MQU-CH", "Decide Loop > 50 minutes");
                 if(didLastReadPassMinutes(30)) {
                     Log.d("MQU-CH", "50 minutes > YES");

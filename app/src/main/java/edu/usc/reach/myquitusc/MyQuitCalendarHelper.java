@@ -95,7 +95,7 @@ public class MyQuitCalendarHelper {
             return "No Match";
         }
         Log.d("MQU-CH","cast Situation position string is " + parsedHourSituation);
-        String[] checkSituationArrayList = MyQuitPlanHelper.pullTasksList(context);
+        String[] checkSituationArrayList = MyQuitPlanHelper.pullTasksList(context, false);
         int index = -1;
         int count = 0;
         for(String checkHour: checkSituationArrayList){
@@ -108,7 +108,7 @@ public class MyQuitCalendarHelper {
             return "No Match";
         }
         else {
-            return MyQuitPlanHelper.pullIntentsList(context)[index];
+            return MyQuitPlanHelper.pullIntentsList(context,false)[index];
         }
     }
 

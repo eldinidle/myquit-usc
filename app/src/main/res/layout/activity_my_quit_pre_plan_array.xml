@@ -24,7 +24,15 @@
 
         <Button
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Go back"
+            android:id="@+id/button"
+            android:layout_weight="1"
+            android:onClick="previousSituation" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:text="Add my own"
             android:id="@+id/submitOwn"
             android:layout_alignParentBottom="true"
@@ -36,7 +44,7 @@
 
         <Button
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="I&apos;m done"
             android:id="@+id/submitArray"
             android:layout_centerHorizontal="true"

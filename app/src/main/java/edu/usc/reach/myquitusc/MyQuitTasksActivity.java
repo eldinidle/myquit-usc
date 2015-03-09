@@ -24,7 +24,7 @@ public class MyQuitTasksActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final String[] NEW_TASKS_LIST = MyQuitPlanHelper.pullTasksList(getApplicationContext());
+        final String[] NEW_TASKS_LIST = MyQuitPlanHelper.pullTasksList(getApplicationContext(),false);
          // MyQuitPlanHelper.taperPullBaseList(getApplicationContext(), 11, 17); // MyQuitPlanHelper.pullTasksList(getApplicationContext());
 
         Intent calendarCall = getIntent();

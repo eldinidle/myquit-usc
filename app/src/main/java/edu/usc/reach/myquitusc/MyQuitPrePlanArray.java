@@ -1,5 +1,6 @@
 package edu.usc.reach.myquitusc;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,11 +27,28 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class MyQuitPrePlanArray extends ActionBarActivity {
+public class MyQuitPrePlanArray extends Activity {
 
 
+    private final int FAIL_KEY = 5;
     private final int END_KEY = 4;
-    private static ArrayList<String[]> finalBuiltArrayList = new ArrayList<String[]>();
+    private static ArrayList<String[]> socialBuiltArrayList = new ArrayList<String[]>();
+    private static ArrayList<String[]> emotionBuiltArrayList = new ArrayList<String[]>();
+    private static ArrayList<String[]> routineBuiltArrayList = new ArrayList<String[]>();
+    private static ArrayList<String[]> finalBuiltArrayList(){
+        ArrayList<String[]> tempHoldALS = new ArrayList<String[]>();
+        for(String[] iterate:socialBuiltArrayList){
+            tempHoldALS.add(iterate);
+        }
+        for(String[] iterate:routineBuiltArrayList){
+            tempHoldALS.add(iterate);
+        }
+        for(String[] iterate:emotionBuiltArrayList){
+            tempHoldALS.add(iterate);
+        }
+        return tempHoldALS;
+    }
+    //private static ArrayList<String[]> finalBuiltArrayList = new ArrayList<String[]>();
     private static ArrayAdapter<String> situationAdapter;
     private static String changingString[];
     private static ArrayList<String> changingArrayList = new ArrayList<String>();
@@ -40,8 +58,9 @@ public class MyQuitPrePlanArray extends ActionBarActivity {
      * Social situations
      */
     protected final int SOCIAL_KEY = 1;
-    private final String socialSituations = "Carefully think about SOCIAL situations where you are most likely to smoke a cigarette. " +
-            "Choose all that apply or create your own if necessary.";
+    private final String socialSituations = "Carefully think about these situations where you may be WITH OTHER PEOPLE.\n" +
+            "Choose at least 3 where you are most likely to smoke a cigarette.\n" +
+            "Or, create your own if necessary.";
 
     private static String[] outWithFriends = MyQuitPlanHelper.outWithFriends;
     private static String[] partyBar = MyQuitPlanHelper.partyBar;
@@ -57,8 +76,9 @@ public class MyQuitPrePlanArray extends ActionBarActivity {
      * Routine situations
      */
     protected final int ROUTINE_KEY = 2;
-    private final String routineSituations = "Next, think about ROUTINE situations where you are most likely to smoke a cigarette. " +
-            "Choose all that apply or create your own if necessary.";
+    private final String routineSituations = "Carefully think about these ROUTINE ACTIVITIES that you may be experience throughout your day.\n" +
+            "Choose at least 3 where you are most likely to smoke a cigarette.\n" +
+            "Or, create your own if necessary.\n";
 
     private static String[] wakeUpActivity = MyQuitPlanHelper.wakeUpActivity;
     private static String[] mealFinished = MyQuitPlanHelper.mealFinished;
@@ -76,8 +96,9 @@ public class MyQuitPrePlanArray extends ActionBarActivity {
      * Emotion situations
      */
     protected final int EMOTION_KEY = 3;
-    private final String emotionSituations = "Finally, think about moments of EMOTION where you are most likely to smoke a cigarette. " +
-            "Choose all that apply or create your own if necessary.";
+    private final String emotionSituations = "Carefully think about some EMOTIONS that you may be experience throughout your day.\n" +
+            "Choose at least 3 where you are most likely to smoke a cigarette.\n" +
+            "Or, create your own if necessary.";
 
     private static String[] underStress = MyQuitPlanHelper.underStress;
     private static String[] feelingDepressed = MyQuitPlanHelper.feelingDepressed;
@@ -121,6 +142,22 @@ public class MyQuitPrePlanArray extends ActionBarActivity {
         situationAdapter.notifyDataSetChanged();
     }
 
+    public void goHome() {
+        finish();
+        startActivity(new Intent(this, MyQuitHomeScreen.class));
+    }
+
+    public void previousSituation(View v) {
+            Intent launchLogin = new Intent(this, MyQuitPrePlanArray.class);
+            launchLogin.putExtra("Type", getType() - 1);
+            if(getType()==SOCIAL_KEY){
+                goHome();
+            }
+            else {
+                finish();
+                startActivity(launchLogin);
+            }
+    }
 
     public void addSituation(View v) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -156,9 +193,27 @@ public class MyQuitPrePlanArray extends ActionBarActivity {
     public void nextSituation(View v){
         if(getType()!=END_KEY && situationList.getCheckedItemCount()>2){
             SparseBooleanArray finalList = situationList.getCheckedItemPositions();
+            switch(getType()){
+                case SOCIAL_KEY: socialBuiltArrayList.clear(); break;
+                case ROUTINE_KEY: routineBuiltArrayList.clear(); break;
+                case EMOTION_KEY: emotionBuiltArrayList.clear(); break;
+                default: break;
+            }
             for (int i = 0; i < situationList.getAdapter().getCount(); i++) {
                 if (finalList.get(i)) {
-                    finalBuiltArrayList.add(chooseBaseList(getType()).get(i));
+                    switch(getType()){
+                        case SOCIAL_KEY:
+                            socialBuiltArrayList.add(chooseBaseList(getType()).get(i));
+                            break;
+                        case ROUTINE_KEY:
+                            routineBuiltArrayList.add(chooseBaseList(getType()).get(i));
+                            break;
+                        case EMOTION_KEY:
+                            emotionBuiltArrayList.add(chooseBaseList(getType()).get(i));
+                            break;
+                        default: break;
+                    }
+
                 }
             }
             Intent launchLogin = new Intent(this, MyQuitPrePlanArray.class);
@@ -168,8 +223,8 @@ public class MyQuitPrePlanArray extends ActionBarActivity {
         }
         else if(getType()==END_KEY) {
             Intent launchLogin = new Intent(this, MyQuitPlans.class);
-            launchLogin.putExtra("FinalList",finalBuiltArrayList);
-            MyQuitPlanHelper.pushBaseList(getApplicationContext(),finalBuiltArrayList);
+            launchLogin.putExtra("FinalList",finalBuiltArrayList());
+            MyQuitPlanHelper.pushBaseList(getApplicationContext(),finalBuiltArrayList(),true);
             finish();
             startActivity(launchLogin);
         }
@@ -194,7 +249,7 @@ public class MyQuitPrePlanArray extends ActionBarActivity {
             case ROUTINE_KEY: return baseRoutineList;
             case EMOTION_KEY: return baseEmotionList;
             default:
-                return finalBuiltArrayList;
+                return finalBuiltArrayList();
         }
     }
 
@@ -212,6 +267,7 @@ public class MyQuitPrePlanArray extends ActionBarActivity {
     int getType() {
         return getIntent().getIntExtra("Type",SOCIAL_KEY);
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -267,7 +323,14 @@ public class MyQuitPrePlanArray extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        Toast.makeText(getApplicationContext(),"Remember, the app won't work until this is complete!",
-                Toast.LENGTH_LONG).show();
+        Intent launchLogin = new Intent(this, MyQuitPrePlanArray.class);
+        launchLogin.putExtra("Type", getType() - 1);
+        if(getType()==SOCIAL_KEY){
+            goHome();
+        }
+        else {
+            finish();
+            startActivity(launchLogin);
+        }
     }
 }

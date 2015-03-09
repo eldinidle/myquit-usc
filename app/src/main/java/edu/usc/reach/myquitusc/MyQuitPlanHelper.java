@@ -207,8 +207,8 @@ public class MyQuitPlanHelper {
             inACarActivity, bedTimeActivity, underStress, feelingDepressed, desireCig,
             enjoyingSmoking, gainedWeight, iAmBored,iAmDrinking);
 
-    public static String[] taperPullBaseList(Context context, int positionEndOfListOne, int positionBeginListTwo) {
-        List<String[]> pullAll = pullBaseList(context);
+    public static String[] taperPullBaseList(Context context, int positionEndOfListOne, int positionBeginListTwo, boolean temporaryChange) {
+        List<String[]> pullAll = pullBaseList(context, temporaryChange);
         int length = pullAll.size();
 
         if((length)!=positionBeginListTwo) {
@@ -239,10 +239,12 @@ public class MyQuitPlanHelper {
         }
     }
 
-    public static boolean pushLabelBaseList(Context context, int position, String specifyItem) {
-        String fileName = "ACTIVITY_PAIRING" + ".csv";
+    public static boolean pushLabelBaseList(Context context, int position, String specifyItem, boolean temporaryChange) {
+        String fileName;
+        if(temporaryChange){fileName = "ACTIVITY_PAIRING" + ".csv";}
+        else {fileName = "ACTIVITY_PAIRING_PERMANENT" + ".csv";}
         try {
-            List<String[]> pullAll = pullBaseList(context);
+            List<String[]> pullAll = pullBaseList(context, temporaryChange);
             int length = pullAll.size();
             int count = 0;
             ArrayList<String[]> newPush = new ArrayList<>();
@@ -273,22 +275,21 @@ public class MyQuitPlanHelper {
     }
 
 
-    public static void extendBaseListOne(Context context) {
-        List<String[]> pullAll = pullBaseList(context);
+    public static void extendBaseListOne(Context context, boolean temporaryChange) {
+        List<String[]> pullAll = pullBaseList(context, temporaryChange);
         pullAll.add(new String[] {"","",""});
-        pushBaseList(context,pullAll);
+        pushBaseList(context,pullAll, temporaryChange);
     }
 
-    public static void shrinkBaseList(Context context, int positionToDelete) {
-        List<String[]> pullAll = pullBaseList(context);
+    public static void shrinkBaseList(Context context, int positionToDelete,boolean temporaryChange) {
+        List<String[]> pullAll = pullBaseList(context,temporaryChange);
         pullAll.remove(positionToDelete);
-        pushBaseList(context,pullAll);
+        pushBaseList(context,pullAll,temporaryChange);
     }
 
 
-    public static String[] pullIntentsList(Context context) {
-       // String fileName = "ACTIVITY_PAIRING" + ".csv";
-        List<String[]> pullAll = pullBaseList(context);
+    public static String[] pullIntentsList(Context context,boolean temporaryChange) {
+        List<String[]> pullAll = pullBaseList(context, temporaryChange);
         int length = pullAll.size();
         int count = 0;
         String[] newPush = new String[length];
@@ -300,9 +301,8 @@ public class MyQuitPlanHelper {
     }
 
 
-    public static String[] pullSituationList(Context context) {
-        String fileName = "ACTIVITY_PAIRING" + ".csv";
-        List<String[]> pullAll = pullBaseList(context);
+    public static String[] pullSituationList(Context context, boolean temporaryChange) {
+        List<String[]> pullAll = pullBaseList(context, temporaryChange);
         int length = pullAll.size();
         int count = 0;
         String[] newPush = new String[length];
@@ -313,9 +313,8 @@ public class MyQuitPlanHelper {
         return newPush;
     }
 
-    public static String[] pullTasksList(Context context) {
-        String fileName = "ACTIVITY_PAIRING" + ".csv";
-        List<String[]> pullAll = pullBaseList(context);
+    public static String[] pullTasksList(Context context, boolean temporaryChange) {
+        List<String[]> pullAll = pullBaseList(context, temporaryChange);
         int length = pullAll.size();
         int count = 0;
         String[] newPush = new String[length];
@@ -326,10 +325,12 @@ public class MyQuitPlanHelper {
         return newPush;
     }
 
-    public static boolean pushIntentBaseList(Context context, int position, String specifyItem) {
-        String fileName = "ACTIVITY_PAIRING" + ".csv";
+    public static boolean pushIntentBaseList(Context context, int position, String specifyItem, boolean temporaryChange) {
+        String fileName;
+        if(temporaryChange){fileName = "ACTIVITY_PAIRING" + ".csv";}
+        else {fileName = "ACTIVITY_PAIRING_PERMANENT" + ".csv";}
         try {
-            List<String[]> pullAll = pullBaseList(context);
+            List<String[]> pullAll = pullBaseList(context, temporaryChange);
             int length = pullAll.size();
             int count = 0;
             ArrayList<String[]> newPush = new ArrayList<>();
@@ -359,8 +360,10 @@ public class MyQuitPlanHelper {
     }
 
 
-    public static boolean pushBaseList(Context context, List<String[]> newBaseList) {
-        String fileName = "ACTIVITY_PAIRING" + ".csv";
+    public static boolean pushBaseList(Context context, List<String[]> newBaseList, boolean temporaryChange) {
+        String fileName;
+        if(temporaryChange){fileName = "ACTIVITY_PAIRING" + ".csv";}
+        else {fileName = "ACTIVITY_PAIRING_PERMANENT" + ".csv";}
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.calPath + fileName));
             writer.writeAll(newBaseList);
@@ -373,8 +376,10 @@ public class MyQuitPlanHelper {
         }
     }
 
-    public static List<String[]> pullBaseList(Context context) {
-        String fileName = "ACTIVITY_PAIRING" + ".csv";
+    public static List<String[]> pullBaseList(Context context, boolean temporaryChange) {
+        String fileName;
+        if(temporaryChange){fileName = "ACTIVITY_PAIRING" + ".csv";}
+        else {fileName = "ACTIVITY_PAIRING_PERMANENT" + ".csv";}
         try {
             CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.calPath + fileName));
             List<String[]> pulledList = reader.readAll();
@@ -387,27 +392,32 @@ public class MyQuitPlanHelper {
         }
     }
 
-    public static boolean listDone(Context context) {
-        return (pullSizeBaseList(context) == countCompletion(context));
+    public static boolean convertBaseList(Context context) {
+        return pushBaseList(context,pullBaseList(context, true),false);
+        //TODO: Add log of this, this is IMPORTANT
     }
 
-    public static String getTextCompletion(Context context) {
-        if(pullSizeBaseList(context) == countCompletion(context)) {
+    public static boolean listDone(Context context, boolean temporaryChange) {
+        return (pullSizeBaseList(context, temporaryChange) == countCompletion(context, temporaryChange));
+    }
+
+    public static String getTextCompletion(Context context, boolean temporaryChange) {
+        if(pullSizeBaseList(context, temporaryChange) == countCompletion(context, temporaryChange)) {
             return "Submit";
         }
         else {
-            return (countCompletion(context) + "/" + pullSizeBaseList(context) + " Done");
+            return (countCompletion(context, temporaryChange) + "/" + pullSizeBaseList(context, temporaryChange) + " Done");
         }
     }
 
-    public static int pullSizeBaseList(Context context) {
-        List<String[]> testList = pullBaseList(context);
+    public static int pullSizeBaseList(Context context, boolean temporaryChange) {
+        List<String[]> testList = pullBaseList(context, temporaryChange);
         return testList.size();
     }
 
 
-    public static int countCompletion(Context context) {
-        List<String[]> testList = pullBaseList(context);
+    public static int countCompletion(Context context, boolean temporaryChange) {
+        List<String[]> testList = pullBaseList(context, temporaryChange);
         int count = 0;
         for(String[] testArray: testList){
             if(testArray[2].length()>5) {
@@ -418,42 +428,42 @@ public class MyQuitPlanHelper {
     }
 
 
-   public static String[] suggestList(Context context, int position) {
-       if (pullTasksList(context)[position].equalsIgnoreCase(outWithFriends[0])) {
+   public static String[] suggestList(Context context, int position, boolean temporaryChange) {
+       if (pullTasksList(context, temporaryChange)[position].equalsIgnoreCase(outWithFriends[0])) {
            return helpOutWithFriends;
-       } else if (pullTasksList(context)[position].equalsIgnoreCase(partyBar[0])) {
+       } else if (pullTasksList(context, temporaryChange)[position].equalsIgnoreCase(partyBar[0])) {
            return helpPartyBar;
-       } else if (pullTasksList(context)[position].equalsIgnoreCase(iAmDrinking[0])) {
+       } else if (pullTasksList(context, temporaryChange)[position].equalsIgnoreCase(iAmDrinking[0])) {
            return helpIAmDrinking;
-       } else if (pullTasksList(context)[position].equalsIgnoreCase(aroundSmokers[0])) {
+       } else if (pullTasksList(context, temporaryChange)[position].equalsIgnoreCase(aroundSmokers[0])) {
            return helpAroundSmokers;
-       } else if (pullTasksList(context)[position].equalsIgnoreCase(offerCigarette[0])) {
+       } else if (pullTasksList(context, temporaryChange)[position].equalsIgnoreCase(offerCigarette[0])) {
            return helpOfferCigarette;
-       } else if (pullTasksList(context)[position].equalsIgnoreCase(nonSmokingVenue[0])) {
+       } else if (pullTasksList(context, temporaryChange)[position].equalsIgnoreCase(nonSmokingVenue[0])) {
            return helpNonSmokingVenue;
-       } else if (pullTasksList(context)[position].equalsIgnoreCase(wakeUpActivity[0])) {
+       } else if (pullTasksList(context, temporaryChange)[position].equalsIgnoreCase(wakeUpActivity[0])) {
            return helpWakeUpActivity;
-       } else if (pullTasksList(context)[position].equalsIgnoreCase(mealFinished[0])) {
+       } else if (pullTasksList(context, temporaryChange)[position].equalsIgnoreCase(mealFinished[0])) {
            return helpMealFinished;
-       } else if (pullTasksList(context)[position].equalsIgnoreCase(coffeeOrTea[0])) {
+       } else if (pullTasksList(context, temporaryChange)[position].equalsIgnoreCase(coffeeOrTea[0])) {
            return helpCoffeeOrTea;
-       } else if (pullTasksList(context)[position].equalsIgnoreCase(onABreak[0])) {
+       } else if (pullTasksList(context, temporaryChange)[position].equalsIgnoreCase(onABreak[0])) {
            return helpOnABreak;
-       } else if (pullTasksList(context)[position].equalsIgnoreCase(inACarActivity[0])) {
+       } else if (pullTasksList(context, temporaryChange)[position].equalsIgnoreCase(inACarActivity[0])) {
            return helpInACarActivity;
-       } else if (pullTasksList(context)[position].equalsIgnoreCase(bedTimeActivity[0])) {
+       } else if (pullTasksList(context, temporaryChange)[position].equalsIgnoreCase(bedTimeActivity[0])) {
            return helpBedtimeActivity;
-       } else if (pullTasksList(context)[position].equalsIgnoreCase(feelingDepressed[0])) {
+       } else if (pullTasksList(context, temporaryChange)[position].equalsIgnoreCase(feelingDepressed[0])) {
            return helpFeelingDepressed;
-       } else if (pullTasksList(context)[position].equalsIgnoreCase(desireCig[0])) {
+       } else if (pullTasksList(context, temporaryChange)[position].equalsIgnoreCase(desireCig[0])) {
            return helpDesireCig;
-       } else if (pullTasksList(context)[position].equalsIgnoreCase(enjoyingSmoking[0])) {
+       } else if (pullTasksList(context, temporaryChange)[position].equalsIgnoreCase(enjoyingSmoking[0])) {
            return helpEnjoyingSmoking;
-       } else if (pullTasksList(context)[position].equalsIgnoreCase(gainedWeight[0])) {
+       } else if (pullTasksList(context, temporaryChange)[position].equalsIgnoreCase(gainedWeight[0])) {
            return helpGainedWeight;
-       } else if (pullTasksList(context)[position].equalsIgnoreCase(iAmBored[0])) {
+       } else if (pullTasksList(context, temporaryChange)[position].equalsIgnoreCase(iAmBored[0])) {
            return helpIAmBored;
-       } else if (pullTasksList(context)[position].equalsIgnoreCase(underStress[0])) {
+       } else if (pullTasksList(context, temporaryChange)[position].equalsIgnoreCase(underStress[0])) {
            return helpUnderStress;
        } else {
            return new String[] {

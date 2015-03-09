@@ -313,8 +313,8 @@ public class MyQuitHomeScreen extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             //timeTitle = getArguments().getString("timeCode");
-            final String[] NEW_TASKS_LIST = MyQuitPlanHelper.pullTasksList(getActivity());
-            final String[] NEW_INTENTS_LIST = MyQuitPlanHelper.pullIntentsList(getActivity());
+            final String[] NEW_TASKS_LIST = MyQuitPlanHelper.pullTasksList(getActivity(),false);
+            final String[] NEW_INTENTS_LIST = MyQuitPlanHelper.pullIntentsList(getActivity(),false);
 
 
 
@@ -403,8 +403,8 @@ public class MyQuitHomeScreen extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             //timeTitle = getArguments().getString("timeCode");
-            final String[] NEW_TASKS_LIST = MyQuitPlanHelper.pullTasksList(getActivity());
-            final String[] NEW_INTENTS_LIST = MyQuitPlanHelper.pullIntentsList(getActivity());
+            final String[] NEW_TASKS_LIST = MyQuitPlanHelper.pullTasksList(getActivity(),false);
+            final String[] NEW_INTENTS_LIST = MyQuitPlanHelper.pullIntentsList(getActivity(),false);
 
             View v = inflater.inflate(R.layout.fragment_rogue_event, container, false);
 

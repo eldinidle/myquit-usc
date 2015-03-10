@@ -2,6 +2,7 @@ package edu.usc.reach.myquitusc;
 
 import android.util.Log;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,17 +47,34 @@ public class MyQuitCalendarSuccessSurvey {
                 return KEY_END_SURVEY;
             case 3:
                 switch (aID) {
-                    case 1001: return KEY_END_SURVEY;
+                    case 1001:
+                        try {
+                            MyQuitCSVHelper.pushCigarette(MyQuitCSVHelper.getFullDate(),MyQuitCSVHelper.getFulltime());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        return KEY_END_SURVEY;
                     case 1002: return 2;
                     default: return 0;
                 }
             case 4:
                 switch (aID) {
-                    case 1001: return KEY_END_SURVEY;
+                    case 1001:
+                        try {
+                            MyQuitCSVHelper.pushCigarette(MyQuitCSVHelper.getFullDate(),MyQuitCSVHelper.getFulltime());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        return KEY_END_SURVEY;
                     case 1002: return 5;
                     default: return 0;
                 }
             case 5:
+                try {
+                    MyQuitCSVHelper.pushCigarette(MyQuitCSVHelper.getFullDate(),MyQuitCSVHelper.getFulltime());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 return KEY_END_SURVEY;
             default: return 0;
         }

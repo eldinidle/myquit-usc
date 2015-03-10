@@ -79,6 +79,15 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Welcome to MyQuit USC\n" + "Let's set up your account and choose your new" +
+                " quit date.")
+                .setPositiveButton("Ok!",new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).create().show();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_quit_login);
         Intent pullCurrentIntent = getIntent();
@@ -204,8 +213,7 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.equalsIgnoreCase("myquitusc");
     }
 
     /**
@@ -368,7 +376,7 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
 
             View v = inflater.inflate(R.layout.fragment_fragment_quit_date_picker, container, false);
 
-            getDialog().setTitle(Html.fromHtml("<font color='#004D40'>When will you quit smoking?</font>"));
+            getDialog().setTitle(Html.fromHtml("<font color='#004D40'>I will quit smoking on...</font>"));
 
             final DatePicker quitDatePicker = (DatePicker) v.findViewById(R.id.datePicker);
             quitDatePicker.setCalendarViewShown(false);

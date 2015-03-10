@@ -1,6 +1,8 @@
 package edu.usc.reach.myquitusc;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
@@ -11,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
@@ -27,6 +30,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Formatter;
 
 
 public class MyQuitProgress extends Activity {
@@ -162,8 +166,42 @@ public class MyQuitProgress extends Activity {
         return cigSmokeArray;
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (MyQuitCSVHelper.pullLoginStatus("TypicalCigCost") == null){
+            final String numbers[] = new String[100];
+        double count = 2;
+        for (int i = 0; i < 100; i++) {
+            count = count + 0.10;
+            final StringBuilder mBuilder = new StringBuilder();
+            final java.util.Formatter mFmt = new java.util.Formatter(mBuilder);
+            final Object[] mArgs = new Object[1];
+            mArgs[0] = count;
+            mBuilder.delete(0, mBuilder.length());
+            mFmt.format("%.2f", mArgs);
+            numbers[i] = mFmt.toString();
+        }
+        final NumberPicker cigCostPicker = new NumberPicker(this);
+        cigCostPicker.setMinValue(0);
+        cigCostPicker.setMaxValue(numbers.length - 1);
+        cigCostPicker.setDisplayedValues(numbers);
+        cigCostPicker.invalidate();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("How much do you usually pay per pack of 20 cigarettes?")
+                .setView(cigCostPicker)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        double cigCost = Double.valueOf(numbers[cigCostPicker.getValue()]) / 20;
+                        MyQuitCSVHelper.logLoginEvents("TypicalCigCost", String.valueOf(cigCost), MyQuitCSVHelper.getFulltime());
+                    }
+                })
+                .setCancelable(false)
+                .create().show();
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_quit_progress);
 

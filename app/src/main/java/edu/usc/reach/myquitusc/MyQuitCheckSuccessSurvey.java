@@ -19,7 +19,7 @@ public class MyQuitCheckSuccessSurvey {
             ", you said you would " + MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[3] + "." +
             System.getProperty("line.separator") +
             "Did you follow through with your plans?", "Yes", "No"};
-    public final String[] howHelpful = {"How helpful was the intervention?", "Extremely helpful",
+    public final String[] howHelpful = {"How helpful was the plan or intention?", "Extremely helpful",
             "Quite helpful", "Somewhat helpful", "A little helpful", "Not at all helpful"};
     public final String[] didSmokeY = {"Did you smoke a cigarette?", "Yes", "No"};
     public final String[] didSmokeN = {"Did you smoke a cigarette?", "Yes", "No"};

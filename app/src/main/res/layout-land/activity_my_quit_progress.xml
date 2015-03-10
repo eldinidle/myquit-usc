@@ -25,7 +25,7 @@
 
         <Button
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="Cigarettes Smoked"
             android:id="@+id/cigSmokeStatus"
             android:layout_alignParentBottom="false"
@@ -34,12 +34,33 @@
 
         <Button
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="Cigarettes Resisted"
             android:id="@+id/cigSavedStatus"
             android:layout_alignParentBottom="false"
             android:layout_toRightOf="@+id/cigSmokeStatus"
             android:layout_alignParentRight="false"
+            android:layout_weight="1" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Money Saved"
+            android:id="@+id/moneySavedStatus"
+            android:layout_weight="1" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Money Spent"
+            android:id="@+id/moneySpentStatus"
+            android:layout_weight="1" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Money Earned"
+            android:id="@+id/moneyEMAStatus"
             android:layout_weight="1" />
     </LinearLayout>
 

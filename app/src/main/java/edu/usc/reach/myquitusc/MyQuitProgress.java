@@ -38,15 +38,20 @@ public class MyQuitProgress extends Activity {
 
     private void runGraphView(final int typePull){
         int[] smokedCigs = countWeeklyCigs(typePull);
+        double[] moneyCigs = countWeeklyMoney(typePull);
         String[] dateLabels = countWeekDays();
-        String label = "My Progress";
+        String label;
         switch(typePull){
             case 1: label = "Cigarettes Smoked"; break;
             case 2: label = "Cigarettes Resisted"; break;
+            case 3: label = "Money Saved"; break;
+            case 4: label = "Money Spent"; break;
+            case 5: label = "Money Earned from EMA"; break;
             default: label = "My Progress";
         }
 
-        GraphViewSeries exampleSeries = new GraphViewSeries(new GraphView.GraphViewData[] {
+
+        GraphViewSeries smokeSeries = new GraphViewSeries(new GraphView.GraphViewData[] {
                 new GraphView.GraphViewData(1, (double) smokedCigs[0])
                 , new GraphView.GraphViewData(2, (double) smokedCigs[1])
                 , new GraphView.GraphViewData(3, (double) smokedCigs[2])
@@ -56,40 +61,87 @@ public class MyQuitProgress extends Activity {
                 , new GraphView.GraphViewData(7, (double) smokedCigs[6])
         });
 
+        GraphViewSeries moneySeries = new GraphViewSeries(new GraphView.GraphViewData[]{
+                new GraphView.GraphViewData(1, moneyCigs[0])
+                , new GraphView.GraphViewData(2, moneyCigs[1])
+                , new GraphView.GraphViewData(3, moneyCigs[2])
+                , new GraphView.GraphViewData(4, moneyCigs[3])
+                , new GraphView.GraphViewData(5, moneyCigs[4])
+                , new GraphView.GraphViewData(6, moneyCigs[5])
+                , new GraphView.GraphViewData(7, moneyCigs[6])
+        });
+
         GraphView graphView = new BarGraphView(
                 this // context
                 , label // heading
         );
-        exampleSeries.getStyle().setValueDependentColor(new ValueDependentColor() {
+        smokeSeries.getStyle().setValueDependentColor(new ValueDependentColor() {
             @Override
             public int get(GraphViewDataInterface graphViewDataInterface) {
-                if(typePull==1) {
-                    return Color.RED;
-                }
-                else if(typePull==2){
-                    return Color.BLUE;
-                }
-                else {
-                    return 0;
+                switch(typePull){
+                    case 1: return Color.RED;
+                    case 2: return Color.BLUE;
+                    default: return 0;
                 }
             }
         });
-        graphView.setCustomLabelFormatter(new CustomLabelFormatter() {
+        moneySeries.getStyle().setValueDependentColor(new ValueDependentColor() {
             @Override
-            public String formatLabel(double v, boolean b) {
-                return ""+((int) v);
+            public int get(GraphViewDataInterface graphViewDataInterface) {
+                switch(typePull){
+                    case 3: return Color.BLUE;
+                    case 4: return Color.RED;
+                    case 5: return Color.GREEN;
+                    default: return 0;
+                }
             }
         });
-        graphView.getGraphViewStyle().setNumVerticalLabels(labelNums(getMax(smokedCigs)));
+
+
         graphView.setHorizontalLabels(dateLabels);
-        graphView.addSeries(exampleSeries); // data
+        if(typePull==1 || typePull ==2) {
+            graphView.setCustomLabelFormatter(new CustomLabelFormatter() {
+                @Override
+                public String formatLabel(double v, boolean b) {
+                    return "" + ((int) v);
+                }
+            });
+            graphView.getGraphViewStyle().setNumVerticalLabels(labelNumsInt(getMaxInt(smokedCigs)));
+            graphView.addSeries(smokeSeries); // data
+        }
+        else{
+            //graphView.getGraphViewStyle().setNumVerticalLabels(labelNumsDouble(getMaxDouble((moneyCigs))));
+            graphView.setCustomLabelFormatter(new CustomLabelFormatter() {
+                @Override
+                public String formatLabel(double v, boolean b) {
+                    final StringBuilder mBuilder = new StringBuilder();
+                    final java.util.Formatter mFmt = new java.util.Formatter(mBuilder);
+                    final Object[] mArgs = new Object[1];
+                    mArgs[0] = v;
+                    mBuilder.delete(0, mBuilder.length());
+                    mFmt.format("%.2f", mArgs);
+                    return "$" + mFmt.toString();
+                }
+            });
+            graphView.addSeries(moneySeries);
+        }
 
 
         LinearLayout progressUSC = (LinearLayout) findViewById(R.id.linearLayout);
         progressUSC.addView(graphView);
     }
 
-    private static int labelNums(int maxCigs){
+    private static int labelNumsDouble(double maxMoney){
+        if(maxMoney>10){
+            return 10;
+        }
+        else {
+            int max = ((int) maxMoney);
+            return max+1;
+        }
+    }
+
+    private static int labelNumsInt(int maxCigs){
         if(maxCigs>10){
             return 10;
         }
@@ -98,7 +150,17 @@ public class MyQuitProgress extends Activity {
         }
     }
 
-    private static int getMax(int[] smokedCigs) {
+    private static double getMaxDouble(double[] moneyCigs) {
+        double count = 0;
+        for(double i:moneyCigs){
+            if(i>count){
+                count=i;
+            }
+        }
+        return count;
+    }
+
+    private static int getMaxInt(int[] smokedCigs) {
         int count = 0;
         for(int i:smokedCigs){
             if(i>count){
@@ -125,6 +187,55 @@ public class MyQuitProgress extends Activity {
             count++;
         }
         return cigDateArray;
+    }
+
+    public static double[] countWeeklyMoney(int typeOfPull) {
+        double[] cigSmokeArray = new double[7];
+
+        Calendar todayCal = Calendar.getInstance();
+        int dayofWeek = todayCal.DAY_OF_WEEK;
+        todayCal.add(todayCal.DATE,(-1*(dayofWeek-1)));
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+
+        int count = 0;
+
+        while (count < 7) {
+            todayCal.add(todayCal.DATE,(count));
+            Date dayOfWeek = todayCal.getTime();
+            try {
+                switch(typeOfPull){
+                    case 3:
+                        double pullCost = Double.valueOf(MyQuitCSVHelper.pullLoginStatus("TypicalCigCost"));
+                        cigSmokeArray[count] = MyQuitCSVHelper.pullCigAvoided(sdf.format(dayOfWeek))*pullCost;
+                        break;
+                    case 4:
+                        double pushCost = Double.valueOf(MyQuitCSVHelper.pullLoginStatus("TypicalCigCost"));
+                        cigSmokeArray[count] = MyQuitCSVHelper.pullCigarette(sdf.format(dayOfWeek))*pushCost;
+                        break;
+                    case 5:
+                        if(MyQuitCSVHelper.pullEMACounts(sdf.format(dayOfWeek))>3) {
+                            cigSmokeArray[count] = MyQuitCSVHelper.pullEMACounts(sdf.format(dayOfWeek)) + 3;
+                        }
+                        else {
+                            cigSmokeArray[count] = MyQuitCSVHelper.pullEMACounts(sdf.format(dayOfWeek));
+                        }
+                        break;
+                    default:
+                        cigSmokeArray[count] = MyQuitCSVHelper.pullCigarette(sdf.format(dayOfWeek));
+                        break;
+                }
+
+                todayCal.add(todayCal.DATE,(-1*count));
+                count++;
+            } catch (IOException e) {
+                cigSmokeArray[count] = 0;
+                todayCal.add(todayCal.DATE,(-1*count));
+                count++;
+                e.printStackTrace();
+            }
+
+        }
+        return cigSmokeArray;
     }
 
     public static int[] countWeeklyCigs(int typeOfPull) {
@@ -209,6 +320,9 @@ public class MyQuitProgress extends Activity {
 
         Button smokedCigs = (Button) findViewById(R.id.cigSmokeStatus);
         Button avoidedCigs = (Button) findViewById(R.id.cigSavedStatus);
+        Button savedCigs = (Button) findViewById(R.id.moneySavedStatus);
+        Button spentCigs = (Button) findViewById(R.id.moneySpentStatus);
+        Button studyMoney = (Button) findViewById(R.id.moneyEMAStatus);
 
 
         smokedCigs.setOnClickListener(new View.OnClickListener() {
@@ -228,6 +342,36 @@ public class MyQuitProgress extends Activity {
                 runGraphView(2);
             }
         });
+
+        savedCigs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayout progressUSC = (LinearLayout) findViewById(R.id.linearLayout);
+                progressUSC.removeAllViews();
+                runGraphView(3);
+            }
+        });
+
+
+        spentCigs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayout progressUSC = (LinearLayout) findViewById(R.id.linearLayout);
+                progressUSC.removeAllViews();
+                runGraphView(4);
+            }
+        });
+
+        studyMoney.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayout progressUSC = (LinearLayout) findViewById(R.id.linearLayout);
+                progressUSC.removeAllViews();
+                runGraphView(5);
+            }
+        });
+
+
 
 
     }

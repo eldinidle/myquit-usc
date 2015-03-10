@@ -44,6 +44,7 @@ public class MyQuitCalendarSuccessSurvey {
                 }
             case 2:
                 MyQuitCSVHelper.pushCigAvoided();
+                MyQuitCSVHelper.pushEMACompleted();
                 return KEY_END_SURVEY;
             case 3:
                 switch (aID) {
@@ -53,6 +54,7 @@ public class MyQuitCalendarSuccessSurvey {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+                        MyQuitCSVHelper.pushEMACompleted();
                         return KEY_END_SURVEY;
                     case 1002: return 2;
                     default: return 0;
@@ -65,6 +67,7 @@ public class MyQuitCalendarSuccessSurvey {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+                        MyQuitCSVHelper.pushEMACompleted();
                         return KEY_END_SURVEY;
                     case 1002: return 5;
                     default: return 0;
@@ -75,6 +78,7 @@ public class MyQuitCalendarSuccessSurvey {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                MyQuitCSVHelper.pushEMACompleted();
                 return KEY_END_SURVEY;
             default: return 0;
         }
@@ -85,6 +89,7 @@ public class MyQuitCalendarSuccessSurvey {
         switch(aID) {
             default:
                 MyQuitCSVHelper.pushCigAvoided();
+                MyQuitCSVHelper.pushEMACompleted();
                 return KEY_END_SURVEY;
         }
     }

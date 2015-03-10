@@ -149,6 +149,15 @@ public class MyQuitCSVHelper{
         return sdf.format(emptyCal.getTime());
     }
 
+    public static int pullEMACounts(String calledDate) throws IOException {
+        String stepDate = calledDate.replaceAll("/", "_");
+        String fileName = stepDate + "EMA_Count" + ".csv";
+        CSVReader reader = new CSVReader(new FileReader(logPath + fileName));
+        List<String[]> pullCigs = reader.readAll();
+        reader.close();
+        return pullCigs.size();
+    }
+
     public static int pullCigAvoided(String calledDate) throws IOException {
         String stepDate = calledDate.replaceAll("/", "_");
         String fileName = stepDate + "R" + ".csv";
@@ -156,6 +165,21 @@ public class MyQuitCSVHelper{
         List<String[]> pullCigs = reader.readAll();
         reader.close();
         return pullCigs.size();
+    }
+
+    public static void pushEMACompleted() {
+        String calledDate = MyQuitCSVHelper.getFullDate();
+        String fullTime = MyQuitCSVHelper.getFulltime();
+        String stepDate = calledDate.replaceAll("/", "_");
+        String fileName = stepDate + "EMA_Count" + ".csv";
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter(logPath + fileName, true));
+            String[] pushTime = new String[] {fullTime};
+            writer.writeNext(pushTime);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void pushCigAvoided() {

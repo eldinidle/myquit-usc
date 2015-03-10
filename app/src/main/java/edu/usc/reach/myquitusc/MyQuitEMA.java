@@ -199,15 +199,15 @@ public class MyQuitEMA extends Activity {
                 try {
                     Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
                     int sendAId =  Integer.valueOf(MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
-                    Log.d("MY-QUIT-USC", "New is" + MyQuitCheckSuccessSurvey.validateNextPosition(position,
-                            MyQuitEMAHelper.pullSpecificAnswer(MyQuitCSVHelper.getFullDate(), sessionID, position,surveyID)));
+                    //Log.d("MY-QUIT-USC", "New is" + MyQuitCheckSuccessSurvey.validateNextPosition(position,
+                    //        MyQuitEMAHelper.pullSpecificAnswer(MyQuitCSVHelper.getFullDate(), sessionID, position,surveyID)));
                     return MyQuitCheckSuccessSurvey.validateNextPosition(position,
                             sendAId);
                 } catch (NumberFormatException nfe) {
-                    Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
-                    Log.d("MY-QUIT-USC", "Answer is " + MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
-                    Log.d("MY-QUIT-USC", "New is" + MyQuitCheckSuccessSurvey.validateNextPosition(position,
-                            MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID)));
+                   // Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
+                   // Log.d("MY-QUIT-USC", "Answer is " + MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
+                   // Log.d("MY-QUIT-USC", "New is" + MyQuitCheckSuccessSurvey.validateNextPosition(position,
+                   //         MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID)));
                     return MyQuitCheckSuccessSurvey.validateNextPosition(position,
                             MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
                 }
@@ -215,15 +215,15 @@ public class MyQuitEMA extends Activity {
                 try {
                     Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
                     int sendAId =  Integer.valueOf(MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
-                    Log.d("MY-QUIT-USC", "New is" + MyQuitCalendarSuccessSurvey.validateNextPosition(position,
-                            MyQuitEMAHelper.pullSpecificAnswer(MyQuitCSVHelper.getFullDate(), sessionID, position,surveyID)));
+                    //Log.d("MY-QUIT-USC", "New is" + MyQuitCalendarSuccessSurvey.validateNextPosition(position,
+                    //        MyQuitEMAHelper.pullSpecificAnswer(MyQuitCSVHelper.getFullDate(), sessionID, position,surveyID)));
                     return MyQuitCalendarSuccessSurvey.validateNextPosition(position,
                             sendAId);
                 } catch (NumberFormatException nfe) {
-                    Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
-                    Log.d("MY-QUIT-USC", "Answer is " + MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
-                    Log.d("MY-QUIT-USC", "New is" + MyQuitCalendarSuccessSurvey.validateNextPosition(position,
-                            MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID)));
+                    //Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
+                    //Log.d("MY-QUIT-USC", "Answer is " + MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
+                    //Log.d("MY-QUIT-USC", "New is" + MyQuitCalendarSuccessSurvey.validateNextPosition(position,
+                    //        MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID)));
                     return MyQuitCalendarSuccessSurvey.validateNextPosition(position,
                             MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
                 }
@@ -231,15 +231,15 @@ public class MyQuitEMA extends Activity {
                 try {
                     Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
                     int sendAId =  Integer.valueOf(MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
-                    Log.d("MY-QUIT-USC", "New is" + MyQuitEndOfDaySurvey.validateNextPosition(position,
-                            MyQuitEMAHelper.pullSpecificAnswer(MyQuitCSVHelper.getFullDate(), sessionID, position,surveyID)));
+                    //Log.d("MY-QUIT-USC", "New is" + MyQuitEndOfDaySurvey.validateNextPosition(position,
+                    //        MyQuitEMAHelper.pullSpecificAnswer(MyQuitCSVHelper.getFullDate(), sessionID, position,surveyID)));
                     return MyQuitEndOfDaySurvey.validateNextPosition(position,
                             sendAId);
                 } catch (NumberFormatException nfe) {
-                    Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
-                    Log.d("MY-QUIT-USC", "Answer is " + MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
-                    Log.d("MY-QUIT-USC", "New is" + MyQuitEndOfDaySurvey.validateNextPosition(position,
-                            MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID)));
+                    //Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
+                    //Log.d("MY-QUIT-USC", "Answer is " + MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
+                    //Log.d("MY-QUIT-USC", "New is" + MyQuitEndOfDaySurvey.validateNextPosition(position,
+                    //        MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID)));
                     return MyQuitEndOfDaySurvey.validateNextPosition(position,
                             MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
                 }

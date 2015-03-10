@@ -1,11 +1,13 @@
 package edu.usc.reach.myquitusc;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v7.app.ActionBarActivity;
@@ -171,39 +173,34 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                 @Override
                 public void onClick(View v) {
                     if (MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
-                        Toast.makeText(getApplicationContext(), "Clicking this will reset your plans, hold down the button to confirm", Toast.LENGTH_LONG).show();
-                    } else {
-                        Intent startPlan = new Intent(getApplicationContext(), MyQuitPrePlanArray.class);
-                        startPlan.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        MyQuitHomeScreen.this.overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
-                        startActivity(startPlan);
-                        finish();
-                    }
-                }
-            });
-            launchPlans.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    if (MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
-                        Intent startPlan = new Intent(getApplicationContext(), MyQuitPrePlanArray.class);
-                        startPlan.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        MyQuitHomeScreen.this.overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
-                        startActivity(startPlan);
-                        finish();
-                    } else {
-                        Intent startPlan = new Intent(getApplicationContext(), MyQuitPrePlanArray.class);
-                        startPlan.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        MyQuitHomeScreen.this.overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
-                        startActivity(startPlan);
-                        finish();
-                    }
-                    return false;
-                }
-            });
+                        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                        builder.setMessage(("Once you complete your new plans, you will be asked to reassign your " +
+                                "typical weekdays and weekends, do you wish to proceed?"))
+                                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent startPlan = new Intent(getApplicationContext(), MyQuitPrePlanArray.class);
+                                        startPlan.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(startPlan);
+                                        finish();
+                                    }
+                                })
+                                .setNegativeButton("No",new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
 
+                                    }
+                                }).create().show();
+                    } else {
+                        Intent startPlan = new Intent(getApplicationContext(), MyQuitPrePlanArray.class);
+                        startPlan.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(startPlan);
+                        finish();
+                    }
+                }
+            });
         }
         else {
             Intent launchLogin = new Intent(this, MyQuitLoginActivity.class);

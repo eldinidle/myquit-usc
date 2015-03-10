@@ -24,6 +24,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+
 
 public class MyQuitPlans extends Activity  {
 
@@ -161,13 +163,21 @@ public class MyQuitPlans extends Activity  {
                     callAllListeners(nextButton,backButton,statusBar,suggestButton,customIntent,presentSituation,
                             removeCustom,indexPosition);
                     if(MyQuitPlanHelper.listDone(getApplicationContext(),true)) {
+
                         MyQuitPlanHelper.convertBaseList(getApplicationContext());
-                        Intent homeLaunch = new Intent(v.getContext(), MyQuitPrePlanCalendar.class);
-                        homeLaunch.putExtra("Date", "DEFAULT_WEEKDAY");
-                        homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        finish();
-                        startActivity(homeLaunch);
+                        try {
+                            MyQuitCSVHelper.pushDateTimes("DEFAULT_WEEKDAY", MyQuitCSVHelper.defaultTimes);
+                            MyQuitCSVHelper.pushDateTimes("DEFAULT_WEEKEND", MyQuitCSVHelper.defaultTimes);
+                            Intent homeLaunch = new Intent(v.getContext(), MyQuitPrePlanCalendar.class);
+                            homeLaunch.putExtra("Date", "DEFAULT_WEEKDAY");
+                            homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                    | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            finish();
+                            startActivity(homeLaunch);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
                     }
                     else {
                         Toast.makeText(getApplicationContext(),"Please review all answers.",Toast.LENGTH_LONG).show();
@@ -222,12 +232,18 @@ public class MyQuitPlans extends Activity  {
                 public void onClick(View v) {
                     //if(MyQuitPlanHelper.pushBaseList(getApplicationContext(),MyQuitPlanHelper.baseList)){
                         MyQuitPlanHelper.convertBaseList(getApplicationContext());
+                    try {
+                        MyQuitCSVHelper.pushDateTimes("DEFAULT_WEEKDAY", MyQuitCSVHelper.defaultTimes);
+                        MyQuitCSVHelper.pushDateTimes("DEFAULT_WEEKEND", MyQuitCSVHelper.defaultTimes);
                         Intent homeLaunch = new Intent(v.getContext(), MyQuitPrePlanCalendar.class);
                         homeLaunch.putExtra("Date","DEFAULT_WEEKDAY");
                         homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         finish();
                         startActivity(homeLaunch);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                    // }
                 }
             });
@@ -308,7 +324,24 @@ public class MyQuitPlans extends Activity  {
 
     @Override
     public void onBackPressed() {
-        Toast.makeText(getApplicationContext(),"Please complete plans before closing application",Toast.LENGTH_SHORT).show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(("Do you want to restart MyQuit Plans and pick a new set of situations?"))
+                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent startPlan = new Intent(getApplicationContext(), MyQuitPrePlanArray.class);
+                        startPlan.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(startPlan);
+                        finish();
+                    }
+                })
+                .setNegativeButton("No",new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).create().show();
     }
 
 

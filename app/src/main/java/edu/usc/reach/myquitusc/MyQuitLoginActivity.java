@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -11,6 +12,7 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -375,12 +377,63 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
             //,,
 
 
-            confirmDate.setText("Hold to confirm My Quit date!");
+            confirmDate.setText("Click to confirm My Quit date!");
+            confirmDate.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DecimalFormat doubleDec = new DecimalFormat("00");
+                    String month = doubleDec.format(quitDatePicker.getMonth() + 1);
+                    String day = doubleDec.format(quitDatePicker.getDayOfMonth());
+                    String year = String.valueOf(quitDatePicker.getYear());
+                    String test = month + "/" + day + "/" + year;
+                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                    builder.setMessage(("I will quit smoking on: " + test))
+                            .setPositiveButton("Ok",new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    try {
+                                        DecimalFormat doubleDec = new DecimalFormat("00");
+                                        String month = doubleDec.format(quitDatePicker.getMonth() + 1);
+                                        String day = doubleDec.format(quitDatePicker.getDayOfMonth());
+                                        String year = String.valueOf(quitDatePicker.getYear());
+                                        String test = month + "/" + day + "/" + year;
+                                        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                                        Date selectedDate = sdf.parse(test);
+                                        Calendar futureCal = Calendar.getInstance();
+                                        futureCal.roll(Calendar.DAY_OF_MONTH, 1);
+                                        Date futureDate = futureCal.getTime();
+                                        if (selectedDate.after(futureDate)) {
+                                            MyQuitCSVHelper.logLoginEvents("MyQuitDate", test, MyQuitCSVHelper.getFulltime());
+                                            dismiss();
+                                            getActivity().finish();
+                                            Intent launchLogin = new Intent(getView().getContext(), MyQuitLoginActivity.class);
+                                            launchLogin.putExtra("DateSet", true);
+                                            launchLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                                    | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(launchLogin);
+                                        } else {
+                                            Toast.makeText(getView().getContext(), "Please select a later date", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(getView().getContext(), "Please select a later date", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            })
+                            .setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            }).create().show();
+                }
+            });
+            /*
             confirmDate.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     DecimalFormat doubleDec = new DecimalFormat("00");
-                    String month = doubleDec.format(quitDatePicker.getMonth()+1);
+                    String month = doubleDec.format(quitDatePicker.getMonth() + 1);
                     String day = doubleDec.format(quitDatePicker.getDayOfMonth());
                     String year = String.valueOf(quitDatePicker.getYear());
                     String test = month + "/" + day + "/" + year;
@@ -388,18 +441,18 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
                     try {
                         Date selectedDate = sdf.parse(test);
                         Calendar futureCal = Calendar.getInstance();
-                        futureCal.roll(Calendar.DAY_OF_MONTH,1);
+                        futureCal.roll(Calendar.DAY_OF_MONTH, 1);
                         Date futureDate = futureCal.getTime();
-                        if(selectedDate.after(futureDate)){
-                            MyQuitCSVHelper.logLoginEvents("MyQuitDate",test,MyQuitCSVHelper.getFulltime());
+                        if (selectedDate.after(futureDate)) {
+                            MyQuitCSVHelper.logLoginEvents("MyQuitDate", test, MyQuitCSVHelper.getFulltime());
                             dismiss();
                             getActivity().finish();
                             Intent launchLogin = new Intent(v.getContext(), MyQuitLoginActivity.class);
                             launchLogin.putExtra("DateSet", true);
                             launchLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                     | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(launchLogin);                        }
-                        else {
+                            startActivity(launchLogin);
+                        } else {
                             Toast.makeText(v.getContext(), "Please select a later date", Toast.LENGTH_SHORT).show();
                         }
                     } catch (ParseException e) {
@@ -408,7 +461,7 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
                     }
                     return false;
                 }
-            });
+            });*/
 
 
             return v;

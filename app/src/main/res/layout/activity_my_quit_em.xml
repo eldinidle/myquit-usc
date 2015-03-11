@@ -20,8 +20,7 @@
             android:id="@+id/prevousEMA"
             android:layout_below="@+id/ema_stub"
             android:layout_centerHorizontal="true"
-            android:layout_gravity="left|bottom"
-            android:background="@color/Teal200" />
+            android:layout_gravity="left|bottom" />
 
         <Button
             android:layout_width="wrap_content"
@@ -31,8 +30,7 @@
             android:layout_below="@+id/prevousEMA"
             android:layout_alignLeft="@+id/prevousEMA"
             android:layout_alignStart="@+id/prevousEMA"
-            android:layout_gravity="right|bottom"
-            android:background="@color/Teal200" />
+            android:layout_gravity="right|bottom" />
     </FrameLayout>
 
     <LinearLayout

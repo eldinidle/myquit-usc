@@ -1,5 +1,6 @@
 package edu.usc.reach.myquitusc;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
@@ -10,9 +11,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,9 +30,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.roomorama.caldroid.CaldroidFragment;
+import com.roomorama.caldroid.CaldroidListener;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class MyQuitHomeScreen extends ActionBarActivity {
 
@@ -55,9 +62,49 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                 Toast.makeText(getApplicationContext(), "Warning: Directory not created", Toast.LENGTH_LONG).show();
             }
 
+            final CaldroidFragment caldroidFragment = new CaldroidFragment();
+            Bundle args = new Bundle();
+            Calendar cal = Calendar.getInstance();
+            args.putInt("month", cal.get(Calendar.MONTH) + 1);
+            args.putInt("year", cal.get(Calendar.YEAR));
+            caldroidFragment.setArguments(args);
+            //Button rightArrow = caldroidFragment.getRightArrowButton();
+            //rightArrow.setBackgroundResource(R.drawable.calendar_next_arrow);
+
+            android.support.v4.app.FragmentTransaction t = getSupportFragmentManager().beginTransaction();
+            t.add(R.id.calendarViewOut, caldroidFragment);
+            t.commit();
+
+            final CaldroidListener listener = new CaldroidListener() {
+
+                @Override
+                public void onSelectDate(Date date, View view) {
+                    if (MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
+                        Intent otherLaunch = new Intent(view.getContext(), MyQuitCalendar.class);
+                        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                        String otherDateSDF = sdf.format(date);
+                        otherLaunch.putExtra("Date", otherDateSDF);
+                        startActivity(otherLaunch);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Please complete your MyQuit 15 Plan first!", Toast.LENGTH_SHORT).show();
+                    }                }
+
+                @Override
+                public void onCaldroidViewCreated() {
+                    // Supply your own adapter to weekdayGridView (SUN, MON, etc)
+
+                    Button leftButton = caldroidFragment.getLeftArrowButton();
+                    Button rightButton = caldroidFragment.getRightArrowButton();
+                    TextView textView = caldroidFragment.getMonthTitleTextView();
 
 
+                    // Do customization here
+                }
 
+            };
+            caldroidFragment.setCaldroidListener(listener);
+
+/*
             CalendarView calendarView = (CalendarView) findViewById(R.id.calendarViewOut);
             calendarView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -93,7 +140,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                         Toast.makeText(getApplicationContext(), "Please complete your MyQuit 15 Plan first!", Toast.LENGTH_SHORT).show();
                     }
                 }
-            });
+            });*/
 
             Button oopsSmoke = (Button) findViewById(R.id.oopsSmoked);
             String checkLastEvent = "NA";
@@ -106,10 +153,10 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             if((checkLastEvent.equalsIgnoreCase("intentPresented") ||
                     checkLastEvent.equalsIgnoreCase("emaPrompted") ||
                     checkLastEvent.equalsIgnoreCase("emaReprompted"))){
-                oopsSmoke.setTextColor(getResources().getColor(R.color.Teal300));
+                oopsSmoke.setTextColor(Color.WHITE);
             }
             else {
-                oopsSmoke.setTextColor(getResources().getColor(R.color.Teal900));
+                oopsSmoke.setTextColor(Color.BLACK);
                 oopsSmoke.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -230,10 +277,10 @@ public class MyQuitHomeScreen extends ActionBarActivity {
         if((checkLastEvent.equalsIgnoreCase("intentPresented") ||
                 checkLastEvent.equalsIgnoreCase("emaPrompted") ||
                 checkLastEvent.equalsIgnoreCase("emaReprompted"))){
-            oopsSmoke.setTextColor(getResources().getColor(R.color.Teal300));
+            oopsSmoke.setTextColor(Color.WHITE);
         }
         else {
-            oopsSmoke.setTextColor(getResources().getColor(R.color.Teal900));
+            oopsSmoke.setTextColor(Color.BLACK);
             oopsSmoke.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -245,7 +292,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                         }
                         ft.addToBackStack(null);
 
-                        // Create and show the dialog.
+                        /// Create and show the dialog.
                         DialogFragment rogueIntent = RogueButtonDialog.newInstance();
                         //  MyQuitCSVHelper.logEMAEvents("intentPresented", MyQuitCSVHelper.getFulltime());
                         rogueIntent.show(ft, "rogueintent");

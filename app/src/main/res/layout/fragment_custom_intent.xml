@@ -22,7 +22,6 @@
             android:text="Cancel"
             android:id="@+id/cancelCustomIntent"
             android:layout_weight="1"
-            android:background="@color/Teal200"
             android:textColor="@color/Teal900" />
 
         <Button
@@ -31,7 +30,6 @@
             android:text="OK"
             android:id="@+id/acceptCustomIntent"
             android:layout_weight="1"
-            android:textColor="@color/Teal900"
-            android:background="@color/Teal200" />
+            android:textColor="@color/Teal900" />
     </LinearLayout>
 </RelativeLayout>

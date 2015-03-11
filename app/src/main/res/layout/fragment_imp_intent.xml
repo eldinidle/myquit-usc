@@ -32,7 +32,6 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="false"
-        android:layout_below="@+id/viewIntent"
-        android:background="@color/Teal200" />
+        android:layout_below="@+id/viewIntent" />
 
 </RelativeLayout>

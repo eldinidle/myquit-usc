@@ -58,7 +58,7 @@ public class MyQuitPrePlanArray extends Activity {
      * Social situations
      */
     protected final int SOCIAL_KEY = 1;
-    private final String socialSituations = "Carefully think about these situations where you may be WITH OTHER PEOPLE.\n" +
+    private final String socialSituations = "Carefully think about situations where you may be WITH OTHER PEOPLE.\n" +
             "Choose at least 3 where you are most likely to smoke a cigarette.\n" +
             "Or, create your own if necessary.";
 
@@ -76,7 +76,7 @@ public class MyQuitPrePlanArray extends Activity {
      * Routine situations
      */
     protected final int ROUTINE_KEY = 2;
-    private final String routineSituations = "Carefully think about these ROUTINE ACTIVITIES that you may be experience throughout your day.\n" +
+    private final String routineSituations = "Carefully think about ROUTINE ACTIVITIES that you may experience throughout your day.\n" +
             "Choose at least 3 where you are most likely to smoke a cigarette.\n" +
             "Or, create your own if necessary.\n";
 
@@ -96,7 +96,7 @@ public class MyQuitPrePlanArray extends Activity {
      * Emotion situations
      */
     protected final int EMOTION_KEY = 3;
-    private final String emotionSituations = "Carefully think about some EMOTIONS that you may be experience throughout your day.\n" +
+    private final String emotionSituations = "Carefully think about some EMOTIONS that you may experience throughout your day.\n" +
             "Choose at least 3 where you are most likely to smoke a cigarette.\n" +
             "Or, create your own if necessary.";
 

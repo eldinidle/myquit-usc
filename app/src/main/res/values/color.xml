@@ -11,4 +11,7 @@
     <color name="Teal800">#00695C</color>
     <color name="Teal900">#004D40</color>
 
+    <color name="AppBar">#3949AB</color>
+    <color name="AppBarText">#FAFAFA</color>
+
 </resources>

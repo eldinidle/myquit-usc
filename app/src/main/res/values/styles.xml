@@ -1,13 +1,43 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:textColorPrimary">@color/Teal900</item>
+
+<!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <item name="android:actionBarStyle"   tools:ignore="NewApi">@style/MyActionBar</item>
+        <item name="actionBarStyle">@style/MyActionBar</item>
+        <item name="android:actionOverflowButtonStyle" tools:ignore="NewApi">@style/MyActionButtonOverflow</item>
+        <item name="actionOverflowButtonStyle">@style/MyActionButtonOverflow</item>
+
+        <!-- <item name="android:textColorPrimary">@color/Teal900</item>
         <item name="android:windowBackground">@color/Teal50</item>
         <item name="android:background">@color/Teal100</item>
-        <item name="android:button">@color/Teal200</item>
+        <item name="android:button">@color/Teal200</item> -->
 
 
+    </style>
+
+
+
+    <style name="MyActionBar" parent="Widget.AppCompat.Light.ActionBar">
+        <item name="android:textColor">@color/AppBarText</item>
+        <item name="android:title" tools:ignore="NewApi">"MyQuit Home"</item>
+        <item name="title">"MyQuit Home"</item>
+        <item name="android:displayOptions" tools:ignore="NewApi">showTitle</item>
+        <item name="displayOptions">showTitle</item>
+        <item name="android:titleTextStyle" tools:ignore="NewApi">@style/MyActionBarTextStyle</item>
+        <item name="titleTextStyle">@style/MyActionBarTextStyle</item>
+        <item name="android:background"  tools:ignore="NewApi">@color/AppBar</item>
+        <item name="background">@color/AppBar</item>
+
+
+    </style>
+
+    <style name="MyActionBarTextStyle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/AppBarText</item>
+    </style>
+
+    <style name="MyActionButtonOverflow" parent="Widget.AppCompat.Light.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_menu_overflow</item>
     </style>
 
 

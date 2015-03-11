@@ -47,8 +47,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/statusBar"
-        android:background="@color/Teal200" />
+        android:layout_toLeftOf="@+id/statusBar" />
 
     <Button
         android:layout_width="wrap_content"
@@ -58,8 +57,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignRight="@+id/plansTitle"
         android:layout_alignEnd="@+id/plansTitle"
-        android:layout_alignLeft="@+id/plansTitle"
-        android:background="@color/Teal200" />
+        android:layout_alignLeft="@+id/plansTitle" />
 
     <Button
         android:layout_width="fill_parent"
@@ -69,8 +67,7 @@
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@+id/statusBar"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:background="@color/Teal200" />
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -78,15 +75,13 @@
         android:text="Need a suggestion? Click here!"
         android:id="@+id/suggestButton"
         android:layout_below="@+id/customIntent"
-        android:layout_centerHorizontal="true"
-        android:background="@color/Teal200" />
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Remove custom situation"
         android:id="@+id/eraseCustomSituation"
-        android:background="@color/Teal200"
         android:layout_below="@+id/suggestButton"
         android:layout_alignParentLeft="false"
         android:layout_alignParentStart="false"

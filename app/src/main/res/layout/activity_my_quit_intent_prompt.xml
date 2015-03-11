@@ -24,7 +24,6 @@
         android:layout_height="wrap_content"
         android:text="Ok!"
         android:id="@+id/promptConfirmIntent"
-        android:background="@color/Teal200"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="false"
         android:layout_alignParentStart="true"

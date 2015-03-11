@@ -1,6 +1,5 @@
 package edu.usc.reach.myquitusc;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
@@ -15,7 +14,6 @@ import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,7 +23,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,7 +41,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_quit_home_screen);
+        setContentView(R.layout.activity_my_quit_home_screen_backup);
         boolean creatStruc = MyQuitCSVHelper.createStructure();
         if(MyQuitCSVHelper.pullLoginStatus("UserName") !=null) {
             if (MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {

@@ -7,8 +7,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="edu.usc.reach.myquitusc.MyQuitLoginActivity"
     android:focusableInTouchMode="true"
-    android:focusable="true"
-    android:background="@color/Teal500">
+    android:focusable="true">
 
     <!-- Login progress -->
 
@@ -19,8 +18,7 @@
         android:layout_gravity="center_horizontal"
         android:scaleType="centerInside"
         android:src="@drawable/splash_logo"
-        android:layout_weight="1"
-        android:background="@color/Teal50" />
+        android:layout_weight="1" />
 
     <TextView
         android:layout_width="match_parent"
@@ -28,7 +26,6 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/instructions_guide"
         android:layout_weight="1"
-        android:background="@color/Teal50"
         android:gravity="center"
         android:textAlignment="center" />
 
@@ -39,32 +36,27 @@
 
     <ScrollView android:id="@+id/login_form" android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/Teal50">
+        android:layout_weight="1">
 
         <LinearLayout android:id="@+id/email_login_form" android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:orientation="vertical"
-            android:background="@color/Teal50">
+            android:layout_height="wrap_content" android:orientation="vertical">
 
             <AutoCompleteTextView android:id="@+id/email" android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:hint="@string/prompt_email"
                 android:inputType="textEmailAddress" android:maxLines="1"
-                android:singleLine="true"
-                android:background="@color/Teal50" />
+                android:singleLine="true" />
 
             <EditText android:id="@+id/password" android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:hint="@string/prompt_password"
                 android:imeActionId="@+id/login"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionUnspecified" android:inputType="textPassword"
-                android:maxLines="1" android:singleLine="true"
-                android:background="@color/Teal50" />
+                android:maxLines="1" android:singleLine="true" />
 
             <Button android:id="@+id/email_sign_in_button" style="?android:textAppearanceSmall"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:layout_marginTop="16dp" android:text="@string/action_sign_in"
                 android:textStyle="bold"
-                android:background="@color/Teal500"
                 android:textAlignment="center"
                 android:layout_gravity="center_horizontal"
                 android:paddingLeft="16dp"

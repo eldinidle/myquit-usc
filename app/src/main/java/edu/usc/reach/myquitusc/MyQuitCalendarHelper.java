@@ -85,6 +85,11 @@ public class MyQuitCalendarHelper {
 
     }
 
+    public static boolean isThisWakingUp(boolean preTenMinutes)  {
+        String hourSituation = unassignHoursArray()[assignArrayPosition(preTenMinutes)];
+        return hourSituation.equalsIgnoreCase("Waking up");
+    }
+
     public static String returnIntentFromSituation(Context context, boolean preTenMinutes)  {
         String hourSituation = unassignHoursArray()[assignArrayPosition(preTenMinutes)];
         String parsedHourSituation;
@@ -165,8 +170,7 @@ public class MyQuitCalendarHelper {
 
     public static void decideCalendar (Context context) {
             if (isWithinXNextHour(10) && !returnIntentFromSituation(context,true).
-                    equalsIgnoreCase("No Match") && !returnIntentFromSituation(context,true).
-                    equalsIgnoreCase("Waking up") && !isWithinXAfterHour(20)) {
+                    equalsIgnoreCase("No Match") && !isThisWakingUp(true) && !isWithinXAfterHour(20)) {
                 Log.d("MQU-CH", "Decide Loop > 50 minutes");
                 if(didLastReadPassMinutes(30)) {
                     Log.d("MQU-CH", "50 minutes > YES");

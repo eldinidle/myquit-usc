@@ -77,21 +77,26 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
     private ImageView mClickToSetDate;
     private TextView mInstructionText;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    void buildWelcomeScreen(boolean eventSet){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Welcome to MyQuit USC\n" + "Let's set up your account and choose your new" +
-                " quit date.")
+        String message = "Welcome to MyQuit USC\n" + "Let's set up your account and log in.";
+        if(eventSet) { message = "Now, let's set up your quit date.";}
+        builder.setMessage(message)
                 .setPositiveButton("Ok!",new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
                     }
                 }).create().show();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_quit_login);
         Intent pullCurrentIntent = getIntent();
         boolean eventSet = pullCurrentIntent.getBooleanExtra("DateSet",false);
+        buildWelcomeScreen(eventSet);
 
 
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -103,7 +108,7 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
         mClickToSetDate = (ImageView) findViewById(R.id.splash_logo_IV);
         mInstructionText = (TextView) findViewById(R.id.instructions_guide);
 
-        if(eventSet) {
+        if(!eventSet) {
             mInstructionText.setVisibility(View.GONE);
             mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
@@ -129,10 +134,10 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
             mEmailSignInButton.setVisibility(View.GONE);
             mLoginFormView.setVisibility(View.GONE);
             mProgressView.setVisibility(View.GONE);
-            mInstructionText.setText("Click the Q to set MyQuit Date");
-            mClickToSetDate.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            //mInstructionText.setText("Click the Q to set MyQuit Date");
+           // mClickToSetDate.setOnClickListener(new OnClickListener() {
+               // @Override
+               // public void onClick(View v) {
                     FragmentTransaction ft = getFragmentManager().beginTransaction();
                     Fragment older = getFragmentManager().findFragmentByTag("quitdate");
                     if (older != null) {
@@ -142,8 +147,8 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
                     DialogFragment quitDateIntent = QuitDateDialog.newInstance();
                     quitDateIntent.show(ft, "quitdate");
 
-                }
-            });
+                //}
+           // });
         }
 
 
@@ -342,7 +347,12 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
 
             if (success) {
                 finish();
-            } else {
+                Intent launchLogin = new Intent(getApplicationContext(), MyQuitLoginActivity.class);
+                launchLogin.putExtra("DateSet", true);
+                launchLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(launchLogin);
+             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                // mPasswordView.requestFocus();
             }
@@ -376,7 +386,7 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
 
             View v = inflater.inflate(R.layout.fragment_fragment_quit_date_picker, container, false);
 
-            getDialog().setTitle(Html.fromHtml("<font color='#004D40'>I will quit smoking on...</font>"));
+            getDialog().setTitle("I will quit smoking on...");
 
             final DatePicker quitDatePicker = (DatePicker) v.findViewById(R.id.datePicker);
             quitDatePicker.setCalendarViewShown(false);
@@ -414,8 +424,7 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
                                             MyQuitCSVHelper.logLoginEvents("MyQuitDate", test, MyQuitCSVHelper.getFulltime());
                                             dismiss();
                                             getActivity().finish();
-                                            Intent launchLogin = new Intent(getView().getContext(), MyQuitLoginActivity.class);
-                                            launchLogin.putExtra("DateSet", true);
+                                            Intent launchLogin = new Intent(getView().getContext(), MyQuitPrePlanArray.class);
                                             launchLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                                     | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                             startActivity(launchLogin);

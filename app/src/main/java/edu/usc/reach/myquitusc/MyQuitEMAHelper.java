@@ -62,7 +62,7 @@ public class MyQuitEMAHelper {
 
     public static void setUpEODEMA() {
         Calendar nowTime = Calendar.getInstance();
-        if(nowTime.HOUR_OF_DAY >= KEY_EOD_PROMPT_HOUR &&
+        if(nowTime.get(Calendar.HOUR_OF_DAY) >= KEY_EOD_PROMPT_HOUR &&
                 MyQuitCSVHelper.isLastEventPastXMinutesTrue(MyQuitCSVHelper.END_OF_DAY_EMA_KEY, (60*(24-KEY_EOD_PROMPT_HOUR)))){
             MyQuitCSVHelper.logEMAEvents(MyQuitCSVHelper.END_OF_DAY_EMA_KEY,
                     "intentPresented", MyQuitCSVHelper.getFulltime(),"","");

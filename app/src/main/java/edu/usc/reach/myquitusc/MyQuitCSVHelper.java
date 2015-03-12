@@ -81,18 +81,24 @@ public class MyQuitCSVHelper{
     }
 
     public static boolean isLastEventPastXMinutesTrue(int emaType, int minutes){
-        String stringTime = MyQuitCSVHelper.pullLastEvent(emaType)[1];
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-        Calendar now = Calendar.getInstance();
-        Date timeNow = now.getTime();
         try {
-            Date timeThen = sdf.parse(stringTime);
-            long compareTime = timeNow.getTime() - timeThen.getTime();
-            return (compareTime > (minutes * 60 * 1000));
-        } catch (ParseException e) {
-            e.printStackTrace();
+            String stringTime = MyQuitCSVHelper.pullLastEvent(emaType)[1];
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+            Calendar now = Calendar.getInstance();
+            Date timeNow = now.getTime();
+            try {
+                Date timeThen = sdf.parse(stringTime);
+                long compareTime = timeNow.getTime() - timeThen.getTime();
+                return (compareTime > (minutes * 60 * 1000));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return true;
+            }
+        }
+        catch(NullPointerException npe){
             return true;
         }
+
     }
 
     public static int compareEvents(String event1, String event2, int emaType) {

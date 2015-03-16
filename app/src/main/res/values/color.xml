@@ -13,5 +13,6 @@
 
     <color name="AppBar">#3949AB</color>
     <color name="AppBarText">#FAFAFA</color>
+    <color name="ActiveText">#FF7043</color>
 
 </resources>

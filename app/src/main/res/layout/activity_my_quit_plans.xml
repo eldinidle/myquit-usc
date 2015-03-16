@@ -13,7 +13,8 @@
         android:text="MyQuit 15"
         android:id="@+id/plansTitle"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/AppBar" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -47,7 +48,9 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/statusBar" />
+        android:layout_toLeftOf="@+id/statusBar"
+        android:background="#FAFAFA"
+        android:textColor="@color/ActiveText" />
 
     <Button
         android:layout_width="wrap_content"
@@ -57,7 +60,9 @@
         android:layout_alignParentBottom="true"
         android:layout_alignRight="@+id/plansTitle"
         android:layout_alignEnd="@+id/plansTitle"
-        android:layout_alignLeft="@+id/plansTitle" />
+        android:layout_alignLeft="@+id/plansTitle"
+        android:background="#FAFAFA"
+        android:textColor="@color/ActiveText" />
 
     <Button
         android:layout_width="fill_parent"
@@ -67,7 +72,9 @@
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@+id/statusBar"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:background="#FAFAFA"
+        android:textColor="@color/ActiveText" />
 
     <Button
         android:layout_width="wrap_content"
@@ -75,7 +82,9 @@
         android:text="Need a suggestion? Click here!"
         android:id="@+id/suggestButton"
         android:layout_below="@+id/customIntent"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:background="#FAFAFA"
+        android:textColor="@color/ActiveText" />
 
     <Button
         android:layout_width="wrap_content"
@@ -87,6 +96,8 @@
         android:layout_alignParentStart="false"
         android:layout_centerHorizontal="true"
         android:layout_alignLeft="@+id/suggestButton"
-        android:layout_alignRight="@+id/suggestButton" />
+        android:layout_alignRight="@+id/suggestButton"
+        android:background="#FAFAFA"
+        android:textColor="@color/ActiveText" />
 
 </RelativeLayout>

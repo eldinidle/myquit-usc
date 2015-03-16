@@ -32,10 +32,30 @@ import com.roomorama.caldroid.CaldroidListener;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 
 public class MyQuitHomeScreen extends ActionBarActivity {
+
+
+    public void formatDialog(AlertDialog dialog) {
+        Button posButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        posButton.setTextColor(getResources().getColor(R.color.ActiveText));
+        Button negButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        negButton.setTextColor(getResources().getColor(R.color.ActiveText));
+        Button neuButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        neuButton.setTextColor(getResources().getColor(R.color.ActiveText));
+
+        int dividerId = dialog.getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
+        View divider = dialog.findViewById(dividerId);
+        divider.setBackgroundColor(getResources().getColor(R.color.AppBar));
+
+        int textViewId = dialog.getContext().getResources().getIdentifier("android:id/alertTitle", null, null);
+        TextView tv = (TextView) dialog.findViewById(textViewId);
+        tv.setTextColor(getResources().getColor(R.color.AppBar));
+    }
 
 
     @Override
@@ -235,7 +255,12 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                                     public void onClick(DialogInterface dialog, int which) {
 
                                     }
-                                }).create().show();
+                                });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+
+                        formatDialog(dialog);
+
                     } else {
                         Intent startPlan = new Intent(getApplicationContext(), MyQuitPrePlanArray.class);
                         startPlan.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
@@ -361,7 +386,10 @@ public class MyQuitHomeScreen extends ActionBarActivity {
 
             View v = inflater.inflate(R.layout.fragment_imp_intent, container, false);
 
-            getDialog().setTitle(Html.fromHtml("<font color='#004D40'>What are you doing now?</font>"));
+            getDialog().setTitle(Html.fromHtml("<font color='#3949AB'>What are you doing now?</font>"));
+            int dividerID = getDialog().getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
+            View divider = getDialog().findViewById(dividerID);
+            divider.setBackgroundColor(getResources().getColor(R.color.AppBar));
 
             final ListView activityList = (ListView) v.findViewById(R.id.chooseCraveEvent);
             final Button closeImp = (Button) v.findViewById(R.id.confirmIntent);
@@ -386,7 +414,10 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                         pulledActivity = MyQuitTasksActivity.TASKS_LIST[position];
                    }
                    MyQuitCSVHelper.logCraveEvent(pulledActivity,MyQuitCSVHelper.getFulltime());
-                   getDialog().setTitle(Html.fromHtml("<font color='#004D40'>Instead of smoking...</font>"));
+                   getDialog().setTitle(Html.fromHtml("<font color='#3949AB'>Instead of smoking...</font>"));
+                    int dividerID = getDialog().getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
+                    View divider = getDialog().findViewById(dividerID);
+                    divider.setBackgroundColor(getResources().getColor(R.color.AppBar));
                     ArrayAdapter<String> blankAA = new ArrayAdapter<>(getActivity(),
                             android.R.layout.simple_list_item_activated_1, new String[] {""});
                     try {
@@ -445,11 +476,15 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                                  Bundle savedInstanceState) {
             //timeTitle = getArguments().getString("timeCode");
             final String[] NEW_TASKS_LIST = MyQuitPlanHelper.pullTasksList(getActivity(),false);
+            Collections.shuffle(Arrays.asList(NEW_TASKS_LIST));
             final String[] NEW_INTENTS_LIST = MyQuitPlanHelper.pullIntentsList(getActivity(),false);
 
             View v = inflater.inflate(R.layout.fragment_rogue_event, container, false);
 
-            getDialog().setTitle(Html.fromHtml("<font color='#004D40'>What were you doing?</font>"));
+            getDialog().setTitle(Html.fromHtml("<font color='#3949AB'>What were you doing?</font>"));
+            int dividerID = getDialog().getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
+            View divider = getDialog().findViewById(dividerID);
+            divider.setBackgroundColor(getResources().getColor(R.color.AppBar));
 
             ListView intentsRogue = (ListView) v.findViewById(R.id.rogueIntentList);
 

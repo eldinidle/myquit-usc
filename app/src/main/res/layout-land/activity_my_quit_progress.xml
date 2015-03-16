@@ -30,7 +30,9 @@
             android:id="@+id/cigSmokeStatus"
             android:layout_alignParentBottom="false"
             android:layout_alignParentLeft="false"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:background="#FAFAFA"
+            android:textColor="@color/ActiveText" />
 
         <Button
             android:layout_width="0dp"
@@ -40,28 +42,36 @@
             android:layout_alignParentBottom="false"
             android:layout_toRightOf="@+id/cigSmokeStatus"
             android:layout_alignParentRight="false"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:background="#FAFAFA"
+            android:textColor="@color/ActiveText" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:text="Money Saved"
             android:id="@+id/moneySavedStatus"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:background="#FAFAFA"
+            android:textColor="@color/ActiveText" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:text="Money Spent"
             android:id="@+id/moneySpentStatus"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:background="#FAFAFA"
+            android:textColor="@color/ActiveText" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:text="Money Earned"
             android:id="@+id/moneyEMAStatus"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:background="#FAFAFA"
+            android:textColor="@color/ActiveText" />
     </LinearLayout>
 
 </RelativeLayout>

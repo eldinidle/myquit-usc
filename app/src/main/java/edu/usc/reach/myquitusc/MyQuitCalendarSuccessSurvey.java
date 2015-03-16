@@ -19,7 +19,7 @@ public class MyQuitCalendarSuccessSurvey {
             System.getProperty("line.separator") +
             MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.CALENDAR_EMA_KEY)[2], "Yes", "No"};
     public  String[] didFollow = {"Did you " +
-            MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.CALENDAR_EMA_KEY)[3] + "?", "Yes", "No"};
+            MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.CALENDAR_EMA_KEY)[3].replace(" me "," you ") + "?", "Yes", "No"};
     public static final String[] howHelpful = {"How helpful was the plan or intention?", "Extremely helpful",
             "Quite helpful", "Somewhat helpful", "A little helpful", "Not at all helpful"};
     public static final String[] didSmokeY = {"Did you smoke a cigarette?", "Yes", "No"};

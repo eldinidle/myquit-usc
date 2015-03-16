@@ -20,6 +20,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -159,6 +160,23 @@ public class MyQuitPrePlanArray extends Activity {
             }
     }
 
+    public void formatDialog(AlertDialog dialog) {
+        Button posButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        posButton.setTextColor(getResources().getColor(R.color.ActiveText));
+        Button negButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        negButton.setTextColor(getResources().getColor(R.color.ActiveText));
+        Button neuButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        neuButton.setTextColor(getResources().getColor(R.color.ActiveText));
+
+        int dividerId = dialog.getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
+        View divider = dialog.findViewById(dividerId);
+        divider.setBackgroundColor(getResources().getColor(R.color.AppBar));
+
+        int textViewId = dialog.getContext().getResources().getIdentifier("android:id/alertTitle", null, null);
+        TextView tv = (TextView) dialog.findViewById(textViewId);
+        tv.setTextColor(getResources().getColor(R.color.AppBar));
+    }
+
     public void addSituation(View v) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final EditText textEntry = new EditText(this);
@@ -170,12 +188,11 @@ public class MyQuitPrePlanArray extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String finalEntry = textEntry.getText().toString();
-                        if(finalEntry.length()>5){
-                            String[] finalPush = new String[] {finalEntry, "If I am "+finalEntry+" I will...",""};
-                            situationHelper(finalPush,getType());
-                        }
-                        else{
-                            Toast.makeText(getApplicationContext(),"Please enter a longer situation",Toast.LENGTH_LONG);
+                        if (finalEntry.length() > 5) {
+                            String[] finalPush = new String[]{finalEntry, "If I am " + finalEntry + " I will...", ""};
+                            situationHelper(finalPush, getType());
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Please enter a longer situation", Toast.LENGTH_LONG);
                         }
                     }
                 })
@@ -184,9 +201,11 @@ public class MyQuitPrePlanArray extends Activity {
                     public void onClick(DialogInterface dialog, int which) {
 
                     }
-                })
-                .create()
-                .show();
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        formatDialog(dialog);
 
     }
 
@@ -261,7 +280,10 @@ public class MyQuitPrePlanArray extends Activity {
                     public void onClick(DialogInterface dialog, int which) {
 
                     }
-                }).create().show();
+                });
+         AlertDialog dialog = builder.create();
+         dialog.show();
+         formatDialog(dialog);
     }
 
     int getType() {

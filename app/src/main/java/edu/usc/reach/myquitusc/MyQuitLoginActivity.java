@@ -77,17 +77,37 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
     private ImageView mClickToSetDate;
     private TextView mInstructionText;
 
+    public void formatDialog(AlertDialog dialog) {
+        Button posButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        posButton.setTextColor(getResources().getColor(R.color.ActiveText));
+        Button negButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        negButton.setTextColor(getResources().getColor(R.color.ActiveText));
+        Button neuButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        neuButton.setTextColor(getResources().getColor(R.color.ActiveText));
+
+        int dividerId = dialog.getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
+        View divider = dialog.findViewById(dividerId);
+        divider.setBackgroundColor(getResources().getColor(R.color.AppBar));
+
+        int textViewId = dialog.getContext().getResources().getIdentifier("android:id/alertTitle", null, null);
+        TextView tv = (TextView) dialog.findViewById(textViewId);
+        tv.setTextColor(getResources().getColor(R.color.AppBar));
+    }
+
     void buildWelcomeScreen(boolean eventSet){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         String message = "Welcome to MyQuit USC\n" + "Let's set up your account and log in.";
         if(eventSet) { message = "Now, let's set up your quit date.";}
         builder.setMessage(message)
-                .setPositiveButton("Ok!",new DialogInterface.OnClickListener() {
+                .setPositiveButton("Ok!", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
                     }
-                }).create().show();
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        formatDialog(dialog);
     }
 
     @Override
@@ -386,6 +406,8 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
 
             View v = inflater.inflate(R.layout.fragment_fragment_quit_date_picker, container, false);
 
+
+
             getDialog().setTitle("I will quit smoking on...");
 
             final DatePicker quitDatePicker = (DatePicker) v.findViewById(R.id.datePicker);
@@ -442,7 +464,24 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
                                 public void onClick(DialogInterface dialog, int which) {
 
                                 }
-                            }).create().show();
+                            });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                    Button posButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                    posButton.setTextColor(getResources().getColor(R.color.ActiveText));
+                    Button negButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                    negButton.setTextColor(getResources().getColor(R.color.ActiveText));
+                    Button neuButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                    neuButton.setTextColor(getResources().getColor(R.color.ActiveText));
+
+                    int dividerId = dialog.getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
+                    View divider = dialog.findViewById(dividerId);
+                    divider.setBackgroundColor(getResources().getColor(R.color.AppBar));
+
+                    int textViewId = dialog.getContext().getResources().getIdentifier("android:id/alertTitle", null, null);
+                    TextView tv = (TextView) dialog.findViewById(textViewId);
+                    tv.setTextColor(getResources().getColor(R.color.AppBar));
+
                 }
             });
             /*

@@ -15,7 +15,8 @@
             android:text="Cancel"
             android:id="@+id/eraseCancel"
             android:layout_weight="1"
-            android:textColor="@color/Teal900" />
+            android:textColor="@color/ActiveText"
+            android:background="#FAFAFA" />
 
         <Button
             android:layout_width="0dp"
@@ -23,7 +24,8 @@
             android:text="OK"
             android:id="@+id/eraseConfirm"
             android:layout_weight="1"
-            android:textColor="@color/Teal900" />
+            android:textColor="@color/ActiveText"
+            android:background="#FAFAFA" />
     </LinearLayout>
 
 </RelativeLayout>

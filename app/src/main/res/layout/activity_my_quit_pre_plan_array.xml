@@ -10,10 +10,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/situationListView"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:choiceMode="multipleChoice"
-        android:layout_above="@+id/preplanbuttons" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="#FAFAFA" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -28,7 +29,9 @@
             android:text="Go back"
             android:id="@+id/button"
             android:layout_weight="1"
-            android:onClick="previousSituation" />
+            android:onClick="previousSituation"
+            android:background="#FAFAFA"
+            android:textColor="#FF7043" />
 
         <Button
             android:layout_width="0dp"
@@ -40,7 +43,9 @@
             android:layout_alignParentEnd="true"
             android:layout_weight="1"
             android:nestedScrollingEnabled="false"
-            android:onClick="addSituation" />
+            android:onClick="addSituation"
+            android:background="#FAFAFA"
+            android:textColor="#FF7043" />
 
         <Button
             android:layout_width="0dp"
@@ -50,7 +55,9 @@
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
             android:layout_weight="1"
-            android:onClick="nextSituation" />
+            android:onClick="nextSituation"
+            android:background="#FAFAFA"
+            android:textColor="#FF7043" />
 
     </LinearLayout>
 

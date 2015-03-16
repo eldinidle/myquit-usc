@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jjoe64.graphview.BarGraphView;
@@ -35,6 +36,23 @@ import java.util.Formatter;
 
 public class MyQuitProgress extends Activity {
 
+
+    public void formatDialog(AlertDialog dialog) {
+        Button posButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        posButton.setTextColor(getResources().getColor(R.color.ActiveText));
+        Button negButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        negButton.setTextColor(getResources().getColor(R.color.ActiveText));
+        Button neuButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        neuButton.setTextColor(getResources().getColor(R.color.ActiveText));
+
+        int dividerId = dialog.getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
+        View divider = dialog.findViewById(dividerId);
+        divider.setBackgroundColor(getResources().getColor(R.color.AppBar));
+
+        int textViewId = dialog.getContext().getResources().getIdentifier("android:id/alertTitle", null, null);
+        TextView tv = (TextView) dialog.findViewById(textViewId);
+        tv.setTextColor(getResources().getColor(R.color.AppBar));
+    }
 
     private void runGraphView(final int typePull){
         int[] smokedCigs = countWeeklyCigs(typePull);
@@ -309,8 +327,10 @@ public class MyQuitProgress extends Activity {
                         MyQuitCSVHelper.logLoginEvents("TypicalCigCost", String.valueOf(cigCost), MyQuitCSVHelper.getFulltime());
                     }
                 })
-                .setCancelable(false)
-                .create().show();
+                .setCancelable(false);
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            formatDialog(dialog);
         }
 
         super.onCreate(savedInstanceState);

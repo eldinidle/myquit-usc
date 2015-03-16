@@ -30,6 +30,22 @@ import java.io.IOException;
 public class MyQuitPlans extends Activity  {
 
 
+    public void formatDialog(AlertDialog dialog) {
+        Button posButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        posButton.setTextColor(getResources().getColor(R.color.ActiveText));
+        Button negButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        negButton.setTextColor(getResources().getColor(R.color.ActiveText));
+        Button neuButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        neuButton.setTextColor(getResources().getColor(R.color.ActiveText));
+
+        int dividerId = dialog.getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
+        View divider = dialog.findViewById(dividerId);
+        divider.setBackgroundColor(getResources().getColor(R.color.AppBar));
+
+        int textViewId = dialog.getContext().getResources().getIdentifier("android:id/alertTitle", null, null);
+        TextView tv = (TextView) dialog.findViewById(textViewId);
+        tv.setTextColor(getResources().getColor(R.color.AppBar));
+    }
 
     private void callAllListeners(Button nextButton, Button backButton,
                                   Button statusBar, Button suggestButton,
@@ -283,7 +299,10 @@ public class MyQuitPlans extends Activity  {
                     public void onClick(DialogInterface dialog, int which) {
 
                     }
-                }).create().show();
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        formatDialog(dialog);
 
 
 
@@ -341,7 +360,10 @@ public class MyQuitPlans extends Activity  {
                     public void onClick(DialogInterface dialog, int which) {
 
                     }
-                }).create().show();
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        formatDialog(dialog);
     }
 
 

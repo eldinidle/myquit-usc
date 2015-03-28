@@ -20,6 +20,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import edu.usc.reach.myquitusc.DatabaseHelpers.MyQuitDatabaseHandler;
+import edu.usc.reach.myquitusc.DatabaseHelpers.PlannedSituation;
+
 /**
  * Created by Eldin on 1/10/15.
  */
@@ -27,7 +30,15 @@ public class MyQuitCalendarHelper {
 
     private static final  String[] stubTimes = new String[] {"", "", "", "", "", "", "", "", "",
             "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };
-    //TODO: Fill out these classes
+
+    private static void logSituationScan(String dateTime,
+                                         String situation, boolean activated){
+        Log.d("MQU-SQL","Begin logging");
+        MyQuitDatabaseHandler MQdb = MyQuitDatabaseHandler.getInstance(MyQuitHomeScreen.mainDBContext);
+        PlannedSituation pS = new PlannedSituation(dateTime, situation, activated);
+        MQdb.addPlannedSituation(pS);
+        Log.d("MQU-SQL","Logging" + pS.getSituation() + " at " + pS.getDateTime() + "," + pS.getActivated());
+    }
 
     public static boolean isWithinXNextHour(int minsBefore) {
         Calendar nowCal = Calendar.getInstance();
@@ -176,10 +187,12 @@ public class MyQuitCalendarHelper {
                     Log.d("MQU-CH", "50 minutes > YES");
                     boolean prompt = Math.random() > 0.5;
                     if (prompt) {
+                        //logSituationScan(MyQuitCSVHelper.getFulltime(),unassignHoursArray()[assignArrayPosition(true)],true);
                         setSession(context, true, false);
                         pushActionCalendar(context);
                     }
                     else {
+                        //logSituationScan(MyQuitCSVHelper.getFulltime(),unassignHoursArray()[assignArrayPosition(true)],false);
                         setSession(context, true, true);
                     }
                 }
@@ -196,10 +209,12 @@ public class MyQuitCalendarHelper {
                     Log.d("MQU-CH", "20 minutes > YES");
                     boolean prompt = Math.random() > 0.5;
                     if(prompt){
+                        //logSituationScan(MyQuitCSVHelper.getFulltime(),unassignHoursArray()[assignArrayPosition(false)],true);
                         setSession(context,false,false);
                         pushActionCalendar(context);
                     }
                     else {
+                        //logSituationScan(MyQuitCSVHelper.getFulltime(),unassignHoursArray()[assignArrayPosition(false)],false);
                         setSession(context,false,true);
                     }
                 }

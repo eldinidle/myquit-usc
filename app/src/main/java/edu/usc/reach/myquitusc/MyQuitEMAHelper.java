@@ -30,6 +30,31 @@ public class MyQuitEMAHelper {
     private static final SimpleDateFormat newsdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
 
+    public static String[] returnLastEMASurvey(String calledDate, int sessionID, int surveyID,
+                                               String situation, String intention) {
+        String stepDate = calledDate.replaceAll("/", "_");
+        String fileName = stepDate + "_" + surveyID + "_" + sessionID + ".csv";
+        try {
+            CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.emaPath + fileName));
+            List<String[]> pullAll = reader.readAll();
+            reader.close();
+            String[] pulledStringArray =  pullAll.get(pullAll.size()-1);
+            String[] newExpand = new String[pulledStringArray.length+4];
+            int count = 0;
+            for(String inArray: pulledStringArray){
+                newExpand[count] = inArray;
+                count++;
+            }
+            newExpand[newExpand.length-4] = MyQuitCSVHelper.pullLoginStatus("UserName");
+            newExpand[newExpand.length-3] = String.valueOf(surveyID);
+            newExpand[newExpand.length-2] = situation;
+            newExpand[newExpand.length-1] = intention;
+            return newExpand;
+        }
+        catch(IOException abc) {
+            return null;
+        }
+    }
 
     public static String[] returnCalendarEMARow() {
         List<String[]> events = MyQuitCalendarHelper.returnCalendarEMA();

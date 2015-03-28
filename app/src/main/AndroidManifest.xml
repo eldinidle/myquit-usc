@@ -99,8 +99,19 @@
         <activity
             android:name=".MyQuitNewPlans"
             android:label="@string/title_activity_my_quit_new_plans"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".DatabaseHelpers.MyQuitAdmin"
+            android:label="@string/title_activity_my_quit_admin" >
+        </activity>
+
+        <provider
+            android:name=".DatabaseHelpers.MyQuitContentProvider"
+            android:authorities="edu.usc.reach.myquitusc.provider"
+            android:enabled="false"
+            android:exported="true" >
+        </provider>
     </application>
 
 </manifest>

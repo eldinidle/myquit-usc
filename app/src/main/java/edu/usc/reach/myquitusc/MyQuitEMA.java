@@ -43,6 +43,24 @@ public class MyQuitEMA extends Activity {
             answers.addView(buttonName);
     }
 
+    void passThroughUpload(int finalSessionID, int survey) {
+        switch (survey) {
+            case 1: MyQuitPHP.postEMAEvent(MyQuitEMAHelper.returnLastEMASurvey(MyQuitCSVHelper.getFullDate(),
+                    finalSessionID, survey, MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[2],
+                    MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[3])); break;
+            case 2: MyQuitPHP.postEMAEvent(MyQuitEMAHelper.returnLastEMASurvey(MyQuitCSVHelper.getFullDate(),
+                    finalSessionID, survey, MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.CALENDAR_EMA_KEY)[2],
+                    MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.CALENDAR_EMA_KEY)[3])); break;
+            case 3: MyQuitPHP.postEMAEvent(MyQuitEMAHelper.returnLastEMASurvey(MyQuitCSVHelper.getFullDate(),
+                    finalSessionID, survey, MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[2],
+                    MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[3])); break;
+            case 4: MyQuitPHP.postEMAEvent(MyQuitEMAHelper.returnLastEMASurvey(MyQuitCSVHelper.getFullDate(),
+                    finalSessionID, survey, MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[2],
+                    MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[3])); break;
+
+        }
+    }
+
     void numericalDecision(LinearLayout surveySetup, TextView question,int sessionID, int position,
                            final int survey) {
         surveySetup.addView(question);
@@ -100,6 +118,9 @@ public class MyQuitEMA extends Activity {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MyQuitPHP.postEMAEvent(MyQuitEMAHelper.returnLastEMASurvey(MyQuitCSVHelper.getFullDate(),
+                        finalSessionID,survey,MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[2],
+                        MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[3]));
                 MyQuitCSVHelper.logEMAEvents(survey, "emaFinished", MyQuitCSVHelper.getFulltime());
                 try {
                     finalPushExitSurvey(survey, finalSessionID);

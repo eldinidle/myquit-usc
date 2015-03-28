@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -45,9 +46,11 @@ public class MyQuitProgress extends Activity {
         Button neuButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
         neuButton.setTextColor(getResources().getColor(R.color.ActiveText));
 
-        int dividerId = dialog.getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
-        View divider = dialog.findViewById(dividerId);
-        divider.setBackgroundColor(getResources().getColor(R.color.AppBar));
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            int dividerId = dialog.getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
+            View divider = dialog.findViewById(dividerId);
+            divider.setBackgroundColor(getResources().getColor(R.color.AppBar));
+        }
 
         int textViewId = dialog.getContext().getResources().getIdentifier("android:id/alertTitle", null, null);
         TextView tv = (TextView) dialog.findViewById(textViewId);
@@ -64,7 +67,7 @@ public class MyQuitProgress extends Activity {
             case 2: label = "Cigarettes Resisted"; break;
             case 3: label = "Money Saved"; break;
             case 4: label = "Money Spent"; break;
-            case 5: label = "Money Earned from EMA"; break;
+            case 5: label = "Money Earned from MyQuit Study"; break;
             default: label = "My Progress";
         }
 

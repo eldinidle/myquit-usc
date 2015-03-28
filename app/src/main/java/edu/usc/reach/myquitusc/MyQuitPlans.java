@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.KeyEvent;
@@ -38,9 +39,11 @@ public class MyQuitPlans extends Activity  {
         Button neuButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
         neuButton.setTextColor(getResources().getColor(R.color.ActiveText));
 
-        int dividerId = dialog.getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
-        View divider = dialog.findViewById(dividerId);
-        divider.setBackgroundColor(getResources().getColor(R.color.AppBar));
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            int dividerId = dialog.getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
+            View divider = dialog.findViewById(dividerId);
+            divider.setBackgroundColor(getResources().getColor(R.color.AppBar));
+        }
 
         int textViewId = dialog.getContext().getResources().getIdentifier("android:id/alertTitle", null, null);
         TextView tv = (TextView) dialog.findViewById(textViewId);

@@ -39,7 +39,7 @@ public class MyQuitPHP {
     private final static String unPlannedSuccessTable = "UnplannedPushSuccessTable.csv";
 
     private static final String urlPostRogueEvent = "http://myquitadmin.usc.edu/data.php";
-    private static final String urlPostEMAEvent = "http://myquit.usc.edu/postema.php";
+    private static final String urlPostEMAEvent = "http://myquitadmin.usc.edu/myquitema.php";
     private static final String urlPostUnplannedEvent = "http://myquit.usc.edu/postunplanned.php";
 
 
@@ -110,12 +110,28 @@ public class MyQuitPHP {
             HttpPost httpPost = new HttpPost(urlPostEMAEvent);
             List<NameValuePair> emaParams = new ArrayList<NameValuePair>();
             int fullLength = params[0].length;
-            String datetime = params[0][fullLength-5] + " " + params[0][fullLength-4];
-            emaParams.add(new BasicNameValuePair("username",params[0][fullLength-2]));
-            emaParams.add(new BasicNameValuePair("surveytype",params[0][fullLength-1]));
-            emaParams.add(new BasicNameValuePair("sessionid",params[0][fullLength-3]));
+            String datetime = params[0][fullLength-7] + " " + params[0][fullLength-6];
+            int surveyType = Integer.valueOf(params[0][fullLength-3]);
+            if(surveyType==MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS){
+                emaParams.add(new BasicNameValuePair("didFollow",params[0][0]));
+                emaParams.add(new BasicNameValuePair("howHelpful",params[0][1]));
+                emaParams.add(new BasicNameValuePair("didSmokeY",params[0][2]));
+                emaParams.add(new BasicNameValuePair("didSmokeN",params[0][3]));
+                emaParams.add(new BasicNameValuePair("doInstead",params[0][4]));
+                emaParams.add(new BasicNameValuePair("situation",params[0][fullLength-2]));
+                emaParams.add(new BasicNameValuePair("intention",params[0][fullLength-1]));
+            }
+
+            emaParams.add(new BasicNameValuePair("username",params[0][fullLength-4]));
+            emaParams.add(new BasicNameValuePair("surveytype",params[0][fullLength-3]));
+            emaParams.add(new BasicNameValuePair("sessionid",params[0][fullLength-5]));
             emaParams.add(new BasicNameValuePair("datetime",datetime));
             emaParams.add(new BasicNameValuePair("allowed",String.valueOf(phpAllowInteger)));
+            Log.d("MQU-PHP","Caught" + params[0][fullLength-2] + params[0][fullLength-1] + params[0][fullLength-3]);
+            Log.d("MQU-PHP","Caught" + params[0][2] + params[0][3] + params[0][4]);
+            Log.d("MQU-PHP","Caught" + params[0][0] + params[0][1]);
+            Log.d("MQU-PHP","Caught" + datetime + phpAllowInteger);
+
 
             try {
                 httpPost.setEntity(new UrlEncodedFormEntity(emaParams));
@@ -199,8 +215,10 @@ public class MyQuitPHP {
                 writer.writeAll(newPush);
                 writer.close();
             } catch (FileNotFoundException e) {
+                Log.d("MQU-PHP","Failure FNF");
                 e.printStackTrace();
             } catch (IOException e) {
+                Log.d("MQU-PHP","Failure IOE");
                 e.printStackTrace();
             }
 
@@ -228,10 +246,21 @@ public class MyQuitPHP {
         HttpPost httpPost = new HttpPost(urlPostEMAEvent);
         List<NameValuePair> emaParams = new ArrayList<NameValuePair>();
         int fullLength = params.length;
-        String datetime = params[fullLength-5] + " " + params[fullLength-4];
-        emaParams.add(new BasicNameValuePair("username",params[fullLength-2]));
-        emaParams.add(new BasicNameValuePair("surveytype",params[fullLength-1]));
-        emaParams.add(new BasicNameValuePair("sessionid",params[fullLength-3]));
+        String datetime = params[fullLength-7] + " " + params[fullLength-6];
+        int surveyType = Integer.valueOf(params[fullLength-3]);
+        if(surveyType==MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS){
+            emaParams.add(new BasicNameValuePair("didFollow",params[0]));
+            emaParams.add(new BasicNameValuePair("howHelpful",params[1]));
+            emaParams.add(new BasicNameValuePair("didSmokeY",params[2]));
+            emaParams.add(new BasicNameValuePair("didSmokeN",params[3]));
+            emaParams.add(new BasicNameValuePair("doInstead",params[4]));
+            emaParams.add(new BasicNameValuePair("situation",params[fullLength-2]));
+            emaParams.add(new BasicNameValuePair("intention",params[fullLength-1]));
+        }
+
+        emaParams.add(new BasicNameValuePair("username",params[fullLength-4]));
+        emaParams.add(new BasicNameValuePair("surveytype",params[fullLength-3]));
+        emaParams.add(new BasicNameValuePair("sessionid",params[fullLength-5]));
         emaParams.add(new BasicNameValuePair("datetime",datetime));
         emaParams.add(new BasicNameValuePair("allowed",String.valueOf(phpAllowInteger)));
         Log.d("MQU-PHP","Caught" + params[fullLength-2] + params[fullLength-1] + params[fullLength-3]);
@@ -406,7 +435,7 @@ public class MyQuitPHP {
             writeLastFileUpload();
             Log.d("MQU-PHP", "Wrote last file upload");
             new SyncRogueEvent().execute();
-            //new SyncEMAEvent().execute();
+            new SyncEMAEvent().execute();
             Log.d("MQU-PHP", "Finished looping");
         }
     }

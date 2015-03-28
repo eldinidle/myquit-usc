@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.preference.DialogPreference;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -122,6 +124,12 @@ public class MyQuitPrePlanArray extends Activity {
         return returnList;
     }
 
+    final int[] returnShuffledArray(){
+        int[] keyArray = new int[] {1,2,3};
+        Collections.shuffle(Arrays.asList(keyArray));
+        return keyArray;
+    }
+
     void situationHelper(String[] finalPush, int arrayType) {
         switch(arrayType){
             case SOCIAL_KEY:
@@ -168,9 +176,11 @@ public class MyQuitPrePlanArray extends Activity {
         Button neuButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
         neuButton.setTextColor(getResources().getColor(R.color.ActiveText));
 
-        int dividerId = dialog.getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
-        View divider = dialog.findViewById(dividerId);
-        divider.setBackgroundColor(getResources().getColor(R.color.AppBar));
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            int dividerId = dialog.getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
+            View divider = dialog.findViewById(dividerId);
+            divider.setBackgroundColor(getResources().getColor(R.color.AppBar));
+        }
 
         int textViewId = dialog.getContext().getResources().getIdentifier("android:id/alertTitle", null, null);
         TextView tv = (TextView) dialog.findViewById(textViewId);

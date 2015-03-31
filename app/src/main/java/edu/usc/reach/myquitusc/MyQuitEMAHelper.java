@@ -86,6 +86,26 @@ public class MyQuitEMAHelper {
         return returnRow;
     }
 
+    private static Boolean getRogueActivation(){
+        String fileName = "DelayedRogueEMA.csv";
+        try {
+            CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.emaPath + fileName));
+            List<String[]> allTimes = reader.readAll();
+            reader.close();
+            String activation = "false";
+            for (String[] time : allTimes) {
+                if(time.length>1){
+                    activation = time[3];
+                }
+            }
+            return Boolean.parseBoolean(activation);
+        }
+        catch(IOException io){
+            io.printStackTrace();
+            return false;
+        }
+
+    }
 
     private static String getLastRogueSituation(){
         String fileName = "DelayedRogueEMA.csv";
@@ -171,7 +191,8 @@ public class MyQuitEMAHelper {
         Calendar now = Calendar.getInstance();
         now.add(Calendar.MINUTE,15);
         Date then = now.getTime();
-        String[] pushArray = new String[] {newsdf.format(then),situation,intent};
+        boolean activate = Math.random()<0.6;
+        String[] pushArray = new String[] {newsdf.format(then),situation,intent,String.valueOf(activate)};
         writer.writeNext(pushArray);
         writer.close();
     }
@@ -180,7 +201,8 @@ public class MyQuitEMAHelper {
         Calendar nowCal = Calendar.getInstance();
         Date nowDate = nowCal.getTime();
         if(MyQuitEMAHelper.withinLastRogueSchedule(true) &&
-                MyQuitCSVHelper.isLastEventPastXMinutesTrue(MyQuitCSVHelper.ROGUE_EMA_KEY,15)){
+                MyQuitCSVHelper.isLastEventPastXMinutesTrue(MyQuitCSVHelper.ROGUE_EMA_KEY,15) &&
+                getRogueActivation()==true){
             MyQuitCSVHelper.logEMAEvents(MyQuitCSVHelper.ROGUE_EMA_KEY,
                     "intentPresented", MyQuitCSVHelper.getFulltime(),getLastRogueSituation(),getLastRogueIntention());
         }

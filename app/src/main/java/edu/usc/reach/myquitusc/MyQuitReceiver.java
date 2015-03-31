@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import java.text.ParseException;
 import java.util.Calendar;
 
 public class MyQuitReceiver extends BroadcastReceiver {
@@ -17,6 +18,23 @@ public class MyQuitReceiver extends BroadcastReceiver {
     }
 
 
+    void runMainStudy(Context context) {
+        MyQuitAutoAssign.autoAssignCalendar();
+        MyQuitEMAHelper.setUpCalendarEMA();
+        MyQuitEMAHelper.setUpEODEMA();
+        MyQuitEMAHelper.setUpRogueEMA();
+        MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.ROGUE_EMA_KEY);
+        MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.CALENDAR_EMA_KEY);
+        MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.END_OF_DAY_EMA_KEY);
+        MyQuitCalendarHelper.decideCalendar(context);
+    }
+
+
+    void runPreMainStudy(Context context){
+        MyQuitEMAHelper.setUpRandomEMA();
+        MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.RANDOM_EMA_KEY);
+        MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.SMOKE_EMA_KEY);
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -32,15 +50,22 @@ public class MyQuitReceiver extends BroadcastReceiver {
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(1, myQuitSFTPNotify);
 
-        MyQuitAutoAssign.autoAssignCalendar();
-        MyQuitEMAHelper.setUpCalendarEMA();
-        MyQuitEMAHelper.setUpEODEMA();
-        MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.ROGUE_EMA_KEY);
-        MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.CALENDAR_EMA_KEY);
-        MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.END_OF_DAY_EMA_KEY);
-        MyQuitCalendarHelper.decideCalendar(context);
-        MyQuitPHP.decidePHPPost();
-        Log.d("MyQuitUSC", "Finished deciding");
+
+        try {
+            if(MyQuitLoginActivity.confirmPreStudy()){
+                runPreMainStudy(context);
+            }
+            else{
+                runMainStudy(context);
+            }
+            MyQuitPHP.decidePHPPost();
+            Log.d("MyQuitUSC", "Finished deciding");
+            mNotificationManager.cancel(1);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Log.d("MyQuitUSC", "Finished deciding");
+            mNotificationManager.cancel(1);
+        }
         /*
         if (MyQuitCSVHelper.pullLastEvent()[0].equalsIgnoreCase("intentPresented")) {
             Intent launchService = new Intent(context, MyQuitService.class);
@@ -60,7 +85,6 @@ public class MyQuitReceiver extends BroadcastReceiver {
         */
 
 
-        mNotificationManager.cancel(1);
 
 //        throw new UnsupportedOperationException("Not yet implemented");
     }

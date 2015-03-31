@@ -1,10 +1,12 @@
-package edu.usc.reach.myquitusc;
+package edu.usc.reach.myquitusc.Surveys;
 
 import android.util.Log;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+
+import edu.usc.reach.myquitusc.MyQuitCSVHelper;
 
 /**
  * Created by Eldin on 12/30/14.

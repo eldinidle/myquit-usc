@@ -41,6 +41,8 @@ public class MyQuitCSVHelper{
     public static final int ROGUE_EMA_KEY = 1;
     public static final int CALENDAR_EMA_KEY = 2;
     public static final int END_OF_DAY_EMA_KEY = 3;
+    public static final int RANDOM_EMA_KEY = 4;
+    public static final int SMOKE_EMA_KEY = 5;
 
     final public static String[] defaultTimes =
             new String[] { "12:00 AM", "01:00 AM", "02:00 AM", "03:00 AM", "04:00 AM", "05:00 AM",
@@ -227,6 +229,8 @@ public class MyQuitCSVHelper{
             case CALENDAR_EMA_KEY: fileName = "CalEMAEvents.csv"; break;
             case END_OF_DAY_EMA_KEY: fileName = "EODEMAEvents.csv"; break;
             case ROGUE_EMA_KEY: fileName = "SystemEvents.csv"; break;
+            case RANDOM_EMA_KEY: fileName = "RandomEMAEvents.csv"; break;
+            case SMOKE_EMA_KEY: fileName = "SmokeEMAEvents.csv"; break;
             default: fileName = "SystemEvents.csv"; break;
         }
         try {
@@ -247,6 +251,8 @@ public class MyQuitCSVHelper{
             case CALENDAR_EMA_KEY: fileName = "CalEMAEvents.csv"; break;
             case END_OF_DAY_EMA_KEY: fileName = "EODEMAEvents.csv"; break;
             case ROGUE_EMA_KEY: fileName = "SystemEvents.csv"; break;
+            case RANDOM_EMA_KEY: fileName = "RandomEMAEvents.csv"; break;
+            case SMOKE_EMA_KEY: fileName = "SmokeEMAEvents.csv"; break;
             default: fileName = "SystemEvents.csv"; break;
         }
         try {
@@ -318,6 +324,8 @@ public class MyQuitCSVHelper{
             case CALENDAR_EMA_KEY: fileName = "CalEMAEvents.csv"; break;
             case END_OF_DAY_EMA_KEY: fileName = "EODEMAEvents.csv"; break;
             case ROGUE_EMA_KEY: fileName = "SystemEvents.csv"; break;
+            case RANDOM_EMA_KEY: fileName = "RandomEMAEvents.csv"; break;
+            case SMOKE_EMA_KEY: fileName = "SmokeEMAEvents.csv"; break;
             default: fileName = "SystemEvents.csv"; break;
         }
         String[] pushEvent = new String [] {logMessage, fullTime};
@@ -337,6 +345,8 @@ public class MyQuitCSVHelper{
             case CALENDAR_EMA_KEY: fileName = "CalEMAEvents.csv"; break;
             case END_OF_DAY_EMA_KEY: fileName = "EODEMAEvents.csv"; break;
             case ROGUE_EMA_KEY: fileName = "SystemEvents.csv"; break;
+            case RANDOM_EMA_KEY: fileName = "RandomEMAEvents.csv"; break;
+            case SMOKE_EMA_KEY: fileName = "SmokeEMAEvents.csv"; break;
             default: fileName = "SystemEvents.csv"; break;
         }
         String[] pushEvent = new String [] {logMessage, fullTime, intent, situation};

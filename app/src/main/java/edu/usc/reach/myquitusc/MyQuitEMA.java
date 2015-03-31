@@ -1,6 +1,5 @@
 package edu.usc.reach.myquitusc;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -11,7 +10,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -20,12 +18,17 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.List;
+
+import edu.usc.reach.myquitusc.Surveys.MyQuitCalendarSuccessSurvey;
+import edu.usc.reach.myquitusc.Surveys.MyQuitCheckSuccessSurvey;
+import edu.usc.reach.myquitusc.Surveys.MyQuitEndOfDaySurvey;
+import edu.usc.reach.myquitusc.Surveys.MyQuitRandomSurvey;
+import edu.usc.reach.myquitusc.Surveys.MyQuitSmokeSurvey;
 
 
 public class MyQuitEMA extends Activity {
@@ -55,8 +58,11 @@ public class MyQuitEMA extends Activity {
                     finalSessionID, survey, MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[2],
                     MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[3])); break;
             case 4: MyQuitPHP.postEMAEvent(MyQuitEMAHelper.returnLastEMASurvey(MyQuitCSVHelper.getFullDate(),
-                    finalSessionID, survey, MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[2],
-                    MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[3])); break;
+                    finalSessionID, survey, MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.RANDOM_EMA_KEY)[2],
+                    MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.RANDOM_EMA_KEY)[3])); break;
+            case 5: MyQuitPHP.postEMAEvent(MyQuitEMAHelper.returnLastEMASurvey(MyQuitCSVHelper.getFullDate(),
+                    finalSessionID, survey, MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.SMOKE_EMA_KEY)[2],
+                    MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.SMOKE_EMA_KEY)[3])); break;
 
         }
     }
@@ -118,9 +124,9 @@ public class MyQuitEMA extends Activity {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyQuitPHP.postEMAEvent(MyQuitEMAHelper.returnLastEMASurvey(MyQuitCSVHelper.getFullDate(),
-                        finalSessionID,survey,MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[2],
-                        MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[3]));
+                //MyQuitPHP.postEMAEvent(MyQuitEMAHelper.returnLastEMASurvey(MyQuitCSVHelper.getFullDate(),
+                //        finalSessionID,survey,MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[2],
+                //        MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[3]));
                 MyQuitCSVHelper.logEMAEvents(survey, "emaFinished", MyQuitCSVHelper.getFulltime());
                 try {
                     finalPushExitSurvey(survey, finalSessionID);
@@ -144,6 +150,8 @@ public class MyQuitEMA extends Activity {
             case 1: return MyQuitCheckSuccessSurvey.KEY_SURVEY_LENGTH;
             case 2: return MyQuitCalendarSuccessSurvey.KEY_SURVEY_LENGTH;
             case 3: return MyQuitEndOfDaySurvey.KEY_SURVEY_LENGTH;
+            case 4: return MyQuitRandomSurvey.KEY_SURVEY_LENGTH;
+            case 5: return MyQuitSmokeSurvey.KEY_SURVEY_LENGTH;
             default: return 0;
         }
     }
@@ -171,7 +179,7 @@ public class MyQuitEMA extends Activity {
                     InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
-    public static List<String[]> retrieveQuestionList(int surveyID) {
+    public static List<String[]> retrieveQuestionList(int surveyID, Context context) {
         switch(surveyID){
             case 1:
                 MyQuitCheckSuccessSurvey survey1 = new MyQuitCheckSuccessSurvey();
@@ -181,10 +189,13 @@ public class MyQuitEMA extends Activity {
                 return survey2.getQuestions;
             case 3:
                 MyQuitEndOfDaySurvey survey3 = new MyQuitEndOfDaySurvey();
-                return survey3.getQuestions;
-            default:
-                MyQuitCheckSuccessSurvey survey4 = new MyQuitCheckSuccessSurvey();
+                return survey3.getQuestions(context);
+            case 4:
+                MyQuitRandomSurvey survey4 = new MyQuitRandomSurvey();
                 return survey4.getQuestions;
+            default:
+                MyQuitSmokeSurvey survey5 = new MyQuitSmokeSurvey();
+                return survey5.getQuestions;
         }
     }
 
@@ -193,6 +204,8 @@ public class MyQuitEMA extends Activity {
             case 1: return MyQuitCheckSuccessSurvey.KEY_END_SURVEY;
             case 2: return MyQuitCalendarSuccessSurvey.KEY_END_SURVEY;
             case 3: return MyQuitEndOfDaySurvey.KEY_END_SURVEY;
+            case 4: return MyQuitRandomSurvey.KEY_END_SURVEY;
+            case 5: return MyQuitSmokeSurvey.KEY_END_SURVEY;
             default: return 0;
         }
     }
@@ -209,6 +222,10 @@ public class MyQuitEMA extends Activity {
                 return MyQuitCalendarSuccessSurvey.validatePreviousPosition(position);
             case 3:
                 return MyQuitEndOfDaySurvey.validatePreviousPosition(position);
+            case 4:
+                return MyQuitRandomSurvey.validatePreviousPosition(position);
+            case 5:
+                return MyQuitSmokeSurvey.validatePreviousPosition(position);
             default:
                 return 0;
         }
@@ -264,6 +281,38 @@ public class MyQuitEMA extends Activity {
                     return MyQuitEndOfDaySurvey.validateNextPosition(position,
                             MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
                 }
+            case 4:
+                try {
+                    Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
+                    int sendAId =  Integer.valueOf(MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
+                    //Log.d("MY-QUIT-USC", "New is" + MyQuitEndOfDaySurvey.validateNextPosition(position,
+                    //        MyQuitEMAHelper.pullSpecificAnswer(MyQuitCSVHelper.getFullDate(), sessionID, position,surveyID)));
+                    return MyQuitRandomSurvey.validateNextPosition(position,
+                            sendAId);
+                } catch (NumberFormatException nfe) {
+                    //Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
+                    //Log.d("MY-QUIT-USC", "Answer is " + MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
+                    //Log.d("MY-QUIT-USC", "New is" + MyQuitEndOfDaySurvey.validateNextPosition(position,
+                    //        MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID)));
+                    return MyQuitRandomSurvey.validateNextPosition(position,
+                            MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
+                }
+            case 5:
+                try {
+                    Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
+                    int sendAId =  Integer.valueOf(MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
+                    //Log.d("MY-QUIT-USC", "New is" + MyQuitEndOfDaySurvey.validateNextPosition(position,
+                    //        MyQuitEMAHelper.pullSpecificAnswer(MyQuitCSVHelper.getFullDate(), sessionID, position,surveyID)));
+                    return MyQuitSmokeSurvey.validateNextPosition(position,
+                            sendAId);
+                } catch (NumberFormatException nfe) {
+                    //Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
+                    //Log.d("MY-QUIT-USC", "Answer is " + MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
+                    //Log.d("MY-QUIT-USC", "New is" + MyQuitEndOfDaySurvey.validateNextPosition(position,
+                    //        MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID)));
+                    return MyQuitSmokeSurvey.validateNextPosition(position,
+                            MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
+                }
             default:
                return 0;
         }
@@ -277,6 +326,10 @@ public class MyQuitEMA extends Activity {
                     MyQuitCalendarSuccessSurvey.KEY_SURVEY_SUCCESS);
             case 3: return MyQuitEMAHelper.pullLastSessionID(MyQuitCSVHelper.getFullDate(),
                     MyQuitEndOfDaySurvey.KEY_SURVEY_SUCCESS);
+            case 4: return MyQuitEMAHelper.pullLastSessionID(MyQuitCSVHelper.getFullDate(),
+                    MyQuitRandomSurvey.KEY_SURVEY_SUCCESS);
+            case 5: return MyQuitEMAHelper.pullLastSessionID(MyQuitCSVHelper.getFullDate(),
+                    MyQuitSmokeSurvey.KEY_SURVEY_SUCCESS);
             default: return 0;
         }
     }
@@ -480,7 +533,7 @@ public class MyQuitEMA extends Activity {
 
 
      //   if (survey == MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS) {
-        List<String[]> Survey = retrieveQuestionList(survey);
+        List<String[]> Survey = retrieveQuestionList(survey,getApplicationContext());
         int surveyLength = Survey.size();
 
         RadioGroup answers = new RadioGroup(this);

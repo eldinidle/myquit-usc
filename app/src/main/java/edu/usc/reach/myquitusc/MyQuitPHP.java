@@ -27,6 +27,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import edu.usc.reach.myquitusc.Surveys.MyQuitCheckSuccessSurvey;
+
 /**
  * Created by Eldin on 1/14/15.
  */
@@ -112,7 +114,7 @@ public class MyQuitPHP {
             int fullLength = params[0].length;
             String datetime = params[0][fullLength-7] + " " + params[0][fullLength-6];
             int surveyType = Integer.valueOf(params[0][fullLength-3]);
-            if(surveyType==MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS){
+            if(surveyType== MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS){
                 emaParams.add(new BasicNameValuePair("didFollow",params[0][0]));
                 emaParams.add(new BasicNameValuePair("howHelpful",params[0][1]));
                 emaParams.add(new BasicNameValuePair("didSmokeY",params[0][2]));

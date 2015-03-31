@@ -56,6 +56,7 @@ import java.util.List;
  */
 public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -94,6 +95,13 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
         int textViewId = dialog.getContext().getResources().getIdentifier("android:id/alertTitle", null, null);
         TextView tv = (TextView) dialog.findViewById(textViewId);
         tv.setTextColor(getResources().getColor(R.color.AppBar));
+    }
+
+    public static boolean confirmPreStudy() throws ParseException{
+        Calendar now = Calendar.getInstance();
+        Date nowTime = now.getTime();
+        Date quitTime = sdf.parse(MyQuitCSVHelper.pullLoginStatus("MyQuitDate"));
+        return(nowTime.before(quitTime));
     }
 
     void buildWelcomeScreen(boolean eventSet){
@@ -368,11 +376,11 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
             showProgress(false);
 
             if (success) {
-                finish();
                 Intent launchLogin = new Intent(getApplicationContext(), MyQuitLoginActivity.class);
                 launchLogin.putExtra("DateSet", true);
                 launchLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                finish();
                 startActivity(launchLogin);
              } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
@@ -439,25 +447,28 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
                                         String day = doubleDec.format(quitDatePicker.getDayOfMonth());
                                         String year = String.valueOf(quitDatePicker.getYear());
                                         String test = month + "/" + day + "/" + year;
-                                        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
                                         Date selectedDate = sdf.parse(test);
                                         Calendar futureCal = Calendar.getInstance();
-                                        futureCal.roll(Calendar.DAY_OF_MONTH, 1);
+                                        futureCal.add(Calendar.DAY_OF_MONTH, 7);
                                         Date futureDate = futureCal.getTime();
                                         if (selectedDate.after(futureDate)) {
                                             MyQuitCSVHelper.logLoginEvents("MyQuitDate", test, MyQuitCSVHelper.getFulltime());
                                             dismiss();
-                                            getActivity().finish();
+                                            MyQuitExperienceSampling.scheduleAllRandomEMA(test);
                                             Intent launchLogin = new Intent(getView().getContext(), MyQuitPrePlanArray.class);
                                             launchLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                                     | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            getActivity().finish();
                                             startActivity(launchLogin);
                                         } else {
                                             Toast.makeText(getView().getContext(), "Please select a later date", Toast.LENGTH_SHORT).show();
                                         }
                                     } catch (ParseException e) {
                                         e.printStackTrace();
-                                        Toast.makeText(getView().getContext(), "Please select a later date", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getView().getContext(), "Parse exception, please login again", Toast.LENGTH_LONG).show();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(getView().getContext(), "Please insert SD card", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             })

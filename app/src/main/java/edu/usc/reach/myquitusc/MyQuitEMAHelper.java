@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -85,11 +86,123 @@ public class MyQuitEMAHelper {
         return returnRow;
     }
 
+
+    private static String getLastRogueSituation(){
+        String fileName = "DelayedRogueEMA.csv";
+        try {
+            CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.emaPath + fileName));
+            List<String[]> allTimes = reader.readAll();
+            reader.close();
+            String situation = "";
+            for (String[] time : allTimes) {
+                if(time.length>1){
+                    situation = time[1];
+                }
+            }
+            return situation;
+        }
+        catch(IOException io){
+            io.printStackTrace();
+            return "";
+        }
+
+    }
+    private static String getLastRogueIntention(){
+        String fileName = "DelayedRogueEMA.csv";
+        try {
+            CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.emaPath + fileName));
+            List<String[]> allTimes = reader.readAll();
+            reader.close();
+            String intention = "";
+            for (String[] time : allTimes) {
+                if(time.length>1) {
+                    intention = time[2];
+                }
+            }
+            return intention;
+
+        }
+        catch(IOException io){
+            io.printStackTrace();
+            return "";
+        }
+    }
+
+    public static Boolean withinLastRogueSchedule(Boolean fifteenAdd){
+        String fileName = "DelayedRogueEMA.csv";
+        try {
+            CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.emaPath + fileName));
+            List<String[]> allTimes = reader.readAll();
+            reader.close();
+            String timeSave = "";
+            for(String[] time: allTimes){
+                timeSave = time[0];
+            }
+            Calendar nowCal = Calendar.getInstance();
+            Date nowTime = nowCal.getTime();
+            try {
+                Date compareTime = newsdf.parse(timeSave);
+                Calendar roll = Calendar.getInstance();
+                roll.setTime(compareTime);
+                int add = 0;
+                if(fifteenAdd){add=15;}
+                roll.add(Calendar.MINUTE,add);
+                compareTime = roll.getTime();
+                if(nowTime.before(compareTime)){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return false;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
+    public static void pushRogueEvent(String situation, String intent) throws IOException {
+        String fileName = "DelayedRogueEMA.csv";
+        CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.emaPath + fileName,true));
+        Calendar now = Calendar.getInstance();
+        now.add(Calendar.MINUTE,15);
+        Date then = now.getTime();
+        String[] pushArray = new String[] {newsdf.format(then),situation,intent};
+        writer.writeNext(pushArray);
+        writer.close();
+    }
+
+    public static void setUpRogueEMA() {
+        Calendar nowCal = Calendar.getInstance();
+        Date nowDate = nowCal.getTime();
+        if(MyQuitEMAHelper.withinLastRogueSchedule(true) &&
+                MyQuitCSVHelper.isLastEventPastXMinutesTrue(MyQuitCSVHelper.ROGUE_EMA_KEY,15)){
+            MyQuitCSVHelper.logEMAEvents(MyQuitCSVHelper.ROGUE_EMA_KEY,
+                    "intentPresented", MyQuitCSVHelper.getFulltime(),getLastRogueSituation(),getLastRogueIntention());
+        }
+    }
+
+
     public static void setUpEODEMA() {
         Calendar nowTime = Calendar.getInstance();
         if(nowTime.get(Calendar.HOUR_OF_DAY) >= KEY_EOD_PROMPT_HOUR &&
                 MyQuitCSVHelper.isLastEventPastXMinutesTrue(MyQuitCSVHelper.END_OF_DAY_EMA_KEY, (60*(24-KEY_EOD_PROMPT_HOUR)))){
             MyQuitCSVHelper.logEMAEvents(MyQuitCSVHelper.END_OF_DAY_EMA_KEY,
+                    "intentPresented", MyQuitCSVHelper.getFulltime(),"","");
+        }
+    }
+
+    public static void setUpRandomEMA() {
+        Calendar nowCal = Calendar.getInstance();
+        Date nowDate = nowCal.getTime();
+        if(MyQuitExperienceSampling.validPromptTime(nowDate) &&
+                MyQuitCSVHelper.isLastEventPastXMinutesTrue(MyQuitCSVHelper.RANDOM_EMA_KEY,60) &&
+                MyQuitCSVHelper.isLastEventPastXMinutesTrue(MyQuitCSVHelper.SMOKE_EMA_KEY,15)){
+            MyQuitCSVHelper.logEMAEvents(MyQuitCSVHelper.RANDOM_EMA_KEY,
                     "intentPresented", MyQuitCSVHelper.getFulltime(),"","");
         }
     }

@@ -77,6 +77,7 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
     private View mLoginFormView;
     private ImageView mClickToSetDate;
     private TextView mInstructionText;
+    private static Boolean mStudyTest;
 
     public void formatDialog(AlertDialog dialog) {
         Button posButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
@@ -248,7 +249,14 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
     }
 
     private boolean isPasswordValid(String password) {
-        return password.equalsIgnoreCase("myquitusc");
+        if(password.equalsIgnoreCase("myquitusctest")){
+            mStudyTest = true;
+            return true;
+        }
+        else {
+            mStudyTest = false;
+            return password.equalsIgnoreCase("myquitusc");
+        }
     }
 
     /**
@@ -449,9 +457,9 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
                                         String test = month + "/" + day + "/" + year;
                                         Date selectedDate = sdf.parse(test);
                                         Calendar futureCal = Calendar.getInstance();
-                                        futureCal.add(Calendar.DAY_OF_MONTH, 7);
+                                        futureCal.add(Calendar.DAY_OF_MONTH, 6);
                                         Date futureDate = futureCal.getTime();
-                                        if (selectedDate.after(futureDate)) {
+                                        if (selectedDate.after(futureDate) || mStudyTest) {
                                             MyQuitCSVHelper.logLoginEvents("MyQuitDate", test, MyQuitCSVHelper.getFulltime());
                                             dismiss();
                                             MyQuitExperienceSampling.scheduleAllRandomEMA(test);

@@ -40,6 +40,14 @@ public class MyQuitAutoAssign {
         }
     }
 
+
+    /**
+     * This function determines if EMA should run based on the number of recorded events on
+     * a calendar class. The return function will default to true if the integer returns a
+     * parse error or exception.
+     *
+     * @return true if EMA will run
+     */
     public static boolean runEMAOffAlgorithm() {
         Log.d("MQU-ALGORITHM","Running decision tree for II prompt");
         String numberOfPrompts = MyQuitCSVHelper.pullLoginStatus("AlgorithmCount");

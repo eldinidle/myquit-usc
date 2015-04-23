@@ -26,6 +26,7 @@ public class MyQuitReceiver extends BroadcastReceiver {
         MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.ROGUE_EMA_KEY);
         MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.CALENDAR_EMA_KEY);
         MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.END_OF_DAY_EMA_KEY);
+        MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.OFF_EMA_KEY);
         MyQuitCalendarHelper.decideCalendar(context);
     }
 

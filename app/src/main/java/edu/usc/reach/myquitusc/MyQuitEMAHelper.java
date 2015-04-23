@@ -231,6 +231,9 @@ public class MyQuitEMAHelper {
     }
 
     public static void setUpCalendarEMA() {  //TODO: inject algorithm 24x3 based on 50/50 shot of II presentation
+        // TODO: determine whether algorithm injection is necessary for this declaration
+        // TODO: determine if this class should be abstracted or if this declaration should be duplicated
+
         String[] returnRow = returnCalendarEMARow();
         if(returnRow[0]!=null) {
             try {

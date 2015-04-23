@@ -50,9 +50,11 @@ public class MyQuitIntentPrompt extends Activity {
                 parsedHourSituation = "doing something";
                 finish();
             }
-            MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(false),
-                   parsedHourSituation, MyQuitCalendarHelper.
-                            returnIntentFromSituation(getApplicationContext(),false));
+            if(MyQuitAutoAssign.runEMAOffAlgorithm()) {
+                MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(false),
+                        parsedHourSituation, MyQuitCalendarHelper.
+                                returnIntentFromSituation(getApplicationContext(), false));
+            }
             MyQuitCalendarHelper.setSession(getApplicationContext(),false,true);
         }
         finish();

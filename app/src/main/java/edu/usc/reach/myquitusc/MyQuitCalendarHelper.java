@@ -280,6 +280,9 @@ public class MyQuitCalendarHelper {
         return integerArrayTable.size();
     }
 
+
+    //TODO: check the declaration of this method to determine how it interacts with the decideCalendar method in the
+    //TODO: ema helper class and receiver class
     public static void setUpEMAPrompt(int emaStartPosition, String situation, String intention) {
         int promptedHour = returnEMAPromptTime(emaStartPosition) - 1;
         //SimpleDateFormat date = new SimpleDateFormat("MM/dd/yyyy");

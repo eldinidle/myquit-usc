@@ -27,6 +27,7 @@ import java.util.List;
 import edu.usc.reach.myquitusc.Surveys.MyQuitCalendarSuccessSurvey;
 import edu.usc.reach.myquitusc.Surveys.MyQuitCheckSuccessSurvey;
 import edu.usc.reach.myquitusc.Surveys.MyQuitEndOfDaySurvey;
+import edu.usc.reach.myquitusc.Surveys.MyQuitOffSuccessSurvey;
 import edu.usc.reach.myquitusc.Surveys.MyQuitRandomSurvey;
 import edu.usc.reach.myquitusc.Surveys.MyQuitSmokeSurvey;
 
@@ -55,15 +56,17 @@ public class MyQuitEMA extends Activity {
                     finalSessionID, survey, MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.CALENDAR_EMA_KEY)[2],
                     MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.CALENDAR_EMA_KEY)[3])); break;
             case 3: MyQuitPHP.postEMAEvent(MyQuitEMAHelper.returnLastEMASurvey(MyQuitCSVHelper.getFullDate(),
-                    finalSessionID, survey, MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[2],
-                    MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[3])); break;
+                    finalSessionID, survey, MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.END_OF_DAY_EMA_KEY)[2],
+                    MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.END_OF_DAY_EMA_KEY)[3])); break;
             case 4: MyQuitPHP.postEMAEvent(MyQuitEMAHelper.returnLastEMASurvey(MyQuitCSVHelper.getFullDate(),
                     finalSessionID, survey, MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.RANDOM_EMA_KEY)[2],
                     MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.RANDOM_EMA_KEY)[3])); break;
             case 5: MyQuitPHP.postEMAEvent(MyQuitEMAHelper.returnLastEMASurvey(MyQuitCSVHelper.getFullDate(),
                     finalSessionID, survey, MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.SMOKE_EMA_KEY)[2],
                     MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.SMOKE_EMA_KEY)[3])); break;
-
+            case 6: MyQuitPHP.postEMAEvent(MyQuitEMAHelper.returnLastEMASurvey(MyQuitCSVHelper.getFullDate(),
+                    finalSessionID, survey, MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.OFF_EMA_KEY)[2],
+                    MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.OFF_EMA_KEY)[3])); break;
         }
     }
 
@@ -152,6 +155,7 @@ public class MyQuitEMA extends Activity {
             case 3: return MyQuitEndOfDaySurvey.KEY_SURVEY_LENGTH;
             case 4: return MyQuitRandomSurvey.KEY_SURVEY_LENGTH;
             case 5: return MyQuitSmokeSurvey.KEY_SURVEY_LENGTH;
+            case 6: return MyQuitOffSuccessSurvey.KEY_SURVEY_LENGTH;
             default: return 0;
         }
     }
@@ -193,9 +197,12 @@ public class MyQuitEMA extends Activity {
             case 4:
                 MyQuitRandomSurvey survey4 = new MyQuitRandomSurvey();
                 return survey4.getQuestions;
-            default:
+            case 5:
                 MyQuitSmokeSurvey survey5 = new MyQuitSmokeSurvey();
                 return survey5.getQuestions;
+            default:
+                MyQuitOffSuccessSurvey survey6 = new MyQuitOffSuccessSurvey();
+                return survey6.getQuestions;
         }
     }
 
@@ -206,6 +213,7 @@ public class MyQuitEMA extends Activity {
             case 3: return MyQuitEndOfDaySurvey.KEY_END_SURVEY;
             case 4: return MyQuitRandomSurvey.KEY_END_SURVEY;
             case 5: return MyQuitSmokeSurvey.KEY_END_SURVEY;
+            case 6: return MyQuitOffSuccessSurvey.KEY_END_SURVEY;
             default: return 0;
         }
     }
@@ -226,6 +234,8 @@ public class MyQuitEMA extends Activity {
                 return MyQuitRandomSurvey.validatePreviousPosition(position);
             case 5:
                 return MyQuitSmokeSurvey.validatePreviousPosition(position);
+            case 6:
+                return MyQuitOffSuccessSurvey.validatePreviousPosition(position);
             default:
                 return 0;
         }
@@ -313,6 +323,22 @@ public class MyQuitEMA extends Activity {
                     return MyQuitSmokeSurvey.validateNextPosition(position,
                             MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
                 }
+            case 6:
+                try {
+                    Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
+                    int sendAId =  Integer.valueOf(MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
+                    //Log.d("MY-QUIT-USC", "New is" + MyQuitCheckSuccessSurvey.validateNextPosition(position,
+                    //        MyQuitEMAHelper.pullSpecificAnswer(MyQuitCSVHelper.getFullDate(), sessionID, position,surveyID)));
+                    return MyQuitOffSuccessSurvey.validateNextPosition(position,
+                            sendAId);
+                } catch (NumberFormatException nfe) {
+                    // Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
+                    // Log.d("MY-QUIT-USC", "Answer is " + MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
+                    // Log.d("MY-QUIT-USC", "New is" + MyQuitCheckSuccessSurvey.validateNextPosition(position,
+                    //         MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID)));
+                    return MyQuitOffSuccessSurvey.validateNextPosition(position,
+                            MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
+                }
             default:
                return 0;
         }
@@ -330,6 +356,8 @@ public class MyQuitEMA extends Activity {
                     MyQuitRandomSurvey.KEY_SURVEY_SUCCESS);
             case 5: return MyQuitEMAHelper.pullLastSessionID(MyQuitCSVHelper.getFullDate(),
                     MyQuitSmokeSurvey.KEY_SURVEY_SUCCESS);
+            case 6: return MyQuitEMAHelper.pullLastSessionID(MyQuitCSVHelper.getFullDate(),
+                    MyQuitOffSuccessSurvey.KEY_SURVEY_SUCCESS);
             default: return 0;
         }
     }

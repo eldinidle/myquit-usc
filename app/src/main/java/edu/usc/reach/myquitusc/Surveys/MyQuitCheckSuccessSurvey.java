@@ -17,8 +17,8 @@ public class MyQuitCheckSuccessSurvey {
     public static final int KEY_SURVEY_LENGTH = 6;
 
 
-    public String[] didFollow = {"When " + MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[2] +
-            ", you said you would " + MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[3] + "." +
+    public String[] didFollow = {"When \"" + MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[2] +
+            "\", you said you would: \"" + MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[3] + "\"." +
             System.getProperty("line.separator") +
             "Did you follow through with your plans?", "Yes", "No"};
     public final String[] howHelpful = {"How helpful was the plan or intention?", "Extremely helpful",

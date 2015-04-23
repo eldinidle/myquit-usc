@@ -14,6 +14,8 @@ import android.widget.TextView;
 public class MyQuitIntentPrompt extends Activity {
 
 
+
+
     void dropWindow() {
         if (MyQuitCalendarHelper.isWithinXNextHour(10) & !MyQuitCalendarHelper.
                 returnIntentFromSituation(getApplicationContext(),true).
@@ -27,9 +29,13 @@ public class MyQuitIntentPrompt extends Activity {
                 parsedHourSituation = "doing something";
                 finish();
             }
-            MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(true),
-                    parsedHourSituation,
-                    MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(),true));
+            //TODO: THIS IS WHERE YOU INJECT ALGORITHM 24x3
+            // TODO: Double check that this algorithm is actually running
+            if(MyQuitAutoAssign.runEMAOffAlgorithm()) {
+                MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(true),
+                        parsedHourSituation,
+                        MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(), true));
+            }
             MyQuitCalendarHelper.setSession(getApplicationContext(),true,true);
         }
         else if (!MyQuitCalendarHelper.isWithinXNextHour(10) & !MyQuitCalendarHelper.

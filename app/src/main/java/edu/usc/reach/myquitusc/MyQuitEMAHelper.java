@@ -185,6 +185,7 @@ public class MyQuitEMAHelper {
 
     }
 
+
     public static void pushRogueEvent(String situation, String intent) throws IOException {
         String fileName = "DelayedRogueEMA.csv";
         CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.emaPath + fileName,true));
@@ -229,7 +230,7 @@ public class MyQuitEMAHelper {
         }
     }
 
-    public static void setUpCalendarEMA() {
+    public static void setUpCalendarEMA() {  //TODO: inject algorithm 24x3 based on 50/50 shot of II presentation
         String[] returnRow = returnCalendarEMARow();
         if(returnRow[0]!=null) {
             try {

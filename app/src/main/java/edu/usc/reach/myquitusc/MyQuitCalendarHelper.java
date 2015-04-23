@@ -179,7 +179,10 @@ public class MyQuitCalendarHelper {
 
     }
 
-    public static void decideCalendar (Context context) {
+
+
+    public static void decideCalendar (Context context) { /*TODO: develop pre-injection code for decision on algorithm in
+                                                            TODO: MyQuitEMA Helper class*/
             if (isWithinXNextHour(10) && !returnIntentFromSituation(context,true).
                     equalsIgnoreCase("No Match") && !isThisWakingUp(true) && !isWithinXAfterHour(20)) {
                 Log.d("MQU-CH", "Decide Loop > 50 minutes");

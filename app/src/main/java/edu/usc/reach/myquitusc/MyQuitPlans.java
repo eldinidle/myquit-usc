@@ -187,6 +187,7 @@ public class MyQuitPlans extends Activity  {
                         try {
                             MyQuitCSVHelper.pushDateTimes("DEFAULT_WEEKDAY", MyQuitCSVHelper.defaultTimes);
                             MyQuitCSVHelper.pushDateTimes("DEFAULT_WEEKEND", MyQuitCSVHelper.defaultTimes);
+                            MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"MyQuit Plans Changed","NA",MyQuitCSVHelper.getFulltime());
                             Intent homeLaunch = new Intent(v.getContext(), MyQuitPrePlanCalendar.class);
                             homeLaunch.putExtra("Date", "DEFAULT_WEEKDAY");
                             homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
@@ -254,6 +255,7 @@ public class MyQuitPlans extends Activity  {
                     try {
                         MyQuitCSVHelper.pushDateTimes("DEFAULT_WEEKDAY", MyQuitCSVHelper.defaultTimes);
                         MyQuitCSVHelper.pushDateTimes("DEFAULT_WEEKEND", MyQuitCSVHelper.defaultTimes);
+                        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"MyQuit Plans Changed","NA",MyQuitCSVHelper.getFulltime());
                         Intent homeLaunch = new Intent(v.getContext(), MyQuitPrePlanCalendar.class);
                         homeLaunch.putExtra("Date","DEFAULT_WEEKDAY");
                         homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK

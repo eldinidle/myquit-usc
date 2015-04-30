@@ -32,6 +32,7 @@ public class MyQuitIntentPrompt extends Activity {
             //TODO: THIS IS WHERE YOU INJECT ALGORITHM 24x3
             // TODO: Double check that this algorithm is actually running
             if(MyQuitAutoAssign.runEMAOffAlgorithm()) {
+                MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Received II","EMA Assigned",MyQuitCSVHelper.getFulltime());
                 MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(true),
                         parsedHourSituation,
                         MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(), true));
@@ -51,6 +52,7 @@ public class MyQuitIntentPrompt extends Activity {
                 finish();
             }
             if(MyQuitAutoAssign.runEMAOffAlgorithm()) {
+                MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Received II","EMA Assigned",MyQuitCSVHelper.getFulltime());
                 MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(false),
                         parsedHourSituation, MyQuitCalendarHelper.
                                 returnIntentFromSituation(getApplicationContext(), false));
@@ -87,8 +89,8 @@ public class MyQuitIntentPrompt extends Activity {
                 parsedHourSituation = "doing something";
                 finish();
             }
-            intentView.setText("Instead of smoking when " + parsedHourSituation + ", you said you would "
-                    + MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(), true));
+            intentView.setText("Instead of smoking while: \"" + parsedHourSituation + "\", you said you would: \""
+                    + MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(), true) + "\"");
         }
         else if (!MyQuitCalendarHelper.isWithinXNextHour(10) & MyQuitCalendarHelper.isWithinXAfterHour(20)) {
             String hourSituation = MyQuitCalendarHelper.unassignHoursArray()[MyQuitCalendarHelper.assignArrayPosition(false)];
@@ -100,7 +102,7 @@ public class MyQuitIntentPrompt extends Activity {
                 parsedHourSituation = "doing something";
                 finish();
             }
-            intentView.setText("Instead of smoking when " + parsedHourSituation + ", you said you would "
+            intentView.setText("Instead of smoking while: \"" + parsedHourSituation + "\", you said you would: \""
                     + MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(), false));
         }
         else {

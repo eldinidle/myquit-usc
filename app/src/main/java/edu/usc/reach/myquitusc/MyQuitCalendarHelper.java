@@ -191,11 +191,29 @@ public class MyQuitCalendarHelper {
                     boolean prompt = Math.random() > 0.5;
                     if (prompt) {
                         //logSituationScan(MyQuitCSVHelper.getFulltime(),unassignHoursArray()[assignArrayPosition(true)],true);
+                        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Prompted With II","NA",MyQuitCSVHelper.getFulltime());
                         setSession(context, true, false);
                         pushActionCalendar(context);
                     }
                     else {
                         //logSituationScan(MyQuitCSVHelper.getFulltime(),unassignHoursArray()[assignArrayPosition(true)],false);
+                        String hourSituation = MyQuitCalendarHelper.unassignHoursArray()[MyQuitCalendarHelper.assignArrayPosition(true)];
+                        String parsedHourSituation;
+                        try {
+                            parsedHourSituation = hourSituation.substring(3);
+                        }
+                        catch(StringIndexOutOfBoundsException soeo) {
+                            parsedHourSituation = "doing something";
+                        }
+                        if(MyQuitAutoAssign.runEMAOffAlgorithm()) {
+                            MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Not Prompted With II","EMA Assigned",MyQuitCSVHelper.getFulltime());
+                            MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(true),
+                                    parsedHourSituation,
+                                    MyQuitCalendarHelper.returnIntentFromSituation(context, true));
+                        }
+                        else{
+                            MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Not Prompted With II","No EMA",MyQuitCSVHelper.getFulltime());
+                        }
                         setSession(context, true, true);
                     }
                 }
@@ -213,11 +231,29 @@ public class MyQuitCalendarHelper {
                     boolean prompt = Math.random() > 0.5;
                     if(prompt){
                         //logSituationScan(MyQuitCSVHelper.getFulltime(),unassignHoursArray()[assignArrayPosition(false)],true);
+                        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Prompted With II","NA",MyQuitCSVHelper.getFulltime());
                         setSession(context,false,false);
                         pushActionCalendar(context);
                     }
                     else {
                         //logSituationScan(MyQuitCSVHelper.getFulltime(),unassignHoursArray()[assignArrayPosition(false)],false);
+                        String hourSituation = MyQuitCalendarHelper.unassignHoursArray()[MyQuitCalendarHelper.assignArrayPosition(false)];
+                        String parsedHourSituation;
+                        try {
+                            parsedHourSituation = hourSituation.substring(3);
+                        }
+                        catch(StringIndexOutOfBoundsException soeo) {
+                            parsedHourSituation = "doing something";
+                        }
+                        if(MyQuitAutoAssign.runEMAOffAlgorithm()) {
+                            MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Not Prompted With II","EMA Assigned",MyQuitCSVHelper.getFulltime());
+                            MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(false),
+                                    parsedHourSituation, MyQuitCalendarHelper.
+                                            returnIntentFromSituation(context, false));
+                        }
+                        else {
+                            MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Not Prompted With II","No EMA",MyQuitCSVHelper.getFulltime());
+                        }
                         setSession(context,false,true);
                     }
                 }

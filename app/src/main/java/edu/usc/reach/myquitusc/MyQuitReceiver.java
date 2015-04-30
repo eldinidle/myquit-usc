@@ -33,6 +33,7 @@ public class MyQuitReceiver extends BroadcastReceiver {
 
     void runPreMainStudy(Context context){
         MyQuitEMAHelper.setUpRandomEMA();
+        MyQuitEMAHelper.setUpSmokeEMA();
         MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.RANDOM_EMA_KEY);
         MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.SMOKE_EMA_KEY);
     }

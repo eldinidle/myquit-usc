@@ -168,6 +168,7 @@ public class MyQuitEMA extends Activity {
     }
 
     void finalPushExitSurvey(int surveyID, int sessionID) throws IOException {
+        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"EMA Complete",String.valueOf(surveyID),MyQuitCSVHelper.getFulltime());
             MyQuitEMAHelper.pushSpecificAnswer(MyQuitCSVHelper.getFullDate(),
                     MyQuitCSVHelper.getTimeOnly(),
                     sessionID, "Completed", retrieveSurveyEnd(surveyID),

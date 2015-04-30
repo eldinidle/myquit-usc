@@ -74,7 +74,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
         catch (NullPointerException neo) {
             neo.printStackTrace();
         }
-        if((MyQuitEMAHelper.withinLastRogueSchedule(false))){
+        if((MyQuitEMAHelper.withinLastRogueSchedule(0))){
             oopsSmoke.setTextColor(Color.WHITE);
         }
         else {
@@ -367,8 +367,14 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             oopsSmoke.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MyQuitCSVHelper.logEMAEvents(MyQuitCSVHelper.SMOKE_EMA_KEY,"intentPresented",
-                            MyQuitCSVHelper.getFulltime(),"","");
+                    try {
+                        MyQuitEMAHelper.pushSmokingEvent();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(v.getContext(),"Please try again.",Toast.LENGTH_LONG).show();
+                    }
+                    //MyQuitCSVHelper.logEMAEvents(MyQuitCSVHelper.SMOKE_EMA_KEY,"intentPresented",
+                    //        MyQuitCSVHelper.getFulltime(),"","");
                     Toast.makeText(getApplicationContext(),"Thank you, don't forget to answer the survey!",Toast.LENGTH_LONG).show();
                 }
             });
@@ -591,6 +597,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                     String intentLister = NEW_INTENTS_LIST[position];
                     try {
                         MyQuitEMAHelper.pushRogueEvent(pulledActivity, intentLister);
+                        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Craving event",pulledActivity,MyQuitCSVHelper.getFulltime());
                     } catch (IOException e) {
                         e.printStackTrace();
                         Toast.makeText(view.getContext(),"Please try again.",Toast.LENGTH_LONG).show();
@@ -684,6 +691,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                         e.printStackTrace();
                         Toast.makeText(view.getContext(), "Please insert SD card or restart application.", Toast.LENGTH_LONG).show();
                     }
+                    MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Smoked cigarette","NA",MyQuitCSVHelper.getFulltime());
                     getDialog().dismiss();
                 }
             });

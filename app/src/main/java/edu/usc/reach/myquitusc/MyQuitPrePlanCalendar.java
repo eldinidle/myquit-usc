@@ -129,6 +129,7 @@ public class MyQuitPrePlanCalendar extends Activity {
                         homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         finish();
+                        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Default Calendar Changed","NA",MyQuitCSVHelper.getFulltime());
                         startActivity(homeLaunch);
                     } else {
                         Toast.makeText(v.getContext(), "Please enter at least " +

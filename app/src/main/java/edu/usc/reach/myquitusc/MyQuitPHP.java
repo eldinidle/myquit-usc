@@ -37,10 +37,12 @@ public class MyQuitPHP {
     private final static int phpAllowInteger = 1265;
 
     private final static String rogueSuccessTable = "RoguePushSuccessTable.csv";
+    private final static String trackerSuccessTable = "TrackerPushSuccessTable.csv";
     private final static String emaSuccessTable = "EMAPushSuccessTable.csv";
     private final static String unPlannedSuccessTable = "UnplannedPushSuccessTable.csv";
 
     private static final String urlPostRogueEvent = "http://myquitadmin.usc.edu/data.php";
+    private static final String urlTrackerEvent = "http://myquitadmin.usc.edu/tracker.php";
     private static final String urlPostEMAEvent = "http://myquitadmin.usc.edu/myquitema.php";
     private static final String urlPostUnplannedEvent = "http://myquit.usc.edu/postunplanned.php";
 
@@ -89,6 +91,54 @@ public class MyQuitPHP {
                     e.printStackTrace();
                     postRogueStatus(params[0], params[1], params[2]);
                 }
+
+            return null;
+        }
+    }
+
+    static class PostTrackerEvent extends AsyncTask<String,String,String> {
+
+
+
+        @Override
+        protected String doInBackground(String... params) {
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost(urlTrackerEvent);
+            Log.d("MQU-PHP","Param 1 is" + params[0]);
+            Log.d("MQU-PHP","Param 2 is" + params[1]);
+            Log.d("MQU-PHP","Param 3 is" + params[2]);
+            Log.d("MQU-PHP","Param 4 is" + params[3]);
+            List<NameValuePair> rogueParams = new ArrayList<NameValuePair>();
+            rogueParams.add(new BasicNameValuePair("username",params[0]));
+            rogueParams.add(new BasicNameValuePair("event",params[1]));
+            rogueParams.add(new BasicNameValuePair("meta",params[2]));
+            rogueParams.add(new BasicNameValuePair("datetime",params[3]));
+            rogueParams.add(new BasicNameValuePair("allowed",String.valueOf(phpAllowInteger)));
+
+            try {
+                httpPost.setEntity(new UrlEncodedFormEntity(rogueParams));
+                Log.d("MQU-PHP","URL is now encoded");
+
+            } catch (UnsupportedEncodingException e)
+            {
+                e.printStackTrace();
+            }
+
+            try {
+                HttpResponse response = httpClient.execute(httpPost);
+                // write response to log
+                Log.d("MQU-PHP", "Http Post Response:" + response.toString());
+            } catch (ClientProtocolException e) {
+                // Log exception
+                Log.d("MQU-PHP", "Http Post Response CPE error");
+                e.printStackTrace();
+                postTrackerStatus(params[0], params[1], params[2], params[3]);
+            } catch (IOException e) {
+                Log.d("MQU-PHP", "Http Post Response IO error");
+                // Log exception
+                e.printStackTrace();
+                postTrackerStatus(params[0], params[1], params[2], params[3]);
+            }
 
             return null;
         }
@@ -195,6 +245,37 @@ public class MyQuitPHP {
         }
     }
 
+    static class SyncTrackerEvent extends AsyncTask<String,String,String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            String fileName = trackerSuccessTable;
+            try {
+                CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.logPath + fileName));
+                List<String[]> pullTimes = reader.readAll();
+                reader.close();
+                Log.d("MQU-PHP","Pulled" + pullTimes.size());
+                List<String[]> newPush = new ArrayList<String[]>();
+                for(String[] row: pullTimes){
+                    if(!syncTrackerEvent(row[0], row[1], row[2], row[3])){
+                        Log.d("MQU-PHP","Adding" + row[0] + row[1] + row[2]);
+                        newPush.add(row);
+                        Log.d("MQU-PHP","Added" + row[0] + row[1] + row[2]);
+                    }
+                }
+                CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.logPath + fileName));
+                writer.writeAll(newPush);
+                writer.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+    }
+
     static class SyncEMAEvent extends AsyncTask<String[],String,String> {
 
         @Override
@@ -231,6 +312,11 @@ public class MyQuitPHP {
     public static void postRogueEvent(String userName, String rogueSituation, String calledDateTime)  {
         String fixedSituation = rogueSituation.replace("'","");
         new PostRogueEvent().execute(userName, fixedSituation, calledDateTime);
+    }
+    public static void postTrackerEvent(String userName, String trackerSituation, String trackerMetaData, String calledDateTime)  {
+        String fixedSituation = trackerSituation.replace("'","");
+        String fixedSituation2 = trackerMetaData.replace("'","");
+        new PostTrackerEvent().execute(userName, fixedSituation, trackerMetaData, calledDateTime);
     }
 
     public static void postEMAEvent(String[] surveyParams) {
@@ -330,12 +416,61 @@ public class MyQuitPHP {
             return false;
         }
     }
+    public static boolean syncTrackerEvent(String userName, String rogueSituation, String metaData, String calledDateTime)  {
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(urlPostRogueEvent);
+        List<NameValuePair> rogueParams = new ArrayList<NameValuePair>();
+        rogueParams.add(new BasicNameValuePair("username",userName));
+        rogueParams.add(new BasicNameValuePair("situation",rogueSituation));
+        rogueParams.add(new BasicNameValuePair("datetime",calledDateTime));
+        rogueParams.add(new BasicNameValuePair("allowed",String.valueOf(phpAllowInteger)));
+        Log.d("MQU-PHP","Caught" + userName + rogueSituation + calledDateTime);
+
+        try {
+            httpPost.setEntity(new UrlEncodedFormEntity(rogueParams));
+            Log.d("MQU-PHP","URL is now encoded");
+        } catch (UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+
+        try {
+            HttpResponse response = httpClient.execute(httpPost);
+            // write response to log
+            Log.d("MQU-PHP", "Http Post Response:" + response.toString());
+            return true;
+        } catch (ClientProtocolException e) {
+            // Log exception
+            Log.d("MQU-PHP", "Http Post Response CPE error");
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            Log.d("MQU-PHP", "Http Post Response IO error");
+            // Log exception
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     public static void postRogueStatus(String userName, String rogueSituation, String calledDateTime) {
         String fileName = rogueSuccessTable;
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.logPath + fileName,true));
             String[] pushRow = new String[] {userName, rogueSituation, calledDateTime};
+            writer.writeNext(pushRow);
+            writer.close();
+        } catch (IOException e) {
+            Log.e("MyQuitUSC","RoguePushSuccess table write failure");
+            e.printStackTrace();
+        }
+
+    }
+    public static void postTrackerStatus(String userName, String trackerEvent, String metaData, String calledDateTime) {
+        String fileName = trackerSuccessTable;
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.logPath + fileName,true));
+            String[] pushRow = new String[] {userName, trackerEvent, metaData, calledDateTime};
             writer.writeNext(pushRow);
             writer.close();
         } catch (IOException e) {
@@ -438,6 +573,7 @@ public class MyQuitPHP {
             Log.d("MQU-PHP", "Wrote last file upload");
             new SyncRogueEvent().execute();
             new SyncEMAEvent().execute();
+            new SyncTrackerEvent().execute();
             Log.d("MQU-PHP", "Finished looping");
         }
     }

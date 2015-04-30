@@ -388,6 +388,7 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
                 launchLogin.putExtra("DateSet", true);
                 launchLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Username logged","NA",MyQuitCSVHelper.getFulltime());
                 finish();
                 startActivity(launchLogin);
              } else {
@@ -466,6 +467,7 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
                                             Intent launchLogin = new Intent(getView().getContext(), MyQuitPrePlanArray.class);
                                             launchLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                                     | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Quit date set",test,MyQuitCSVHelper.getFulltime());
                                             getActivity().finish();
                                             startActivity(launchLogin);
                                         } else {

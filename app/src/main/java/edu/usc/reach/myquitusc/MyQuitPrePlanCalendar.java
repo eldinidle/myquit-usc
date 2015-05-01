@@ -1,7 +1,10 @@
 package edu.usc.reach.myquitusc;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -23,6 +26,38 @@ import java.util.Date;
 
 public class MyQuitPrePlanCalendar extends Activity {
 
+    public void formatDialog(AlertDialog dialog) {
+        Button posButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        posButton.setTextColor(getResources().getColor(R.color.ActiveText));
+        Button negButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        negButton.setTextColor(getResources().getColor(R.color.ActiveText));
+        Button neuButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        neuButton.setTextColor(getResources().getColor(R.color.ActiveText));
+
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            int dividerId = dialog.getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
+            View divider = dialog.findViewById(dividerId);
+            divider.setBackgroundColor(getResources().getColor(R.color.AppBar));
+        }
+
+        int textViewId = dialog.getContext().getResources().getIdentifier("android:id/alertTitle", null, null);
+        TextView tv = (TextView) dialog.findViewById(textViewId);
+        tv.setTextColor(getResources().getColor(R.color.AppBar));
+    }
+
+    private void showInstruction() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(("Please select each hour you wish to schedule. If you change your mind, long-press the hour to clear your entry."))
+                .setPositiveButton("Ok",new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        formatDialog(dialog);
+    }
+
     @Override
     public void onBackPressed() {
         Toast.makeText(getApplicationContext(), "Please complete plans before closing application", Toast.LENGTH_SHORT).show();
@@ -36,10 +71,15 @@ public class MyQuitPrePlanCalendar extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_quit_calendar);
+
+
         Intent pickupDate = getIntent();
         final String calledDate = pickupDate.getStringExtra("Date");
         final int focusPosition = pickupDate.getIntExtra("FocusPosition",0);
         final boolean weekEnd = pickupDate.getBooleanExtra("Weekend",false);
+        final boolean instruct = pickupDate.getBooleanExtra("Instruct",false);
+        if(instruct){showInstruction();}
+
         try {
             pulledTimes = MyQuitCSVHelper.pullDateTimes(calledDate);
         } catch (IOException e) {

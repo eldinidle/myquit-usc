@@ -28,6 +28,7 @@ public class MyQuitReceiver extends BroadcastReceiver {
         MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.END_OF_DAY_EMA_KEY);
         MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.OFF_EMA_KEY);
         MyQuitCalendarHelper.decideCalendar(context);
+        MyQuitPHP.decidePHPPost();
     }
 
 
@@ -36,6 +37,7 @@ public class MyQuitReceiver extends BroadcastReceiver {
         MyQuitEMAHelper.setUpSmokeEMA();
         MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.RANDOM_EMA_KEY);
         MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.SMOKE_EMA_KEY);
+        MyQuitPHP.decidePHPPost();
     }
 
     @Override
@@ -60,7 +62,6 @@ public class MyQuitReceiver extends BroadcastReceiver {
             else{
                 runMainStudy(context);
             }
-            MyQuitPHP.decidePHPPost();
             Log.d("MyQuitUSC", "Finished deciding");
             mNotificationManager.cancel(1);
         } catch (ParseException e) {

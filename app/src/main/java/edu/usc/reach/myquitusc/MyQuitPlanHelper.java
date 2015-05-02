@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -362,11 +363,42 @@ public class MyQuitPlanHelper {
         }
     }
 
+    private static void backupOldList(Context context){
+        String fileName = "ACTIVITY_PAIRING_PERMANENT" + ".csv";
+        List<String[]> holdAll;
+        String newFile;
+        try {
+            CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.calPath + fileName));
+            holdAll = reader.readAll();
+            reader.close();
+            String time = MyQuitCSVHelper.getFulltime();
+            time = time.replaceAll(":","_");
+            time = time.replaceAll("/","_");
+            time = time.replaceAll(" ","_");
+            newFile = "ACTIVITY_PAIRING_SET" + time + ".csv";
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.calPath + newFile));
+            writer.writeAll(holdAll);
+            writer.close();
+        } catch (IOException e) {
+            Toast.makeText(context,"Please restart app and try again",Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+
+    }
 
     public static boolean pushBaseList(Context context, List<String[]> newBaseList, boolean temporaryChange) {
         String fileName;
         if(temporaryChange){fileName = "ACTIVITY_PAIRING" + ".csv";}
-        else {fileName = "ACTIVITY_PAIRING_PERMANENT" + ".csv";}
+        else {
+            fileName = "ACTIVITY_PAIRING_PERMANENT" + ".csv";
+            MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"MyQuit Plans Changed","NA",MyQuitCSVHelper.getFulltime());
+            backupOldList(context);
+        }
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.calPath + fileName));
             writer.writeAll(newBaseList);

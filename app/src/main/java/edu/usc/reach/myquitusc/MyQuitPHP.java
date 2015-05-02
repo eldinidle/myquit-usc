@@ -267,6 +267,7 @@ public class MyQuitPHP {
                 writer.writeAll(newPush);
                 writer.close();
             } catch (FileNotFoundException e) {
+                Log.d("MQU-PHP","Failure FNF EMA");
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -298,7 +299,7 @@ public class MyQuitPHP {
                 writer.writeAll(newPush);
                 writer.close();
             } catch (FileNotFoundException e) {
-                Log.d("MQU-PHP","Failure FNF");
+                Log.d("MQU-PHP","Failure FNF EMA");
                 e.printStackTrace();
             } catch (IOException e) {
                 Log.d("MQU-PHP","Failure IOE");
@@ -416,12 +417,14 @@ public class MyQuitPHP {
             return false;
         }
     }
+
     public static boolean syncTrackerEvent(String userName, String rogueSituation, String metaData, String calledDateTime)  {
         HttpClient httpClient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(urlPostRogueEvent);
+        HttpPost httpPost = new HttpPost(urlTrackerEvent);
         List<NameValuePair> rogueParams = new ArrayList<NameValuePair>();
         rogueParams.add(new BasicNameValuePair("username",userName));
-        rogueParams.add(new BasicNameValuePair("situation",rogueSituation));
+        rogueParams.add(new BasicNameValuePair("event",rogueSituation));
+        rogueParams.add(new BasicNameValuePair("meta",metaData));
         rogueParams.add(new BasicNameValuePair("datetime",calledDateTime));
         rogueParams.add(new BasicNameValuePair("allowed",String.valueOf(phpAllowInteger)));
         Log.d("MQU-PHP","Caught" + userName + rogueSituation + calledDateTime);
@@ -554,7 +557,7 @@ public class MyQuitPHP {
             try {
                 Date timeThen = sdf.parse(stringTime);
                 long compareTime = timeNow.getTime() - timeThen.getTime();
-                Log.d("MQU-PHP", "PHP loop event confirmed");
+                Log.d("MQU-PHP", "PHP loop event confirmed"  + (compareTime > (minutes * 60 * 1000)));
                 return (compareTime > (minutes * 60 * 1000));
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -572,8 +575,8 @@ public class MyQuitPHP {
             writeLastFileUpload();
             Log.d("MQU-PHP", "Wrote last file upload");
             new SyncRogueEvent().execute();
-            new SyncEMAEvent().execute();
             new SyncTrackerEvent().execute();
+            new SyncEMAEvent().execute();
             Log.d("MQU-PHP", "Finished looping");
         }
     }

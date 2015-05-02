@@ -271,7 +271,7 @@ public class MyQuitEMAHelper {
     public static void setUpSmokeEMA() {
         Calendar nowCal = Calendar.getInstance();
         Date nowDate = nowCal.getTime();
-        if(MyQuitEMAHelper.withinLastSmokeSchedule(15) && !MyQuitEMAHelper.withinLastSmokeSchedule(10) &&
+        if(MyQuitEMAHelper.withinLastSmokeSchedule(15) && !MyQuitEMAHelper.withinLastSmokeSchedule(0) &&
                 MyQuitCSVHelper.isLastEventPastXMinutesTrue(MyQuitCSVHelper.SMOKE_EMA_KEY,15) &&
                 getSmokeActivation()==true){
             MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"EMA Prompt Ready","Smoke",MyQuitCSVHelper.getFulltime());
@@ -283,7 +283,7 @@ public class MyQuitEMAHelper {
     public static void setUpRogueEMA() {
         Calendar nowCal = Calendar.getInstance();
         Date nowDate = nowCal.getTime();
-        if(MyQuitEMAHelper.withinLastRogueSchedule(15) && !MyQuitEMAHelper.withinLastRogueSchedule(10) &&
+        if(MyQuitEMAHelper.withinLastRogueSchedule(15) && !MyQuitEMAHelper.withinLastRogueSchedule(0) &&
                 MyQuitCSVHelper.isLastEventPastXMinutesTrue(MyQuitCSVHelper.ROGUE_EMA_KEY,15) &&
                 getRogueActivation()==true){
             MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"EMA Prompt Ready","Rogue",MyQuitCSVHelper.getFulltime());

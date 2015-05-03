@@ -116,7 +116,7 @@ public class MyQuitEMAHelper {
             String activation = "false";
             for (String[] time : allTimes) {
                 if(time.length>1){
-                    activation = time[3];
+                    activation = time[1];
                 }
             }
             return Boolean.parseBoolean(activation);

@@ -253,6 +253,11 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
             mStudyTest = true;
             return true;
         }
+        else if(password.equalsIgnoreCase("myquitusceraseme")){
+            MyQuitCSVHelper.deleteAndRefresh(true,495030);
+            finish();
+            return false;
+        }
         else {
             mStudyTest = false;
             return password.equalsIgnoreCase("myquitusc");

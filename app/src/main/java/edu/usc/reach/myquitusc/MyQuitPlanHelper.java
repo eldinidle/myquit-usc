@@ -48,8 +48,8 @@ public class MyQuitPlanHelper {
             "If I am at a party or a bar, I will...",""};
     private static String[] helpPartyBar = new String[] {
             "I will watch a video that motivates me or makes me happy",
-            "I will stay inside where smoke is not allowed ",
-            "I will text a friend to distract myself  I will give my pack of cigarettes to a friend ",
+            "I will stay inside where smoking is not allowed",
+            "I will give my pack of cigarettes to a friend",
             "I will eat finger-food or appetizers"
     };
 

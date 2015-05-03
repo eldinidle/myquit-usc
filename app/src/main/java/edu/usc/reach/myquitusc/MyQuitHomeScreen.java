@@ -362,9 +362,9 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             caldroidFragment.setCaldroidListener(listener);
 
 
-            Button oopsSmoke = (Button) findViewById(R.id.oopsSmoked);
-            oopsSmoke.setOnClickListener(null);
-            oopsSmoke.setOnClickListener(new View.OnClickListener() {
+            Button gonnaSmoke = (Button) findViewById(R.id.smokeNow);
+            gonnaSmoke.setOnClickListener(null);
+            gonnaSmoke.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     try {
@@ -393,9 +393,9 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                 }
             });
 
-            Button gonnaSmoke = (Button) findViewById(R.id.smokeNow);
-            gonnaSmoke.setText("");
-            gonnaSmoke.setOnClickListener(null);
+            Button oopsSmoke = (Button) findViewById(R.id.oopsSmoked);
+            oopsSmoke.setText("");
+            oopsSmoke.setOnClickListener(null);
 
             Button launchPlans = (Button) findViewById(R.id.quitPlans);
             launchPlans.setOnClickListener(new View.OnClickListener() {
@@ -497,16 +497,15 @@ public class MyQuitHomeScreen extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        /*if (id == R.id.action_settings) {
             Intent launchLogin = new Intent(this, MyQuitAdmin.class);
             startActivity(launchLogin);
             return true;
         }
         if (id == R.id.renewFolders) {
-            MyQuitCSVHelper.deleteAndRefresh(true,495030);
-            finish();
+
             return true;
-        }
+        }*/
         if (id == R.id.loginToApp) {
             Intent launchLogin = new Intent(this, MyQuitLoginActivity.class);
             startActivity(launchLogin);

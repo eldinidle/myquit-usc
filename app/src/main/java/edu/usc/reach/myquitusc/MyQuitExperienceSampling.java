@@ -22,6 +22,7 @@ public class MyQuitExperienceSampling {
     private static final String scheduleFileName = MyQuitCSVHelper.logPath + "ESMSchedule.csv";
     private static final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
     private static final SimpleDateFormat dateOnly = new SimpleDateFormat("MM/dd/yyyy");
+    private static final SimpleDateFormat timeOnly = new SimpleDateFormat("HH:mm:ss");
 
     public static void scheduleAllRandomEMA(String loginDate) throws ParseException, IOException {
             Date endDate = dateOnly.parse(loginDate);
@@ -31,6 +32,7 @@ public class MyQuitExperienceSampling {
                 scheduleRandomEMA(nowDate);
                 rollingCal.add(Calendar.DAY_OF_YEAR, 1);
                 nowDate = rollingCal.getTime();
+                Log.d("MQU-RANDOM","Scheduled day");
             }
 
     }
@@ -150,6 +152,7 @@ public class MyQuitExperienceSampling {
         for(int i = 0;i<3;i++) {
             dynamicCal.set(year,month,day,randomHour(i+1),randomMinute(),0);
             dynamicDate = dynamicCal.getTime();
+            MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"ESM " + String.valueOf(i) + " on " + dateOnly.format(dynamicDate),timeOnly.format(dynamicDate),MyQuitCSVHelper.getFulltime());
             returnString[i] = sdf.format(dynamicDate);
         }
         return returnString;

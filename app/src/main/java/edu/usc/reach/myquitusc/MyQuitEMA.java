@@ -223,7 +223,8 @@ public class MyQuitEMA extends Activity {
         return MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID);
     }
 
-    private static int validatePrevious(int surveyID, int position) {
+    private static int validatePrevious(int surveyID, int position,
+                                        boolean naTrue, boolean paTrue, boolean pssTrue, boolean ccTrue, boolean anhedoniaTrue) {
         switch (surveyID) {
             case 1:
                 return MyQuitCheckSuccessSurvey.validatePreviousPosition(position);
@@ -232,7 +233,7 @@ public class MyQuitEMA extends Activity {
             case 3:
                 return MyQuitEndOfDaySurvey.validatePreviousPosition(position);
             case 4:
-                return MyQuitRandomSurvey.validatePreviousPosition(position);
+                return MyQuitRandomSurvey.validatePreviousPosition(position,naTrue,paTrue,pssTrue,ccTrue,anhedoniaTrue);
             case 5:
                 return MyQuitSmokeSurvey.validatePreviousPosition(position);
             case 6:
@@ -242,7 +243,8 @@ public class MyQuitEMA extends Activity {
         }
     }
 
-    private static int validateNext(int surveyID, int position, int sessionID) {
+    private static int validateNext(int surveyID, int position, int sessionID,
+                                    boolean naTrue, boolean paTrue, boolean pssTrue, boolean ccTrue, boolean anhedoniaTrue) {
         switch (surveyID) {
             case 1:
                 try {
@@ -299,14 +301,14 @@ public class MyQuitEMA extends Activity {
                     //Log.d("MY-QUIT-USC", "New is" + MyQuitEndOfDaySurvey.validateNextPosition(position,
                     //        MyQuitEMAHelper.pullSpecificAnswer(MyQuitCSVHelper.getFullDate(), sessionID, position,surveyID)));
                     return MyQuitRandomSurvey.validateNextPosition(position,
-                            sendAId);
+                            sendAId,naTrue,paTrue,pssTrue,ccTrue,anhedoniaTrue);
                 } catch (NumberFormatException nfe) {
                     //Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
                     //Log.d("MY-QUIT-USC", "Answer is " + MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
                     //Log.d("MY-QUIT-USC", "New is" + MyQuitEndOfDaySurvey.validateNextPosition(position,
                     //        MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID)));
                     return MyQuitRandomSurvey.validateNextPosition(position,
-                            MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
+                            MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID),naTrue,paTrue,pssTrue,ccTrue,anhedoniaTrue);
                 }
             case 5:
                 try {
@@ -539,15 +541,30 @@ public class MyQuitEMA extends Activity {
         + "and" + sessionID);
         boolean next = pickSurveyInfo.getBooleanExtra("Next", false);
         boolean previous = pickSurveyInfo.getBooleanExtra("Previous", false);
+
+
+        boolean naTrue = MyQuitEMAHelper.pullLastSessionMarker(MyQuitCSVHelper.getFullDate(),
+                MyQuitRandomSurvey.KEY_SURVEY_SUCCESS,MyQuitRandomSurvey.KEY_NA);
+        boolean paTrue = MyQuitEMAHelper.pullLastSessionMarker(MyQuitCSVHelper.getFullDate(),
+                MyQuitRandomSurvey.KEY_SURVEY_SUCCESS,MyQuitRandomSurvey.KEY_PA);
+        boolean pssTrue = MyQuitEMAHelper.pullLastSessionMarker(MyQuitCSVHelper.getFullDate(),
+                MyQuitRandomSurvey.KEY_SURVEY_SUCCESS,MyQuitRandomSurvey.KEY_PSS);
+        boolean ccTrue = MyQuitEMAHelper.pullLastSessionMarker(MyQuitCSVHelper.getFullDate(),
+                MyQuitRandomSurvey.KEY_SURVEY_SUCCESS,MyQuitRandomSurvey.KEY_CC);
+        boolean anhedoniaTrue = MyQuitEMAHelper.pullLastSessionMarker(MyQuitCSVHelper.getFullDate(),
+                MyQuitRandomSurvey.KEY_SURVEY_SUCCESS,MyQuitRandomSurvey.KEY_ANHEDONIA);
+
+
         int position;
 
         if(previous) {
-            position = validatePrevious(survey,pickSurveyInfo.getIntExtra("Position", 0));
+            position = validatePrevious(survey,pickSurveyInfo.getIntExtra("Position", 0),naTrue,paTrue,pssTrue,ccTrue,anhedoniaTrue);
             Log.d("MY-QUIT-USC","Overwriting survey position to " +position);
             Log.d("MY-QUIT-USC","PREVIOUS RECEIVED " + position);
         }
         else if(next){
-            position = validateNext(survey,pickSurveyInfo.getIntExtra("Position", 0),sessionID);
+            position = validateNext(survey,pickSurveyInfo.getIntExtra("Position", 0),sessionID,
+                    naTrue, paTrue, pssTrue, ccTrue, anhedoniaTrue);
             Log.d("MY-QUIT-USC","NEXT RECEIVED " + position);
         }
         else {

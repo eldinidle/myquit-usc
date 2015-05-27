@@ -103,7 +103,7 @@ public class MyQuitIntentPrompt extends Activity {
                 finish();
             }
             intentView.setText("Instead of smoking while: \"" + parsedHourSituation + "\", you said you would: \""
-                    + MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(), false));
+                    + MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(), false) + "\"");
         }
         else {
             finish();

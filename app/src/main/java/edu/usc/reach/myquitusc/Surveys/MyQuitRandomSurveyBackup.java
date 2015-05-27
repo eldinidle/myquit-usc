@@ -1,26 +1,17 @@
 package edu.usc.reach.myquitusc.Surveys;
 
-import android.content.Context;
 import android.util.Log;
 
 import java.util.Arrays;
 import java.util.List;
 
-import edu.usc.reach.myquitusc.MyQuitPlanHelper;
-
 /**
  * Created by Eldin on 12/30/14.
  */
-public class MyQuitRandomSurvey {
+public class MyQuitRandomSurveyBackup {
     public static final int KEY_SURVEY_SUCCESS = 4;
     public static final int KEY_END_SURVEY = 35;
     public static final int KEY_SURVEY_LENGTH = 36;
-
-    public static final int KEY_NA = 3;
-    public static final int KEY_PA = 4;
-    public static final int KEY_PSS = 5;
-    public static final int KEY_CC = 6;
-    public static final int KEY_ANHEDONIA = 7;
 
     public static final String[] whereAt = {"Where were you when the phone alerted you?","Home","Bathroom",
     "Dormitory","Class","Bar/restaurant","Work","Outside","Car","Other location"};
@@ -99,25 +90,25 @@ public class MyQuitRandomSurvey {
     public static final String[] anhedoniaHobby = {"How much pleasure/enjoyment would you feel right now in response to personal hobbies, such as reading, painting, following sports, or collecting things?",
             "1 = No pleasure", "2","3","4","5","6","7","8","9","10 = Extreme pleasure"};
     public static final String[] anhedoniaSocial = {"How much pleasure/enjoyment would you feel right now in response to socializing with other people in-person or over the phone and Internet?",
-            "1 = No pleasure", "2","3","4","5","6","7","8","9","10 = Extreme pleasure"};
+            "1 = No pleasure", "2","3","4","5","6","7","8","9","10 = Extreme plesaure"};
 
     public static final String[] endMessage = {"Thank you for completing the survey"};
 
 
     public  List<String[]> getQuestions = Arrays.asList(whereAt,whereAtText,whatDoing,whatDoingText,whoWith, // 5
-                hadThese,othersSmoke,allowSmoke,persistStressor,occurStressor,naScared,naUpset, // 7 12
-                naDistressed,naTense,naSad,naIrritable,naHopeless,paHappy,paCheerful,paEnthusiastic, //8 20
-                paProud,paInterested,pssSchool,pssWork,pssFamily,pssMoney,ccMindCig,ccMindVape, // 8 28
-                ccDesireCig,ccDesireVape,ccUrgeCig,ccUrgeVape,anhedoniaPeople,anhedoniaHobby, // 6 34
+                hadThese,othersSmoke,allowSmoke,persistStressor,occurStressor,naScared,naUpset, // 7
+                naDistressed,naTense,naSad,naIrritable,naHopeless,paHappy,paCheerful,paEnthusiastic, //8
+                paProud,paInterested,pssSchool,pssWork,pssFamily,pssMoney,ccMindCig,ccMindVape, // 8
+                ccDesireCig,ccDesireVape,ccUrgeCig,ccUrgeVape,anhedoniaPeople,anhedoniaHobby, // 6
                 anhedoniaSocial,endMessage); // 2
 
     public static int validateNextPosition(int qID, int aID, boolean naTrue, boolean paTrue,
                                            boolean pssTrue, boolean ccTrue, boolean anhedoniaTrue) {
         Log.d("MQU-EMA","Received Qid" + qID + " and " + aID );
-       // if(qID>3){
-       //     return qID + 1;
-       // }
-       // else {
+        if(qID>3){
+            return qID + 1;
+        }
+        else {
             switch(qID){
                 case 0:
                     switch(aID) {
@@ -134,34 +125,9 @@ public class MyQuitRandomSurvey {
                         default:
                             return 4;
                     }
-                case 9:
-                    if(naTrue){return 10;}
-                    else if(paTrue){return 17;}
-                    else if(pssTrue){return 22;}
-                    else if(ccTrue){return 26;}
-                    else if(anhedoniaTrue){return 32;}
-                    else{return 35;}
-                case 16:
-                    if(paTrue){return 17;}
-                    else if(pssTrue){return 22;}
-                    else if(ccTrue){return 26;}
-                    else if(anhedoniaTrue){return 32;}
-                    else{return 35;}
-                case 21:
-                    if(pssTrue){return 22;}
-                    else if(ccTrue){return 26;}
-                    else if(anhedoniaTrue){return 32;}
-                    else{return 35;}
-                case 25:
-                    if(ccTrue){return 26;}
-                    else if(anhedoniaTrue){return 32;}
-                    else{return 35;}
-                case 31:
-                    if(anhedoniaTrue){return 32;}
-                    else{return 35;}
-                default: return qID + 1;
-        //    }
-        //    return 0;
+                case 3: return 4;
+            }
+            return 0;
         }
     }
 
@@ -174,35 +140,15 @@ public class MyQuitRandomSurvey {
 
     public static int validatePreviousPosition(int qID, boolean naTrue, boolean paTrue,
                                                boolean pssTrue, boolean ccTrue, boolean anhedoniaTrue) {
-        if(qID==0){return 0;}
-        //if(qID>4){
-        //    return qID-1;
-        //}
+        if(qID>4){
+            return qID-1;
+        }
         switch(qID){
             case 2: return 0;
             case 3: return 2;
             case 4: return 2;
-            case 17:
-                if(naTrue){return 16;}
-                else{return 9;}
-            case 22:
-                if(paTrue){return 21;}
-                else if(naTrue){return 16;}
-                else{return 9;}
-            case 26:
-                if(pssTrue){return 25;}
-                else if(paTrue){return 21;}
-                else if(naTrue){return 16;}
-                else{return 9;}
-            case 32:
-                if(ccTrue){return 31;}
-                else if(pssTrue){return 25;}
-                else if(paTrue){return 21;}
-                else if(naTrue){return 16;}
-                else{return 9;}
-            default: return (qID - 1);
+            default: return 0;
         }
-
     }
 
 

@@ -21,6 +21,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import edu.usc.reach.myquitusc.Surveys.MyQuitRandomSurvey;
+
 /**
  * Created by Eldin on 12/30/14.
  */
@@ -259,9 +261,11 @@ public class MyQuitEMAHelper {
         String fileName = "DelayedSmokeEMA.csv";
         CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.emaPath + fileName,true));
         Calendar now = Calendar.getInstance();
-        now.add(Calendar.MINUTE,15);
+        now.add(Calendar.MINUTE,0);
+        //now.add(Calendar.MINUTE,15); // this is for 15 minute delay
         Date then = now.getTime();
-        boolean activate = Math.random()<0.6;
+        boolean activate = true;
+        //boolean activate = Math.random()<0.6; // this is for percentage
         MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Smoking push EMA",String.valueOf(activate),MyQuitCSVHelper.getFulltime());
         String[] pushArray = new String[] {newsdf.format(then),String.valueOf(activate)};
         writer.writeNext(pushArray);
@@ -444,10 +448,29 @@ public class MyQuitEMAHelper {
     public static void pushLastSessionID(String calledDate, int surveyID, int sessionID) {
         String stepDate = calledDate.replaceAll("/", "_");
         String fileName = stepDate +"_" + surveyID +  "_Sessions.csv";
+        boolean naTrue = false;
+        boolean paTrue = false;
+        boolean pssTrue = false;
+        boolean ccTrue = false;
+        boolean anhedoniaTrue = false;
+        if(surveyID== MyQuitRandomSurvey.KEY_SURVEY_SUCCESS){
+             naTrue = Math.random()<0.6;
+             paTrue = Math.random()<0.6;
+             pssTrue = Math.random()<0.6;
+             ccTrue = Math.random()<0.6;
+             anhedoniaTrue = Math.random()<0.6;
+        }
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.emaPath + fileName, true));
             Log.d("MQU","Logging ID for " + sessionID);
-            writer.writeNext(new String[] {calledDate,String.valueOf(surveyID),String.valueOf(sessionID)});
+            if(surveyID== MyQuitRandomSurvey.KEY_SURVEY_SUCCESS){
+                writer.writeNext(new String[] {calledDate,String.valueOf(surveyID),String.valueOf(sessionID),
+                        String.valueOf(naTrue),String.valueOf(paTrue),String.valueOf(pssTrue),
+                        String.valueOf(ccTrue),String.valueOf(anhedoniaTrue)});
+            }
+            else {
+                writer.writeNext(new String[] {calledDate,String.valueOf(surveyID),String.valueOf(sessionID)});
+            }
             writer.close();
         } catch (IOException e) {
             Log.d("MQU","No directory structure");
@@ -455,6 +478,36 @@ public class MyQuitEMAHelper {
 
     }
 
+    public static boolean pullLastSessionMarker(String calledDate, int surveyID, int sessionMarker) {
+        String stepDate = calledDate.replaceAll("/", "_");
+        String fileName = stepDate + "_" + surveyID + "_Sessions.csv";
+        try {
+            CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.emaPath + fileName));
+            List<String[]> pullAll = reader.readAll();
+            reader.close();
+            String[] lastLine = null;
+            for(String[] lineBy: pullAll) {
+                if(lineBy[1].equalsIgnoreCase(String.valueOf(surveyID))) {
+                    lastLine = lineBy;
+                    Log.d("MQU","Logging success check" + lineBy[0] + lineBy[1] + lineBy[2]);
+                }
+                else {
+                    Log.d("MQU","Logging failed check");
+                }
+            }
+
+            try {
+                Log.d("MQU","Logging success final" + lastLine[2]);
+                return Boolean.valueOf(lastLine[sessionMarker]);
+            }
+            catch (NullPointerException neo) {
+                return false;
+            }
+        } catch (IOException e) {
+            Log.d("MQU","No directory structure");
+            return false;
+        }
+    }
 
     public static int pullLastSessionID(String calledDate, int surveyID) {
         String stepDate = calledDate.replaceAll("/", "_");

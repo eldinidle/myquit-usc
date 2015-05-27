@@ -287,6 +287,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                                         startPlan.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         startActivity(startPlan);
+                                        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"MyQuit Plans Restarted","NA",MyQuitCSVHelper.getFulltime());
                                         finish();
                                     }
                                 })
@@ -306,6 +307,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                         startPlan.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(startPlan);
+                        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"MyQuit Plans Restarted","NA",MyQuitCSVHelper.getFulltime());
                         finish();
                     }
                 }
@@ -412,6 +414,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                                         startPlan.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         startActivity(startPlan);
+                                        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"MyQuit Plans Restarted","NA",MyQuitCSVHelper.getFulltime());
                                         finish();
                                     }
                                 })
@@ -624,6 +627,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                     Intent startPlan = new Intent(getActivity(), MyQuitHomeScreen.class);
                     startPlan.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                             | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"MyQuit Plans Restarted","NA",MyQuitCSVHelper.getFulltime());
                     startActivity(startPlan);
                 }
             });

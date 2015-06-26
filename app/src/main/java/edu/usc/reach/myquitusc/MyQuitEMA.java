@@ -48,25 +48,29 @@ public class MyQuitEMA extends Activity {
     }
 
     void passThroughUpload(int finalSessionID, int survey) {
+        Log.d("MQU-PHP","Survey is" + String.valueOf(survey));
         switch (survey) {
             case 1: MyQuitPHP.postEMAEvent(MyQuitEMAHelper.returnLastEMASurvey(MyQuitCSVHelper.getFullDate(),
-                    finalSessionID, survey, MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[2],
-                    MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.ROGUE_EMA_KEY)[3])); break;
+                    finalSessionID, survey, MyQuitCSVHelper.pullLastEventArray("intentPresented",MyQuitCSVHelper.ROGUE_EMA_KEY)[2],
+                    MyQuitCSVHelper.pullLastEventArray("intentPresented",MyQuitCSVHelper.ROGUE_EMA_KEY)[3])); break;
             case 2: MyQuitPHP.postEMAEvent(MyQuitEMAHelper.returnLastEMASurvey(MyQuitCSVHelper.getFullDate(),
-                    finalSessionID, survey, MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.CALENDAR_EMA_KEY)[2],
-                    MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.CALENDAR_EMA_KEY)[3])); break;
+                    finalSessionID, survey, MyQuitCSVHelper.pullLastEventArray("intentPresented",MyQuitCSVHelper.CALENDAR_EMA_KEY)[2],
+                    MyQuitCSVHelper.pullLastEventArray("intentPresented",MyQuitCSVHelper.CALENDAR_EMA_KEY)[3])); break;
             case 3: MyQuitPHP.postEMAEvent(MyQuitEMAHelper.returnLastEMASurvey(MyQuitCSVHelper.getFullDate(),
-                    finalSessionID, survey, MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.END_OF_DAY_EMA_KEY)[2],
-                    MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.END_OF_DAY_EMA_KEY)[3])); break;
+                    finalSessionID, survey, "","")); break;
             case 4: MyQuitPHP.postEMAEvent(MyQuitEMAHelper.returnLastEMASurvey(MyQuitCSVHelper.getFullDate(),
-                    finalSessionID, survey, MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.RANDOM_EMA_KEY)[2],
-                    MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.RANDOM_EMA_KEY)[3])); break;
+                    finalSessionID, survey, "","")); break;
             case 5: MyQuitPHP.postEMAEvent(MyQuitEMAHelper.returnLastEMASurvey(MyQuitCSVHelper.getFullDate(),
-                    finalSessionID, survey, MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.SMOKE_EMA_KEY)[2],
-                    MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.SMOKE_EMA_KEY)[3])); break;
+                    finalSessionID, survey, "", "")); break;
+            /*case 4: MyQuitPHP.postEMAEvent(MyQuitEMAHelper.returnLastEMASurvey(MyQuitCSVHelper.getFullDate(),
+                    finalSessionID, survey, MyQuitCSVHelper.pullLastEventArray("intentPresented",MyQuitCSVHelper.RANDOM_EMA_KEY)[2],
+                    MyQuitCSVHelper.pullLastEventArray("intentPresented",MyQuitCSVHelper.RANDOM_EMA_KEY)[3])); break;
+            case 5: MyQuitPHP.postEMAEvent(MyQuitEMAHelper.returnLastEMASurvey(MyQuitCSVHelper.getFullDate(),
+                    finalSessionID, survey, MyQuitCSVHelper.pullLastEventArray("intentPresented",MyQuitCSVHelper.SMOKE_EMA_KEY)[2],
+                    MyQuitCSVHelper.pullLastEventArray("intentPresented",MyQuitCSVHelper.SMOKE_EMA_KEY)[3])); break; */
             case 6: MyQuitPHP.postEMAEvent(MyQuitEMAHelper.returnLastEMASurvey(MyQuitCSVHelper.getFullDate(),
-                    finalSessionID, survey, MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.OFF_EMA_KEY)[2],
-                    MyQuitCSVHelper.pullLastEvent(MyQuitCSVHelper.OFF_EMA_KEY)[3])); break;
+                    finalSessionID, survey, MyQuitCSVHelper.pullLastEventArray("intentPresented",MyQuitCSVHelper.OFF_EMA_KEY)[2],
+                    MyQuitCSVHelper.pullLastEventArray("intentPresented",MyQuitCSVHelper.OFF_EMA_KEY)[3])); break;
         }
     }
 
@@ -143,6 +147,7 @@ public class MyQuitEMA extends Activity {
                     Log.d("MY-QUIT-USC","Something's wrong here...");
                     e.printStackTrace();
                 }
+                passThroughUpload(finalSessionID,survey); // TODO: Double check this is supposed to be here
                 finish();
             }
         });
@@ -618,6 +623,34 @@ public class MyQuitEMA extends Activity {
                     addButtonBeyondTwo(9, answers,answer9,questionString,sessionID,1009,position,receiver,surveyLength,survey);
                     RadioButton answer10 = new RadioButton(this);
                     addButtonBeyondTwo(10, answers,answer10,questionString,sessionID,1010,position,receiver,surveyLength,survey);
+                    RadioButton answer11 = new RadioButton(this);
+                    addButtonBeyondTwo(11, answers,answer10,questionString,sessionID,1011,position,receiver,surveyLength,survey);
+                    RadioButton answer12 = new RadioButton(this);
+                    addButtonBeyondTwo(12, answers,answer10,questionString,sessionID,1012,position,receiver,surveyLength,survey);
+                    RadioButton answer13 = new RadioButton(this);
+                    addButtonBeyondTwo(13, answers,answer10,questionString,sessionID,1013,position,receiver,surveyLength,survey);
+                    RadioButton answer14 = new RadioButton(this);
+                    addButtonBeyondTwo(14, answers,answer10,questionString,sessionID,1014,position,receiver,surveyLength,survey);
+                    RadioButton answer15 = new RadioButton(this);
+                    addButtonBeyondTwo(15, answers,answer10,questionString,sessionID,1015,position,receiver,surveyLength,survey);
+                    RadioButton answer16 = new RadioButton(this);
+                    addButtonBeyondTwo(16, answers,answer10,questionString,sessionID,1016,position,receiver,surveyLength,survey);
+                    RadioButton answer17 = new RadioButton(this);
+                    addButtonBeyondTwo(17, answers,answer10,questionString,sessionID,1017,position,receiver,surveyLength,survey);
+                    RadioButton answer18 = new RadioButton(this);
+                    addButtonBeyondTwo(18, answers,answer10,questionString,sessionID,1018,position,receiver,surveyLength,survey);
+                    RadioButton answer19 = new RadioButton(this);
+                    addButtonBeyondTwo(19, answers,answer10,questionString,sessionID,1019,position,receiver,surveyLength,survey);
+                    RadioButton answer20 = new RadioButton(this);
+                    addButtonBeyondTwo(20, answers,answer10,questionString,sessionID,1020,position,receiver,surveyLength,survey);
+                    RadioButton answer21 = new RadioButton(this);
+                    addButtonBeyondTwo(21, answers,answer10,questionString,sessionID,1021,position,receiver,surveyLength,survey);
+                    RadioButton answer22 = new RadioButton(this);
+                    addButtonBeyondTwo(22, answers,answer10,questionString,sessionID,1022,position,receiver,surveyLength,survey);
+                    RadioButton answer23 = new RadioButton(this);
+                    addButtonBeyondTwo(23, answers,answer10,questionString,sessionID,1023,position,receiver,surveyLength,survey);
+                    RadioButton answer24 = new RadioButton(this);
+                    addButtonBeyondTwo(24, answers,answer10,questionString,sessionID,1024,position,receiver,surveyLength,survey);
                 } catch (Exception a) {}
                 surveySetup.addView(question);
                 surveySetup.addView(answers);

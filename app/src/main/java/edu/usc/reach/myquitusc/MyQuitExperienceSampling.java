@@ -28,6 +28,8 @@ public class MyQuitExperienceSampling {
             Date endDate = dateOnly.parse(loginDate);
             Calendar rollingCal = Calendar.getInstance();
             Date nowDate = rollingCal.getTime();
+            //String holdCurrentDate = dateOnly.format(currentDate);
+            //Date nowDate = dateOnly.parse(holdCurrentDate);
             while (dateBefore(nowDate,endDate)) {
                 scheduleRandomEMA(nowDate);
                 rollingCal.add(Calendar.DAY_OF_YEAR, 1);
@@ -74,15 +76,25 @@ public class MyQuitExperienceSampling {
         int thenDayGet = compareCal.get(Calendar.DAY_OF_MONTH);
         int nowYearGet = thisCal.get(Calendar.YEAR);
         int thenYearGet = compareCal.get(Calendar.YEAR);
-        if(nowYearGet>thenYearGet){
+        if(nowYearGet<thenYearGet){
+            return true;
+        }
+        else if(nowYearGet>thenYearGet){
+            Log.d("MQU-RANDOM","Year greater");
             return false;
         }
         else{
             if(nowMonthGet>thenMonthGet){
+                Log.d("MQU-RANDOM","Month greater");
                 return false;
+
+            }
+            else if(nowMonthGet<thenMonthGet){
+                return true;
             }
             else{
                 if(nowDayGet>=thenDayGet){
+                    Log.d("MQU-RANDOM","Day greater");
                     return false;
                 }
                 else{

@@ -467,12 +467,12 @@ public class MyQuitLoginActivity extends Activity implements LoaderCallbacks<Cur
                                         Date futureDate = futureCal.getTime();
                                         if (selectedDate.after(futureDate) || mStudyTest) {
                                             MyQuitCSVHelper.logLoginEvents("MyQuitDate", test, MyQuitCSVHelper.getFulltime());
-                                            dismiss();
                                             MyQuitExperienceSampling.scheduleAllRandomEMA(test);
                                             Intent launchLogin = new Intent(getView().getContext(), MyQuitPrePlanArray.class);
                                             launchLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                                     | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                             MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Quit date set",test,MyQuitCSVHelper.getFulltime());
+                                            dismiss();
                                             getActivity().finish();
                                             startActivity(launchLogin);
                                         } else {

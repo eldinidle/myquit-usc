@@ -27,7 +27,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import edu.usc.reach.myquitusc.Surveys.MyQuitCalendarSuccessSurvey;
 import edu.usc.reach.myquitusc.Surveys.MyQuitCheckSuccessSurvey;
+import edu.usc.reach.myquitusc.Surveys.MyQuitEndOfDaySurvey;
+import edu.usc.reach.myquitusc.Surveys.MyQuitOffSuccessSurvey;
+import edu.usc.reach.myquitusc.Surveys.MyQuitRandomSurvey;
+import edu.usc.reach.myquitusc.Surveys.MyQuitRandomSurveyBackup;
+import edu.usc.reach.myquitusc.Surveys.MyQuitSmokeSurvey;
 
 /**
  * Created by Eldin on 1/14/15.
@@ -164,14 +170,128 @@ public class MyQuitPHP {
             int fullLength = params[0].length;
             String datetime = params[0][fullLength-7] + " " + params[0][fullLength-6];
             int surveyType = Integer.valueOf(params[0][fullLength-3]);
-            if(surveyType== MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS){
-                emaParams.add(new BasicNameValuePair("didFollow",params[0][0]));
-                emaParams.add(new BasicNameValuePair("howHelpful",params[0][1]));
-                emaParams.add(new BasicNameValuePair("didSmokeY",params[0][2]));
-                emaParams.add(new BasicNameValuePair("didSmokeN",params[0][3]));
-                emaParams.add(new BasicNameValuePair("doInstead",params[0][4]));
-                emaParams.add(new BasicNameValuePair("situation",params[0][fullLength-2]));
-                emaParams.add(new BasicNameValuePair("intention",params[0][fullLength-1]));
+
+            switch(surveyType){
+                case MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS:
+                    emaParams.add(new BasicNameValuePair("didFollow",params[0][0]));
+                    emaParams.add(new BasicNameValuePair("howHelpful",params[0][1]));
+                    emaParams.add(new BasicNameValuePair("didSmokeY",params[0][2]));
+                    emaParams.add(new BasicNameValuePair("didSmokeN",params[0][3]));
+                    emaParams.add(new BasicNameValuePair("doInstead",params[0][4]));
+                    emaParams.add(new BasicNameValuePair("situation",params[0][fullLength-2]));
+                    emaParams.add(new BasicNameValuePair("intention",params[0][fullLength-1]));
+                    break;
+                case MyQuitCalendarSuccessSurvey.KEY_SURVEY_SUCCESS:
+                    emaParams.add(new BasicNameValuePair("areContext",params[0][0]));
+                    emaParams.add(new BasicNameValuePair("didFollow",params[0][1]));
+                    emaParams.add(new BasicNameValuePair("howHelpful",params[0][2]));
+                    emaParams.add(new BasicNameValuePair("didSmokeY",params[0][3]));
+                    emaParams.add(new BasicNameValuePair("didSmokeN",params[0][4]));
+                    emaParams.add(new BasicNameValuePair("doInstead",params[0][5]));
+                    emaParams.add(new BasicNameValuePair("situation",params[0][fullLength-2]));
+                    emaParams.add(new BasicNameValuePair("intention",params[0][fullLength-1]));
+                    break;
+                case MyQuitEndOfDaySurvey.KEY_SURVEY_SUCCESS:
+                    emaParams.add(new BasicNameValuePair("howManyCigs", params[0][0]));
+                    emaParams.add(new BasicNameValuePair("pssFamily", params[0][1]));
+                    emaParams.add(new BasicNameValuePair("pssMoney", params[0][2]));
+                    emaParams.add(new BasicNameValuePair("pssSchool", params[0][3]));
+                    emaParams.add(new BasicNameValuePair("pssWork", params[0][4]));
+                    emaParams.add(new BasicNameValuePair("naDistressed", params[0][5]));
+                    emaParams.add(new BasicNameValuePair("naIrritable", params[0][6]));
+                    emaParams.add(new BasicNameValuePair("naSad", params[0][7]));
+                    emaParams.add(new BasicNameValuePair("naScared", params[0][8]));
+                    emaParams.add(new BasicNameValuePair("naTense", params[0][9]));
+                    emaParams.add(new BasicNameValuePair("naUpset", params[0][10]));
+                    emaParams.add(new BasicNameValuePair("paCheerful", params[0][11]));
+                    emaParams.add(new BasicNameValuePair("paEnthusiastic", params[0][12]));
+                    emaParams.add(new BasicNameValuePair("paHappy", params[0][13]));
+                    emaParams.add(new BasicNameValuePair("paInterested", params[0][14]));
+                    emaParams.add(new BasicNameValuePair("paProud", params[0][15]));
+                    emaParams.add(new BasicNameValuePair("troubleCigs", params[0][16]));
+                    emaParams.add(new BasicNameValuePair("botherDesire", params[0][17]));
+                    emaParams.add(new BasicNameValuePair("frequentUrges", params[0][18]));
+                    emaParams.add(new BasicNameValuePair("confidentQuit", params[0][19]));
+                    emaParams.add(new BasicNameValuePair("helpQuit", params[0][20]));
+                    emaParams.add(new BasicNameValuePair("vapeCig", params[0][21]));
+                    emaParams.add(new BasicNameValuePair("vapeCigCount", params[0][22]));
+                    emaParams.add(new BasicNameValuePair("vapePuffCount", params[0][23]));
+                    break;
+                case MyQuitOffSuccessSurvey.KEY_SURVEY_SUCCESS:
+                    break;
+                case MyQuitRandomSurvey.KEY_SURVEY_SUCCESS:
+                    emaParams.add(new BasicNameValuePair("whereAt", params[0][0]));
+                    emaParams.add(new BasicNameValuePair("whereAtText", params[0][1]));
+                    emaParams.add(new BasicNameValuePair("whatDoing", params[0][2]));
+                    emaParams.add(new BasicNameValuePair("whatDoingText", params[0][3]));
+                    emaParams.add(new BasicNameValuePair("whoWith", params[0][4]));
+                    emaParams.add(new BasicNameValuePair("hadThese", params[0][5]));
+                    emaParams.add(new BasicNameValuePair("othersSmoke", params[0][6]));
+                    emaParams.add(new BasicNameValuePair("allowSmoke", params[0][7]));
+                    emaParams.add(new BasicNameValuePair("persistStressor", params[0][8]));
+                    emaParams.add(new BasicNameValuePair("occurStressor", params[0][9]));
+                    emaParams.add(new BasicNameValuePair("naScared", params[0][10]));
+                    emaParams.add(new BasicNameValuePair("naUpset", params[0][11]));
+                    emaParams.add(new BasicNameValuePair("naDistressed", params[0][12]));
+                    emaParams.add(new BasicNameValuePair("naTense", params[0][13]));
+                    emaParams.add(new BasicNameValuePair("naSad", params[0][14]));
+                    emaParams.add(new BasicNameValuePair("naIrritable", params[0][15]));
+                    emaParams.add(new BasicNameValuePair("naHopeless", params[0][16]));
+                    emaParams.add(new BasicNameValuePair("paHappy", params[0][17]));
+                    emaParams.add(new BasicNameValuePair("paCheerful", params[0][18]));
+                    emaParams.add(new BasicNameValuePair("paEnthusiastic", params[0][19]));
+                    emaParams.add(new BasicNameValuePair("paProud", params[0][20]));
+                    emaParams.add(new BasicNameValuePair("paInterested", params[0][21]));
+                    emaParams.add(new BasicNameValuePair("pssSchool", params[0][22]));
+                    emaParams.add(new BasicNameValuePair("pssWork", params[0][23]));
+                    emaParams.add(new BasicNameValuePair("pssFamily", params[0][24]));
+                    emaParams.add(new BasicNameValuePair("pssMoney", params[0][25]));
+                    emaParams.add(new BasicNameValuePair("ccMindCig", params[0][26]));
+                    emaParams.add(new BasicNameValuePair("ccMindVape", params[0][27]));
+                    emaParams.add(new BasicNameValuePair("ccDesireCig", params[0][28]));
+                    emaParams.add(new BasicNameValuePair("ccDesireVape", params[0][29]));
+                    emaParams.add(new BasicNameValuePair("ccUrgeCig", params[0][30]));
+                    emaParams.add(new BasicNameValuePair("ccUrgeVape", params[0][31]));
+                    emaParams.add(new BasicNameValuePair("anhedoniaPeople", params[0][32]));
+                    emaParams.add(new BasicNameValuePair("anhedoniaHobby", params[0][33]));
+                    emaParams.add(new BasicNameValuePair("anhedoniaSocial", params[0][34]));
+                    break;
+                case MyQuitSmokeSurvey.KEY_SURVEY_SUCCESS:
+                    emaParams.add(new BasicNameValuePair("whereAt", params[0][0]));
+                    emaParams.add(new BasicNameValuePair("whereAtText", params[0][1]));
+                    emaParams.add(new BasicNameValuePair("whatDoing", params[0][2]));
+                    emaParams.add(new BasicNameValuePair("whatDoingText", params[0][3]));
+                    emaParams.add(new BasicNameValuePair("reasonSmoke", params[0][4]));
+                    emaParams.add(new BasicNameValuePair("reasonSmokeText", params[0][5]));
+                    emaParams.add(new BasicNameValuePair("whoWith", params[0][6]));
+                    emaParams.add(new BasicNameValuePair("hadThese", params[0][7]));
+                    emaParams.add(new BasicNameValuePair("othersSmoke", params[0][8]));
+                    emaParams.add(new BasicNameValuePair("allowSmoke", params[0][9]));
+                    emaParams.add(new BasicNameValuePair("persistStressor", params[0][10]));
+                    emaParams.add(new BasicNameValuePair("occurStressor", params[0][11]));
+                    emaParams.add(new BasicNameValuePair("naScared", params[0][12]));
+                    emaParams.add(new BasicNameValuePair("naUpset", params[0][13]));
+                    emaParams.add(new BasicNameValuePair("naDistressed", params[0][14]));
+                    emaParams.add(new BasicNameValuePair("naTense", params[0][15]));
+                    emaParams.add(new BasicNameValuePair("naSad", params[0][16]));
+                    emaParams.add(new BasicNameValuePair("naIrritable", params[0][17]));
+                    emaParams.add(new BasicNameValuePair("naHopeless", params[0][18]));
+                    emaParams.add(new BasicNameValuePair("paHappy", params[0][19]));
+                    emaParams.add(new BasicNameValuePair("paCheerful", params[0][20]));
+                    emaParams.add(new BasicNameValuePair("paEnthusiastic", params[0][21]));
+                    emaParams.add(new BasicNameValuePair("paProud", params[0][22]));
+                    emaParams.add(new BasicNameValuePair("paInterested", params[0][23]));
+                    emaParams.add(new BasicNameValuePair("pssSchool", params[0][24]));
+                    emaParams.add(new BasicNameValuePair("pssWork", params[0][25]));
+                    emaParams.add(new BasicNameValuePair("pssFamily", params[0][26]));
+                    emaParams.add(new BasicNameValuePair("pssMoney", params[0][27]));
+                    emaParams.add(new BasicNameValuePair("ccMindCig", params[0][28]));
+                    emaParams.add(new BasicNameValuePair("ccDesireCig", params[0][29]));
+                    emaParams.add(new BasicNameValuePair("ccUrgeCig", params[0][30]));
+                    emaParams.add(new BasicNameValuePair("anhedoniaPeople", params[0][31]));
+                    emaParams.add(new BasicNameValuePair("anhedoniaHobby", params[0][32]));
+                    emaParams.add(new BasicNameValuePair("anhedoniaSocial", params[0][33]));
+                    break;
             }
 
             emaParams.add(new BasicNameValuePair("username",params[0][fullLength-4]));
@@ -191,6 +311,7 @@ public class MyQuitPHP {
 
             } catch (UnsupportedEncodingException e)
             {
+                Log.d("MQU-PHP","URL is not supported or encoded");
                 e.printStackTrace();
             }
 
@@ -337,14 +458,127 @@ public class MyQuitPHP {
         int fullLength = params.length;
         String datetime = params[fullLength-7] + " " + params[fullLength-6];
         int surveyType = Integer.valueOf(params[fullLength-3]);
-        if(surveyType==MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS){
-            emaParams.add(new BasicNameValuePair("didFollow",params[0]));
-            emaParams.add(new BasicNameValuePair("howHelpful",params[1]));
-            emaParams.add(new BasicNameValuePair("didSmokeY",params[2]));
-            emaParams.add(new BasicNameValuePair("didSmokeN",params[3]));
-            emaParams.add(new BasicNameValuePair("doInstead",params[4]));
-            emaParams.add(new BasicNameValuePair("situation",params[fullLength-2]));
-            emaParams.add(new BasicNameValuePair("intention",params[fullLength-1]));
+        switch(surveyType){
+            case MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS:
+                emaParams.add(new BasicNameValuePair("didFollow",params[0]));
+                emaParams.add(new BasicNameValuePair("howHelpful",params[1]));
+                emaParams.add(new BasicNameValuePair("didSmokeY",params[2]));
+                emaParams.add(new BasicNameValuePair("didSmokeN",params[3]));
+                emaParams.add(new BasicNameValuePair("doInstead",params[4]));
+                emaParams.add(new BasicNameValuePair("situation",params[fullLength-2]));
+                emaParams.add(new BasicNameValuePair("intention",params[fullLength-1]));
+                break;
+            case MyQuitCalendarSuccessSurvey.KEY_SURVEY_SUCCESS:
+                emaParams.add(new BasicNameValuePair("areContext",params[0]));
+                emaParams.add(new BasicNameValuePair("didFollow",params[1]));
+                emaParams.add(new BasicNameValuePair("howHelpful",params[2]));
+                emaParams.add(new BasicNameValuePair("didSmokeY",params[3]));
+                emaParams.add(new BasicNameValuePair("didSmokeN",params[4]));
+                emaParams.add(new BasicNameValuePair("doInstead",params[5]));
+                emaParams.add(new BasicNameValuePair("situation",params[fullLength-2]));
+                emaParams.add(new BasicNameValuePair("intention",params[fullLength-1]));
+                break;
+            case MyQuitEndOfDaySurvey.KEY_SURVEY_SUCCESS:
+                emaParams.add(new BasicNameValuePair("howManyCigs", params[0]));
+                emaParams.add(new BasicNameValuePair("pssFamily", params[1]));
+                emaParams.add(new BasicNameValuePair("pssMoney", params[2]));
+                emaParams.add(new BasicNameValuePair("pssSchool", params[3]));
+                emaParams.add(new BasicNameValuePair("pssWork", params[4]));
+                emaParams.add(new BasicNameValuePair("naDistressed", params[5]));
+                emaParams.add(new BasicNameValuePair("naIrritable", params[6]));
+                emaParams.add(new BasicNameValuePair("naSad", params[7]));
+                emaParams.add(new BasicNameValuePair("naScared", params[8]));
+                emaParams.add(new BasicNameValuePair("naTense", params[9]));
+                emaParams.add(new BasicNameValuePair("naUpset", params[10]));
+                emaParams.add(new BasicNameValuePair("paCheerful", params[11]));
+                emaParams.add(new BasicNameValuePair("paEnthusiastic", params[12]));
+                emaParams.add(new BasicNameValuePair("paHappy", params[13]));
+                emaParams.add(new BasicNameValuePair("paInterested", params[14]));
+                emaParams.add(new BasicNameValuePair("paProud", params[15]));
+                emaParams.add(new BasicNameValuePair("troubleCigs", params[16]));
+                emaParams.add(new BasicNameValuePair("botherDesire", params[17]));
+                emaParams.add(new BasicNameValuePair("frequentUrges", params[18]));
+                emaParams.add(new BasicNameValuePair("confidentQuit", params[19]));
+                emaParams.add(new BasicNameValuePair("helpQuit", params[20]));
+                emaParams.add(new BasicNameValuePair("vapeCig", params[21]));
+                emaParams.add(new BasicNameValuePair("vapeCigCount", params[22]));
+                emaParams.add(new BasicNameValuePair("vapePuffCount", params[23]));
+                break;
+            case MyQuitOffSuccessSurvey.KEY_SURVEY_SUCCESS:
+                break;
+            case MyQuitRandomSurvey.KEY_SURVEY_SUCCESS:
+                emaParams.add(new BasicNameValuePair("whereAt", params[0]));
+                emaParams.add(new BasicNameValuePair("whereAtText", params[1]));
+                emaParams.add(new BasicNameValuePair("whatDoing", params[2]));
+                emaParams.add(new BasicNameValuePair("whatDoingText", params[3]));
+                emaParams.add(new BasicNameValuePair("whoWith", params[4]));
+                emaParams.add(new BasicNameValuePair("hadThese", params[5]));
+                emaParams.add(new BasicNameValuePair("othersSmoke", params[6]));
+                emaParams.add(new BasicNameValuePair("allowSmoke", params[7]));
+                emaParams.add(new BasicNameValuePair("persistStressor", params[8]));
+                emaParams.add(new BasicNameValuePair("occurStressor", params[9]));
+                emaParams.add(new BasicNameValuePair("naScared", params[10]));
+                emaParams.add(new BasicNameValuePair("naUpset", params[11]));
+                emaParams.add(new BasicNameValuePair("naDistressed", params[12]));
+                emaParams.add(new BasicNameValuePair("naTense", params[13]));
+                emaParams.add(new BasicNameValuePair("naSad", params[14]));
+                emaParams.add(new BasicNameValuePair("naIrritable", params[15]));
+                emaParams.add(new BasicNameValuePair("naHopeless", params[16]));
+                emaParams.add(new BasicNameValuePair("paHappy", params[17]));
+                emaParams.add(new BasicNameValuePair("paCheerful", params[18]));
+                emaParams.add(new BasicNameValuePair("paEnthusiastic", params[19]));
+                emaParams.add(new BasicNameValuePair("paProud", params[20]));
+                emaParams.add(new BasicNameValuePair("paInterested", params[21]));
+                emaParams.add(new BasicNameValuePair("pssSchool", params[22]));
+                emaParams.add(new BasicNameValuePair("pssWork", params[23]));
+                emaParams.add(new BasicNameValuePair("pssFamily", params[24]));
+                emaParams.add(new BasicNameValuePair("pssMoney", params[25]));
+                emaParams.add(new BasicNameValuePair("ccMindCig", params[26]));
+                emaParams.add(new BasicNameValuePair("ccMindVape", params[27]));
+                emaParams.add(new BasicNameValuePair("ccDesireCig", params[28]));
+                emaParams.add(new BasicNameValuePair("ccDesireVape", params[29]));
+                emaParams.add(new BasicNameValuePair("ccUrgeCig", params[30]));
+                emaParams.add(new BasicNameValuePair("ccUrgeVape", params[31]));
+                emaParams.add(new BasicNameValuePair("anhedoniaPeople", params[32]));
+                emaParams.add(new BasicNameValuePair("anhedoniaHobby", params[33]));
+                emaParams.add(new BasicNameValuePair("anhedoniaSocial", params[34]));
+                break;
+            case MyQuitSmokeSurvey.KEY_SURVEY_SUCCESS:
+                emaParams.add(new BasicNameValuePair("whereAt", params[0]));
+                emaParams.add(new BasicNameValuePair("whereAtText", params[1]));
+                emaParams.add(new BasicNameValuePair("whatDoing", params[2]));
+                emaParams.add(new BasicNameValuePair("whatDoingText", params[3]));
+                emaParams.add(new BasicNameValuePair("reasonSmoke", params[4]));
+                emaParams.add(new BasicNameValuePair("reasonSmokeText", params[5]));
+                emaParams.add(new BasicNameValuePair("whoWith", params[6]));
+                emaParams.add(new BasicNameValuePair("hadThese", params[7]));
+                emaParams.add(new BasicNameValuePair("othersSmoke", params[8]));
+                emaParams.add(new BasicNameValuePair("allowSmoke", params[9]));
+                emaParams.add(new BasicNameValuePair("persistStressor", params[10]));
+                emaParams.add(new BasicNameValuePair("occurStressor", params[11]));
+                emaParams.add(new BasicNameValuePair("naScared", params[12]));
+                emaParams.add(new BasicNameValuePair("naUpset", params[13]));
+                emaParams.add(new BasicNameValuePair("naDistressed", params[14]));
+                emaParams.add(new BasicNameValuePair("naTense", params[15]));
+                emaParams.add(new BasicNameValuePair("naSad", params[16]));
+                emaParams.add(new BasicNameValuePair("naIrritable", params[17]));
+                emaParams.add(new BasicNameValuePair("naHopeless", params[18]));
+                emaParams.add(new BasicNameValuePair("paHappy", params[19]));
+                emaParams.add(new BasicNameValuePair("paCheerful", params[20]));
+                emaParams.add(new BasicNameValuePair("paEnthusiastic", params[21]));
+                emaParams.add(new BasicNameValuePair("paProud", params[22]));
+                emaParams.add(new BasicNameValuePair("paInterested", params[23]));
+                emaParams.add(new BasicNameValuePair("pssSchool", params[24]));
+                emaParams.add(new BasicNameValuePair("pssWork", params[25]));
+                emaParams.add(new BasicNameValuePair("pssFamily", params[26]));
+                emaParams.add(new BasicNameValuePair("pssMoney", params[27]));
+                emaParams.add(new BasicNameValuePair("ccMindCig", params[28]));
+                emaParams.add(new BasicNameValuePair("ccDesireCig", params[29]));
+                emaParams.add(new BasicNameValuePair("ccUrgeCig", params[30]));
+                emaParams.add(new BasicNameValuePair("anhedoniaPeople", params[31]));
+                emaParams.add(new BasicNameValuePair("anhedoniaHobby", params[32]));
+                emaParams.add(new BasicNameValuePair("anhedoniaSocial", params[33]));
+                break;
         }
 
         emaParams.add(new BasicNameValuePair("username",params[fullLength-4]));

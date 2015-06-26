@@ -33,6 +33,7 @@ public class MyQuitCalendarSuccessSurvey {
     public  List<String[]> getQuestions = Arrays.asList(areContext, didFollow,howHelpful,didSmokeY,
             didSmokeN, doInstead,endMessage);
 
+
     public static int validateNextPosition(int qID, int aID) {
         Log.d("MQU-EMA","Received Qid" + qID + " and " + aID );
         switch (qID) {

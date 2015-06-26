@@ -247,6 +247,36 @@ public class MyQuitCSVHelper{
         }
     }
 
+    public static String[] pullLastEventArray(String logMessage, int emaType) {
+        String fileName;
+        switch(emaType){
+            case CALENDAR_EMA_KEY: fileName = "CalEMAEvents.csv"; break;
+            case END_OF_DAY_EMA_KEY: fileName = "EODEMAEvents.csv"; break;
+            case ROGUE_EMA_KEY: fileName = "SystemEvents.csv"; break;
+            case RANDOM_EMA_KEY: fileName = "RandomEMAEvents.csv"; break;
+            case SMOKE_EMA_KEY: fileName = "SmokeEMAEvents.csv"; break;
+            case OFF_EMA_KEY: fileName = "OffEMAEvents.csv"; break;
+            default: fileName = "SystemEvents.csv"; break;
+        }
+        try {
+            CSVReader reader = new CSVReader(new FileReader(logPath + fileName));
+            String[] report;
+            String[] returnReport = null;
+            String pulledTime = null;
+            String pulledMessage;
+            while((report = reader.readNext()) != null) {
+                pulledMessage = report[0];
+                if (pulledMessage.equalsIgnoreCase(logMessage)) {
+                    returnReport = report;
+                }
+            }
+            return returnReport;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static String pullLastEvent(String logMessage, int emaType) {
         String fileName;
         switch(emaType){

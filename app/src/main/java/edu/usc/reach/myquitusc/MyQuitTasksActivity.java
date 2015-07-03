@@ -25,6 +25,7 @@ public class MyQuitTasksActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final String[] NEW_TASKS_LIST = MyQuitPlanHelper.pullTasksList(getApplicationContext(),false);
+        final String[] NEW_INTENTS_LIST = MyQuitPlanHelper.pullIntentsList(getApplicationContext(),false);
          // MyQuitPlanHelper.taperPullBaseList(getApplicationContext(), 11, 17); // MyQuitPlanHelper.pullTasksList(getApplicationContext());
 
         Intent calendarCall = getIntent();
@@ -85,6 +86,7 @@ public class MyQuitTasksActivity extends Activity {
                 launchBack.putExtra("Weekend",weekEnd);
                 launchBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 MyQuitTasksActivity.this.overridePendingTransition(R.anim.abc_slide_in_bottom,R.anim.abc_slide_out_top);
+                MyQuitPHP.postCalendarEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),callingDate,MyQuitCSVHelper.defaultTimes[positionTitle],NEW_TASKS_LIST[position],NEW_INTENTS_LIST[position],MyQuitCSVHelper.getFulltime());
                 startActivity(launchBack);
              }
         });

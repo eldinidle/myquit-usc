@@ -250,6 +250,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             });
 
             Button gonnaSmoke = (Button) findViewById(R.id.smokeNow);
+            gonnaSmoke.setText("I want to smoke!");
             oopsSmoke.setOnClickListener(null);
             gonnaSmoke.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -366,11 +367,12 @@ public class MyQuitHomeScreen extends ActionBarActivity {
 
             Button gonnaSmoke = (Button) findViewById(R.id.smokeNow);
             gonnaSmoke.setOnClickListener(null);
+            gonnaSmoke.setText("I am about to smoke!");
             gonnaSmoke.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     try {
-                        MyQuitEMAHelper.pushSmokingEvent();
+                        MyQuitEMAHelper.pushSmokingEvent(getApplicationContext());
                     } catch (IOException e) {
                         e.printStackTrace();
                         Toast.makeText(v.getContext(),"Please try again.",Toast.LENGTH_LONG).show();

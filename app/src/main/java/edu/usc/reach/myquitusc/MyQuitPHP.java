@@ -45,11 +45,17 @@ public class MyQuitPHP {
     private final static String rogueSuccessTable = "RoguePushSuccessTable.csv";
     private final static String trackerSuccessTable = "TrackerPushSuccessTable.csv";
     private final static String emaSuccessTable = "EMAPushSuccessTable.csv";
+    private final static String calendarSuccessTable = "CalendarPushSuccessTable.csv";
+    private final static String gpsSuccessTable = "GPSPushSuccessTable.csv";
+
     private final static String unPlannedSuccessTable = "UnplannedPushSuccessTable.csv";
 
     private static final String urlPostRogueEvent = "http://myquitadmin.usc.edu/data.php";
     private static final String urlTrackerEvent = "http://myquitadmin.usc.edu/tracker.php";
     private static final String urlPostEMAEvent = "http://myquitadmin.usc.edu/myquitema.php";
+    private static final String urlPostCalendarEvent = "http://myquitadmin.usc.edu/calendar.php";
+    private static final String urlPostGPSEvent = "http://myquitadmin.usc.edu/gps.php";
+
     private static final String urlPostUnplannedEvent = "http://myquit.usc.edu/postunplanned.php";
 
 
@@ -144,6 +150,105 @@ public class MyQuitPHP {
                 // Log exception
                 e.printStackTrace();
                 postTrackerStatus(params[0], params[1], params[2], params[3]);
+            }
+
+            return null;
+        }
+    }
+
+    static class PostGPSEvent extends AsyncTask<String,String,String> {
+
+
+
+        @Override
+        protected String doInBackground(String... params) {
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost(urlPostGPSEvent);
+            Log.d("MQU-PHP","Param 1 is" + params[0]);
+            Log.d("MQU-PHP","Param 2 is" + params[1]);
+            Log.d("MQU-PHP","Param 3 is" + params[2]);
+            Log.d("MQU-PHP","Param 4 is" + params[3]);
+            List<NameValuePair> rogueParams = new ArrayList<NameValuePair>();
+            rogueParams.add(new BasicNameValuePair("username",params[0]));
+            rogueParams.add(new BasicNameValuePair("fulltime",params[1]));
+            rogueParams.add(new BasicNameValuePair("latitude",params[2]));
+            rogueParams.add(new BasicNameValuePair("longitude",params[3]));
+            rogueParams.add(new BasicNameValuePair("accuracy",params[4]));
+            rogueParams.add(new BasicNameValuePair("allowed",String.valueOf(phpAllowInteger)));
+
+            try {
+                httpPost.setEntity(new UrlEncodedFormEntity(rogueParams));
+                Log.d("MQU-PHP","URL is now encoded");
+
+            } catch (UnsupportedEncodingException e)
+            {
+                e.printStackTrace();
+            }
+
+            try {
+                HttpResponse response = httpClient.execute(httpPost);
+                // write response to log
+                Log.d("MQU-PHP", "Http Post Response:" + response.toString());
+            } catch (ClientProtocolException e) {
+                // Log exception
+                Log.d("MQU-PHP", "Http Post Response CPE error");
+                e.printStackTrace();
+                postGPSStatus(params[0], params[1], params[2], params[3], params[4]);
+            } catch (IOException e) {
+                Log.d("MQU-PHP", "Http Post Response IO error");
+                // Log exception
+                e.printStackTrace();
+                postGPSStatus(params[0], params[1], params[2], params[3], params[4]);
+            }
+
+            return null;
+        }
+    }
+
+    static class PostCalendarEvent extends AsyncTask<String,String,String> {
+
+
+
+        @Override
+        protected String doInBackground(String... params) {
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost(urlPostCalendarEvent);
+            Log.d("MQU-PHP","Param 1 is" + params[0]);
+            Log.d("MQU-PHP","Param 2 is" + params[1]);
+            Log.d("MQU-PHP","Param 3 is" + params[2]);
+            Log.d("MQU-PHP","Param 4 is" + params[3]);
+            List<NameValuePair> rogueParams = new ArrayList<NameValuePair>();
+            rogueParams.add(new BasicNameValuePair("username",params[0]));
+            rogueParams.add(new BasicNameValuePair("caldate",params[1]));
+            rogueParams.add(new BasicNameValuePair("hour",params[2]));
+            rogueParams.add(new BasicNameValuePair("situation",params[3]));
+            rogueParams.add(new BasicNameValuePair("intention",params[4]));
+            rogueParams.add(new BasicNameValuePair("timechanged",params[5]));
+            rogueParams.add(new BasicNameValuePair("allowed",String.valueOf(phpAllowInteger)));
+
+            try {
+                httpPost.setEntity(new UrlEncodedFormEntity(rogueParams));
+                Log.d("MQU-PHP","URL is now encoded");
+
+            } catch (UnsupportedEncodingException e)
+            {
+                e.printStackTrace();
+            }
+
+            try {
+                HttpResponse response = httpClient.execute(httpPost);
+                // write response to log
+                Log.d("MQU-PHP", "Http Post Response:" + response.toString());
+            } catch (ClientProtocolException e) {
+                // Log exception
+                Log.d("MQU-PHP", "Http Post Response CPE error");
+                e.printStackTrace();
+                postCalendarStatus(params[0], params[1], params[2], params[3], params[4], params[5]);
+            } catch (IOException e) {
+                Log.d("MQU-PHP", "Http Post Response IO error");
+                // Log exception
+                e.printStackTrace();
+                postCalendarStatus(params[0], params[1], params[2], params[3], params[4], params[5]);
             }
 
             return null;
@@ -398,6 +503,70 @@ public class MyQuitPHP {
         }
     }
 
+    static class SyncGPSEvent extends AsyncTask<String,String,String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            String fileName = gpsSuccessTable;
+            try {
+                CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.logPath + fileName));
+                List<String[]> pullTimes = reader.readAll();
+                reader.close();
+                Log.d("MQU-PHP","Pulled" + pullTimes.size());
+                List<String[]> newPush = new ArrayList<String[]>();
+                for(String[] row: pullTimes){
+                    if(!syncGPSEvent(row[0], row[1], row[2], row[3], row[4])){
+                        Log.d("MQU-PHP","Adding" + row[0] + row[1] + row[2]);
+                        newPush.add(row);
+                        Log.d("MQU-PHP","Added" + row[0] + row[1] + row[2]);
+                    }
+                }
+                CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.logPath + fileName));
+                writer.writeAll(newPush);
+                writer.close();
+            } catch (FileNotFoundException e) {
+                Log.d("MQU-PHP","Failure FNF EMA");
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+    }
+
+    static class SyncCalendarEvent extends AsyncTask<String,String,String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            String fileName = calendarSuccessTable;
+            try {
+                CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.logPath + fileName));
+                List<String[]> pullTimes = reader.readAll();
+                reader.close();
+                Log.d("MQU-PHP","Pulled" + pullTimes.size());
+                List<String[]> newPush = new ArrayList<String[]>();
+                for(String[] row: pullTimes){
+                    if(!syncCalendarEvent(row[0], row[1], row[2], row[3], row[4], row[5])){
+                        Log.d("MQU-PHP","Adding" + row[0] + row[1] + row[2]);
+                        newPush.add(row);
+                        Log.d("MQU-PHP","Added" + row[0] + row[1] + row[2]);
+                    }
+                }
+                CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.logPath + fileName));
+                writer.writeAll(newPush);
+                writer.close();
+            } catch (FileNotFoundException e) {
+                Log.d("MQU-PHP","Failure FNF EMA");
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+    }
+
     static class SyncEMAEvent extends AsyncTask<String[],String,String> {
 
         @Override
@@ -439,6 +608,26 @@ public class MyQuitPHP {
         String fixedSituation = trackerSituation.replace("'","");
         String fixedSituation2 = trackerMetaData.replace("'","");
         new PostTrackerEvent().execute(userName, fixedSituation, trackerMetaData, calledDateTime);
+    }
+
+    public static void postGPSEvent(String userName, String fulltime, String latitude, String longitude, String accuracy)  {
+        String userName2 = userName.replace("'","");
+        String fulltime2 = fulltime.replace("'","");
+        String latitude2 = latitude.replace("'","");
+        String longitude2 = longitude.replace("'","");
+        String accuracy2 = accuracy.replace("'","");
+        new PostGPSEvent().execute(userName2, fulltime2, latitude2, longitude2, accuracy2);
+    }
+
+    public static void postCalendarEvent(String userName, String calDate, String hour, String situation, String intention, String timeChanged)  {
+        String fixedName = userName.replace("'","");
+        String fixedCalDate2 = calDate.replace("'","");
+        String fixedCalDate = fixedCalDate2.replace("DEFAULT_","");
+        String fixedHour = hour.replace("'","");
+        String fixedSituation = situation.replace("'","");
+        String fixedIntention = intention.replace("'","");
+        String fixedTimeChange = timeChanged.replace("'","");
+        new PostCalendarEvent().execute(fixedName, fixedCalDate, fixedHour, fixedSituation, fixedIntention, fixedTimeChange);
     }
 
     public static void postEMAEvent(String[] surveyParams) {
@@ -690,6 +879,85 @@ public class MyQuitPHP {
         }
     }
 
+    public static boolean syncGPSEvent(String userName, String fulltime, String latitude, String longitude, String accuracy)  {
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(urlPostGPSEvent);
+        List<NameValuePair> rogueParams = new ArrayList<NameValuePair>();
+        rogueParams.add(new BasicNameValuePair("username",userName));
+        rogueParams.add(new BasicNameValuePair("fulltime",fulltime));
+        rogueParams.add(new BasicNameValuePair("latitude",latitude));
+        rogueParams.add(new BasicNameValuePair("longitude",longitude));
+        rogueParams.add(new BasicNameValuePair("accuracy",accuracy));
+        rogueParams.add(new BasicNameValuePair("allowed",String.valueOf(phpAllowInteger)));
+        Log.d("MQU-PHP","Caught" + userName + latitude + longitude);
+
+        try {
+            httpPost.setEntity(new UrlEncodedFormEntity(rogueParams));
+            Log.d("MQU-PHP","URL is now encoded");
+        } catch (UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+
+        try {
+            HttpResponse response = httpClient.execute(httpPost);
+            // write response to log
+            Log.d("MQU-PHP", "Http Post Response:" + response.toString());
+            return true;
+        } catch (ClientProtocolException e) {
+            // Log exception
+            Log.d("MQU-PHP", "Http Post Response CPE error");
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            Log.d("MQU-PHP", "Http Post Response IO error");
+            // Log exception
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean syncCalendarEvent(String userName, String calDate, String hour, String situation, String intention, String timeChanged)  {
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(urlPostCalendarEvent);
+        List<NameValuePair> rogueParams = new ArrayList<NameValuePair>();
+        rogueParams.add(new BasicNameValuePair("username",userName));
+        rogueParams.add(new BasicNameValuePair("caldate",calDate));
+        rogueParams.add(new BasicNameValuePair("hour",hour));
+        rogueParams.add(new BasicNameValuePair("situation",situation));
+        rogueParams.add(new BasicNameValuePair("intention",intention));
+        rogueParams.add(new BasicNameValuePair("timechanged",timeChanged));
+        rogueParams.add(new BasicNameValuePair("allowed",String.valueOf(phpAllowInteger)));
+        Log.d("MQU-PHP","Caught" + userName + hour + timeChanged);
+
+        try {
+            httpPost.setEntity(new UrlEncodedFormEntity(rogueParams));
+            Log.d("MQU-PHP","URL is now encoded");
+        } catch (UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+
+        try {
+            HttpResponse response = httpClient.execute(httpPost);
+            // write response to log
+            Log.d("MQU-PHP", "Http Post Response:" + response.toString());
+            return true;
+        } catch (ClientProtocolException e) {
+            // Log exception
+            Log.d("MQU-PHP", "Http Post Response CPE error");
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            Log.d("MQU-PHP", "Http Post Response IO error");
+            // Log exception
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static void postRogueStatus(String userName, String rogueSituation, String calledDateTime) {
         String fileName = rogueSuccessTable;
         try {
@@ -712,6 +980,35 @@ public class MyQuitPHP {
             writer.close();
         } catch (IOException e) {
             Log.e("MyQuitUSC","RoguePushSuccess table write failure");
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void postGPSStatus(String userName, String fulltime, String latitude, String longitude, String accuracy) {
+        String fileName = gpsSuccessTable;
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.logPath + fileName,true));
+            String[] pushRow = new String[] {userName, fulltime, latitude, longitude, accuracy};
+            writer.writeNext(pushRow);
+            writer.close();
+        } catch (IOException e) {
+            Log.e("MyQuitUSC","RoguePushSuccess table write failure");
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public static void postCalendarStatus(String userName, String calDate, String hour, String situation, String intention, String timeChanged) {
+        String fileName = calendarSuccessTable;
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.logPath + fileName,true));
+            String[] pushRow = new String[] {userName, calDate, hour, situation, intention, timeChanged};
+            writer.writeNext(pushRow);
+            writer.close();
+        } catch (IOException e) {
+            Log.e("MyQuitUSC","CalendarPushSuccess table write failure");
             e.printStackTrace();
         }
 
@@ -811,6 +1108,8 @@ public class MyQuitPHP {
             new SyncRogueEvent().execute();
             new SyncTrackerEvent().execute();
             new SyncEMAEvent().execute();
+            new SyncCalendarEvent().execute();
+            new SyncGPSEvent().execute();
             Log.d("MQU-PHP", "Finished looping");
         }
     }

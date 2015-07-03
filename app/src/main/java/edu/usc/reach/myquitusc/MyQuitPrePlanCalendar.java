@@ -4,15 +4,18 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +28,48 @@ import java.util.Date;
 
 
 public class MyQuitPrePlanCalendar extends Activity {
+
+    private void setEndOfDay(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        CharSequence[] hourList = {"8:00 PM","9:00 PM","10:00 PM","11:00 PM"};
+        //String[] hourList = new String[]{"8:00 PM","9:00 PM","10:00 PM","11:00 PM"};
+        //ArrayAdapter<String> hoursAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_activated_1,hourList);
+        builder.setTitle(("Select preferred time to receive your evening survey:"))
+                .setCancelable(false)
+                .setItems(hourList,new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        MyQuitCSVHelper.logLoginEvents("EOD Prompt",String.valueOf(which+20),MyQuitCSVHelper.getFulltime());
+                        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"EOD Prompt Selected",String.valueOf(which+20),MyQuitCSVHelper.getFulltime());
+                        Intent homeLaunch = new Intent(getApplicationContext(), MyQuitHomeScreen.class);
+                        homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        MyQuitPrePlanCalendar.this.overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
+                        MyQuitCSVHelper.logLoginEvents("completedPlans", MyQuitCSVHelper.getFulltime());
+                        startActivity(homeLaunch);
+                        dialog.dismiss();
+                    }
+                });
+
+                /*.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1,hourList)
+                        ,new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                MyQuitCSVHelper.logLoginEvents("EOD Prompt",String.valueOf(which+20),MyQuitCSVHelper.getFulltime());
+                MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"EOD Prompt Selected",String.valueOf(which+20),MyQuitCSVHelper.getFulltime());
+                Intent homeLaunch = new Intent(getApplicationContext(), MyQuitHomeScreen.class);
+                homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                MyQuitPrePlanCalendar.this.overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
+                MyQuitCSVHelper.logLoginEvents("completedPlans", MyQuitCSVHelper.getFulltime());
+                startActivity(homeLaunch);
+                dialog.dismiss();
+            }
+        });*/
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        formatDialog(dialog);
+    }
 
     public void formatDialog(AlertDialog dialog) {
         Button posButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
@@ -149,12 +194,8 @@ public class MyQuitPrePlanCalendar extends Activity {
             public void onClick(View v) {
                 if (weekEnd) {
                     if (MyQuitAutoAssign.minimumLabelConfirm("DEFAULT_WEEKEND")) {
-                        Intent homeLaunch = new Intent(v.getContext(), MyQuitHomeScreen.class);
-                        homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        MyQuitPrePlanCalendar.this.overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
-                        MyQuitCSVHelper.logLoginEvents("completedPlans", MyQuitCSVHelper.getFulltime());
-                        startActivity(homeLaunch);
+                        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Default Calendar Changed","NA",MyQuitCSVHelper.getFulltime());
+                        setEndOfDay();
                     } else {
                         Toast.makeText(v.getContext(), "Please enter at least " +
                                         MyQuitAutoAssign.minimumLabels + " labels in the day",
@@ -169,7 +210,6 @@ public class MyQuitPrePlanCalendar extends Activity {
                         homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         finish();
-                        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Default Calendar Changed","NA",MyQuitCSVHelper.getFulltime());
                         startActivity(homeLaunch);
                     } else {
                         Toast.makeText(v.getContext(), "Please enter at least " +

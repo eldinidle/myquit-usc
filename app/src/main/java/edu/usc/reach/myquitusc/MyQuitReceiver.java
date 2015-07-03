@@ -1,10 +1,12 @@
 package edu.usc.reach.myquitusc;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -13,6 +15,7 @@ import java.util.Calendar;
 
 public class MyQuitReceiver extends BroadcastReceiver {
    // static final int KEY_NUM_REPROMPTS = 3;
+
 
     public MyQuitReceiver() {
     }
@@ -29,6 +32,7 @@ public class MyQuitReceiver extends BroadcastReceiver {
         MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.OFF_EMA_KEY);
         MyQuitCalendarHelper.decideCalendar(context);
         MyQuitPHP.decidePHPPost();
+        MyQuitGPSHelper.pushGPSData(context);
     }
 
 
@@ -38,6 +42,7 @@ public class MyQuitReceiver extends BroadcastReceiver {
         MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.RANDOM_EMA_KEY);
         MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.SMOKE_EMA_KEY);
         MyQuitPHP.decidePHPPost();
+        MyQuitGPSHelper.pushGPSData(context);
     }
 
     @Override

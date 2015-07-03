@@ -28,7 +28,21 @@ import edu.usc.reach.myquitusc.Surveys.MyQuitRandomSurvey;
  */
 public class MyQuitEMAHelper {
     static final int KEY_NUM_REPROMPTS = 3;
-    static final int KEY_EOD_PROMPT_HOUR = 22;
+
+    private static int KEY_EOD_PROMPT_HOUR() {
+        try {
+            int checkReturnHour = Integer.parseInt(MyQuitCSVHelper.pullLoginStatus("EOD Prompt"));
+            if(checkReturnHour < 20 | checkReturnHour > 23){
+                return 22;
+            }
+            else{return checkReturnHour;}
+        }
+        catch(NumberFormatException nfe){
+            return 22;
+        }
+    }
+
+    //static final int KEY_EOD_PROMPT_HOUR = 22;
 
     private static final SimpleDateFormat newsdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
@@ -257,7 +271,7 @@ public class MyQuitEMAHelper {
         writer.close();
     }
 
-    public static void pushSmokingEvent() throws IOException {
+    public static void pushSmokingEvent(Context context) throws IOException {
         String fileName = "DelayedSmokeEMA.csv";
         CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.emaPath + fileName,true));
         Calendar now = Calendar.getInstance();
@@ -270,6 +284,7 @@ public class MyQuitEMAHelper {
         String[] pushArray = new String[] {newsdf.format(then),String.valueOf(activate)};
         writer.writeNext(pushArray);
         writer.close();
+        MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.SMOKE_EMA_KEY);
     }
 
     public static void setUpSmokeEMA() {
@@ -299,8 +314,8 @@ public class MyQuitEMAHelper {
 
     public static void setUpEODEMA() {
         Calendar nowTime = Calendar.getInstance();
-        if(nowTime.get(Calendar.HOUR_OF_DAY) >= KEY_EOD_PROMPT_HOUR &&
-                MyQuitCSVHelper.isLastEventPastXMinutesTrue(MyQuitCSVHelper.END_OF_DAY_EMA_KEY, (60*(24-KEY_EOD_PROMPT_HOUR)))){
+        if(nowTime.get(Calendar.HOUR_OF_DAY) >= KEY_EOD_PROMPT_HOUR() &&
+                MyQuitCSVHelper.isLastEventPastXMinutesTrue(MyQuitCSVHelper.END_OF_DAY_EMA_KEY, (60*(24-KEY_EOD_PROMPT_HOUR())))){
             MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"EMA Prompt Ready","EOD",MyQuitCSVHelper.getFulltime());
             MyQuitCSVHelper.logEMAEvents(MyQuitCSVHelper.END_OF_DAY_EMA_KEY,
                     "intentPresented", MyQuitCSVHelper.getFulltime(),"","");
@@ -384,6 +399,13 @@ public class MyQuitEMAHelper {
     }
 
 
+    public static int lagDelay(int emaType) {
+        switch(emaType){
+            case 3: return 15;
+            default: return 3;
+        }
+    }
+
     public static void decideEMA (Context context, int emaType) {
         Log.d("MQU-DECIDE","Decision on" + emaType);
     try {
@@ -393,7 +415,7 @@ public class MyQuitEMAHelper {
         } else if (MyQuitCSVHelper.pullLastEvent(emaType)[0].substring(0, 11).equalsIgnoreCase("emaReprompt") & (MyQuitCSVHelper.convertRepromptChar(emaType) > KEY_NUM_REPROMPTS)) {
             MyQuitCSVHelper.logEMAEvents(emaType, "emaMissedSurvey", MyQuitCSVHelper.getFulltime());
             Log.d("MQU-DECIDE","Decision is missed");
-        } else if ((MyQuitCSVHelper.pullLastEvent(emaType)[0].equalsIgnoreCase("emaPrompted") | MyQuitCSVHelper.pullLastEvent(emaType)[0].substring(0, 11).equalsIgnoreCase("emaReprompt")) & MyQuitCSVHelper.isLastEventPastXMinutes(emaType,3)) {
+        } else if ((MyQuitCSVHelper.pullLastEvent(emaType)[0].equalsIgnoreCase("emaPrompted") | MyQuitCSVHelper.pullLastEvent(emaType)[0].substring(0, 11).equalsIgnoreCase("emaReprompt")) & MyQuitCSVHelper.isLastEventPastXMinutes(emaType,lagDelay(emaType))) {
             pushActionEMA(context, emaType);
             Log.d("MQU-DECIDE","Decision is reprompt");
         } else if (MyQuitCSVHelper.pullLastEvent(emaType)[0].equalsIgnoreCase("emaMissedSurvey")){

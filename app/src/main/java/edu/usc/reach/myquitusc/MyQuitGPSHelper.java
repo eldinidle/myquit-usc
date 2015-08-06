@@ -11,12 +11,19 @@ import com.opencsv.CSVWriter;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import edu.usc.reach.myquitusc.Surveys.MyQuitRandomSurvey;
 
 /**
  * Created by Eldin on 7/1/15.
  */
 public class MyQuitGPSHelper {
 
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
     Context mContext;
 
@@ -58,8 +65,10 @@ public class MyQuitGPSHelper {
 
 
     public static void pushGPSData(Context context) {
-        String[] pushGPS = getLocationArray(context);
-        MyQuitPHP.postGPSEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),pushGPS[0],pushGPS[1],pushGPS[2],pushGPS[3]);
+        if(pushGPSDataCheck(context)) {
+            String[] pushGPS = getLocationArray(context);
+            MyQuitPHP.postGPSEvent(MyQuitCSVHelper.pullLoginStatus("UserName"), pushGPS[0], pushGPS[1], pushGPS[2], pushGPS[3]);
+        }
         /*
         String calledDate = MyQuitCSVHelper.getFullDate();
         String stepDate = calledDate.replaceAll("/", "_");
@@ -74,6 +83,87 @@ public class MyQuitGPSHelper {
         }
         */
     }
+
+    /*
+  **  Pre QD every 2 minutes for 10 minutes up to risky schedule every 2 minutes for 10 minutes after risky schedule
+every 2 minutes for 10 minutes BEFORE and AFTER Random every 2 minutes for 10 minutes BEFORE and AFTER Smoking
+ ** Post QD every 2 minutes for 10 minutes up to risky schedule every 2 minutes for 10 minutes after risky schedule
+ ** every 2 minutes for 10 minutes when I Just Smoked is pressed every 2 minutes for 10 minutes when I want to smoke is pressed
+     */
+
+    private static boolean pushGPSDataCheck(Context context) {
+        if(MyQuitCalendarHelper.isWithinXNextHour(10) && !MyQuitCalendarHelper.returnIntentFromSituation(context, true).
+                equalsIgnoreCase("No Match") && !MyQuitCalendarHelper.isWithinXAfterHour(20)){
+            return true;
+        }
+        else if (!MyQuitCalendarHelper.isWithinXNextHour(10) && !MyQuitCalendarHelper.returnIntentFromSituation(context, false).
+                equalsIgnoreCase("No Match") && MyQuitCalendarHelper.isWithinXAfterHour(10)){
+            return true;
+        }
+        else if (compareCigCraveTimes(true)){
+            return true;
+        }
+        else if (compareCigCraveTimes(false)){
+            return true;
+        }
+        else if (MyQuitExperienceSampling.isXMinutesBeforeRandom(10)){
+            return true;
+        }
+        else if (isWithinTenAfterPresentedEMA(MyQuitRandomSurvey.KEY_SURVEY_SUCCESS)){
+            return true;
+        }
+        else {
+            return false;
+        }
+
+    }
+
+    private static boolean compareCigCraveTimes(Boolean cigCrave){ // true = cig, false = crave
+        try {
+                Date cigTime;
+            if(cigCrave) {
+                 cigTime = MyQuitCSVHelper.pullCigaretteTime(MyQuitCSVHelper.getFullDate());
+            }
+            else {
+                 cigTime = MyQuitCSVHelper.pullCraveTime();
+            }
+            Calendar cigCal = Calendar.getInstance();
+            cigCal.setTime(cigTime);
+            cigCal.add(Calendar.MINUTE,10);
+            cigTime = cigCal.getTime();
+
+            Calendar nowCal = Calendar.getInstance();
+            Date nowTime = nowCal.getTime();
+
+            return cigTime.after(nowTime);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    private static boolean isWithinTenAfterPresentedEMA(int emaType) {
+        String lastEvent = MyQuitCSVHelper.pullLastEvent("intentPresented", emaType);
+        Calendar nowCal = Calendar.getInstance();
+        Date nowTime = nowCal.getTime();
+        try {
+            nowCal.setTime(sdf.parse(lastEvent));
+            nowCal.add(Calendar.MINUTE,10);
+            return nowTime.before(nowCal.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
+        catch (NullPointerException nee) {
+            nee.printStackTrace();
+            return false;
+        }
+    }
+
 
 
 

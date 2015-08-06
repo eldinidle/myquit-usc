@@ -47,7 +47,7 @@ public class MyQuitEMA extends Activity {
             answers.addView(buttonName);
     }
 
-    void passThroughUpload(int finalSessionID, int survey) {
+    public static void passThroughUpload(int finalSessionID, int survey) {
         Log.d("MQU-PHP","Survey is" + String.valueOf(survey));
         switch (survey) {
             case 1: MyQuitPHP.postEMAEvent(MyQuitEMAHelper.returnLastEMASurvey(MyQuitCSVHelper.getFullDate(),

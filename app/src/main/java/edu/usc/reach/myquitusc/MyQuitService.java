@@ -64,7 +64,7 @@ public class MyQuitService extends Service {
         launchEMA.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         launchEMA.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         emaIntent = PendingIntent.getActivity(this, 0, launchEMA, PendingIntent.FLAG_UPDATE_CURRENT);
-        Uri tone= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        Uri tone= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder emaNotification = new NotificationCompat.Builder(this)
                 .setContentTitle("Click here!")
                 .setContentText("New survey available")
@@ -124,6 +124,7 @@ public class MyQuitService extends Service {
 
        if (decisionAction.matches("EMA")) {
            decisionEMA(emaType, decisionSessionID, surveyID);
+           MyQuitEMA.passThroughUpload(decisionSessionID,emaType);
        }
 
        else if (decisionAction.matches("Calendar")){
@@ -134,7 +135,7 @@ public class MyQuitService extends Service {
            launchCalendar.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
            launchCalendar.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
            calendarIntent = PendingIntent.getActivity(this, 0, launchCalendar, 0);
-           Uri tone= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+           Uri tone= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
            NotificationCompat.Builder calendarNotification = new NotificationCompat.Builder(this)
                    .setContentTitle("Click here!")
                    .setContentText("Let's try something else instead of smoking!")

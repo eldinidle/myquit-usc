@@ -17,6 +17,9 @@ import java.util.List;
  * Created by Eldin Dzubur on 12/26/14.
  */
 public class MyQuitCSVHelper{
+
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+
     /*
     final String filePath;
         final String calPath;
@@ -206,6 +209,20 @@ public class MyQuitCSVHelper{
         }
     }
 
+    public static Date pullCigaretteTime(String calledDate) throws IOException, ParseException {
+        String stepDate = calledDate.replaceAll("/", "_");
+        String fileName = stepDate + ".csv";
+        CSVReader reader = new CSVReader(new FileReader(logPath + fileName));
+        List<String[]> pullCigs = reader.readAll();
+        reader.close();
+        String[] cigDateTime = null;
+        for(String[] holdRow: pullCigs){
+            cigDateTime = holdRow;
+        }
+        String time = cigDateTime[0]; // + " " + cigDateTime[1];
+        return sdf.parse(time);
+    }
+
     public static int pullCigarette(String calledDate) throws IOException {
         String stepDate = calledDate.replaceAll("/", "_");
         String fileName = stepDate + ".csv";
@@ -330,6 +347,17 @@ public class MyQuitCSVHelper{
     }
 
 
+    public static Date pullCraveTime () throws IOException, ParseException {
+        String[] pullEvent = null;
+
+        CSVReader reader = new CSVReader(new FileReader(logPath + "CraveEvents.csv"));
+        List<String[]> allRead = reader.readAll();
+        for(String[] tempStringArray: allRead){
+            pullEvent = tempStringArray;
+        }
+
+        return sdf.parse(pullEvent[1]);
+    }
 
     public static void logCraveEvent(String activity, String fullTime) {
         String[] pushEvent = new String [] {activity, fullTime};

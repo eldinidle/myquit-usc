@@ -275,7 +275,7 @@ public class MyQuitPHP {
             int fullLength = params[0].length;
             String datetime = params[0][fullLength-7] + " " + params[0][fullLength-6];
             int surveyType = Integer.valueOf(params[0][fullLength-3]);
-
+            Log.d("MY-QUIT-USC","added session PHP at survey" + surveyType);
             switch(surveyType){
                 case MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS:
                     emaParams.add(new BasicNameValuePair("didFollow",params[0][0]));
@@ -632,6 +632,7 @@ public class MyQuitPHP {
 
     public static void postEMAEvent(String[] surveyParams) {
        String[] fixedParams = new String[surveyParams.length];
+        Log.d("MY-QUIT-USC","added session PHP fixedparams");
        int count = 0;
        for(String iter: surveyParams){
            fixedParams[count] = iter.replace("'","");

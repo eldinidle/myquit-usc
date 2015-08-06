@@ -182,4 +182,32 @@ public class MyQuitExperienceSampling {
        writer.close();
     }
 
+    public static boolean isXMinutesBeforeRandom(int xMinutes) {
+        Date nowTime = Calendar.getInstance().getTime();
+        try {
+            String[] pulledTime = pullTimes(nowTime);
+            for(String timePull: pulledTime) {
+                Date baseDate = sdf.parse(timePull);
+                Calendar tempCal = Calendar.getInstance();
+                tempCal.setTime(baseDate);
+                tempCal.add(Calendar.MINUTE,((-1)* xMinutes));
+                Date newBaseDate = tempCal.getTime();
+                if(nowTime.after(newBaseDate) && nowTime.before(baseDate)){
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
+          catch (NullPointerException neo) {
+              neo.printStackTrace();
+              return false;
+        }
+        return false;
+    }
+
 }

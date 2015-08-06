@@ -49,12 +49,16 @@ public class MyQuitEMAHelper {
 
     public static String[] returnLastEMASurvey(String calledDate, int sessionID, int surveyID,
                                                String situation, String intention) {
+        Log.d("MQU-PHP","added session PHP " + calledDate + sessionID + surveyID);
         String stepDate = calledDate.replaceAll("/", "_");
         String fileName = stepDate + "_" + surveyID + "_" + sessionID + ".csv";
         try {
             CSVReader reader = new CSVReader(new FileReader(MyQuitCSVHelper.emaPath + fileName));
+            Log.d("MY-QUIT-USC","added session PHP reader");
             List<String[]> pullAll = reader.readAll();
+            Log.d("MY-QUIT-USC","added session PHP read");
             reader.close();
+            Log.d("MY-QUIT-USC","added session PHP in EMA");
             String[] pulledStringArray =  pullAll.get(pullAll.size()-1);
             String[] newExpand = new String[pulledStringArray.length+4];
             int count = 0;
@@ -66,9 +70,11 @@ public class MyQuitEMAHelper {
             newExpand[newExpand.length-3] = String.valueOf(surveyID);
             newExpand[newExpand.length-2] = situation;
             newExpand[newExpand.length-1] = intention;
+            Log.d("MY-QUIT-USC","added session PHP in EMA, done with extraction");
             return newExpand;
         }
         catch(IOException abc) {
+            Log.d("MY-QUIT-USC","added session PHP IO EXCEPTION ERROR");
             return null;
         }
     }
@@ -284,6 +290,7 @@ public class MyQuitEMAHelper {
         String[] pushArray = new String[] {newsdf.format(then),String.valueOf(activate)};
         writer.writeNext(pushArray);
         writer.close();
+        MyQuitEMAHelper.setUpSmokeEMA();
         MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.SMOKE_EMA_KEY);
     }
 
@@ -380,6 +387,9 @@ public class MyQuitEMAHelper {
             launchService.putExtra("SessionID",createNewSessionID(MyQuitCSVHelper.getFullDate()));
             Log.d("MY-QUIT-USC", "added session ID is" + launchService.getIntExtra("SessionID", 0));
             launchService.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Log.d("MY-QUIT-USC","added session PHP ERROR1");
+            //MyQuitEMA.passThroughUpload(launchService.getIntExtra("SessionID", 0),emaType);
+            Log.d("MY-QUIT-USC","added session PHP OK");
             context.startService(launchService);
         } catch (IOException e) {
             //TODO: Adjust dummy survey to use intent presented + sessionID
@@ -388,6 +398,9 @@ public class MyQuitEMAHelper {
                 launchService.putExtra("SessionID",createNewSessionID(MyQuitCSVHelper.getFullDate()));
                 Log.d("MY-QUIT-USC","new added session ID is" + launchService.getIntExtra("SessionID",0));
                 launchService.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Log.d("MY-QUIT-USC","added session PHP ERROR2");
+                //MyQuitEMA.passThroughUpload(launchService.getIntExtra("SessionID", 0),emaType);
+                Log.d("MY-QUIT-USC","added session PHP OK");
                 context.startService(launchService);
             } catch (IOException e1) {
                 Log.d("MY-QUIT-USC","added session ID ERROR");

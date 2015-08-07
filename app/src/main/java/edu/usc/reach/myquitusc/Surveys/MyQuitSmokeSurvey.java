@@ -13,6 +13,13 @@ public class MyQuitSmokeSurvey {
     public static final int KEY_END_SURVEY = 34;
     public static final int KEY_SURVEY_LENGTH = 35;
 
+
+    public static final int KEY_NA = 3;
+    public static final int KEY_PA = 4;
+    public static final int KEY_PSS = 5;
+    public static final int KEY_CC = 6;
+    public static final int KEY_ANHEDONIA = 7;
+
     public static final String[] whereAt = {"Where were you when you decided to smoke this cigarette?","Home","Bathroom",
     "Dormitory","Class","Bar/restaurant","Work","Outside","Car","Other location"};
     public static final String[] whereAtText = {"Where were you?","TEXT_ENTRY"};
@@ -94,11 +101,73 @@ public class MyQuitSmokeSurvey {
 
 
     public  List<String[]> getQuestions = Arrays.asList(whereAt,whereAtText,whatDoing,whatDoingText, reasonSmoke, reasonSmokeText, //6
-            whoWith, hadThese,othersSmoke,allowSmoke,persistStressor,occurStressor,naScared,naUpset, // 8
-                naDistressed,naTense,naSad,naIrritable,naHopeless,paHappy,paCheerful,paEnthusiastic, //8
-                paProud,paInterested,pssSchool,pssWork,pssFamily,pssMoney,ccMindCig, // 7
-                ccDesireCig,ccUrgeCig,anhedoniaPeople,anhedoniaHobby, // 4
+            whoWith, hadThese,othersSmoke,allowSmoke,persistStressor,occurStressor,naScared,naUpset, // 8 14
+                naDistressed,naTense,naSad,naIrritable,naHopeless,paHappy,paCheerful,paEnthusiastic, //8 22
+                paProud,paInterested,pssSchool,pssWork,pssFamily,pssMoney,ccMindCig, // 7 29
+                ccDesireCig,ccUrgeCig,anhedoniaPeople,anhedoniaHobby, // 4 33
                 anhedoniaSocial,endMessage); // 2
+
+    public static int validateNextPosition(int qID, int aID, boolean naTrue, boolean paTrue,
+                                           boolean pssTrue, boolean ccTrue, boolean anhedoniaTrue) {
+        Log.d("MQU-EMA","Received Qid" + qID + " and " + aID );
+        // if(qID>3){
+        //     return qID + 1;
+        // }
+        // else {
+        switch(qID){
+            case 0:
+                switch(aID) {
+                    case 1009:
+                        return 1;
+                    default:
+                        return 2;
+                }
+            case 1: return 2;
+            case 2:
+                switch(aID) {
+                    case 1008:
+                        return 3;
+                    default:
+                        return 4;
+                }
+            case 4:
+                switch(aID) {
+                    case 1009:
+                        return 5;
+                    default:
+                        return 6;
+                }
+            case 11:
+                if(naTrue){return 12;}
+                else if(paTrue){return 19;}
+                else if(pssTrue){return 24;}
+                else if(ccTrue){return 28;}
+                else if(anhedoniaTrue){return 31;}
+                else{return KEY_END_SURVEY;}
+            case 18:
+                if(paTrue){return 19;}
+                else if(pssTrue){return 24;}
+                else if(ccTrue){return 28;}
+                else if(anhedoniaTrue){return 31;}
+                else{return KEY_END_SURVEY;}
+            case 23:
+                if(pssTrue){return 24;}
+                else if(ccTrue){return 28;}
+                else if(anhedoniaTrue){return 31;}
+                else{return KEY_END_SURVEY;}
+            case 27:
+                if(ccTrue){return 28;}
+                else if(anhedoniaTrue){return 31;}
+                else{return KEY_END_SURVEY;}
+            case 30:
+                if(anhedoniaTrue){return 31;}
+                else{return KEY_END_SURVEY;}
+            default: return qID + 1;
+            //    }
+            //    return 0;
+        }
+    }
+/*
 
     public static int validateNextPosition(int qID, int aID) {
         Log.d("MQU-EMA","Received Qid" + qID + " and " + aID );
@@ -135,6 +204,7 @@ public class MyQuitSmokeSurvey {
             return 0;
         }
     }
+    */
 
     public static int validateNextPosition(int qID, String aID) {
         Log.d("MQU-EMA","Received Qid" + qID + " and " + aID );
@@ -142,6 +212,42 @@ public class MyQuitSmokeSurvey {
     }
 
 
+    public static int validatePreviousPosition(int qID, boolean naTrue, boolean paTrue,
+                                               boolean pssTrue, boolean ccTrue, boolean anhedoniaTrue) {
+        if(qID==0){return 0;}
+        //if(qID>4){
+        //    return qID-1;
+        //}
+        switch(qID){
+            case 2: return 0;
+            case 3: return 2;
+            case 4: return 2;
+            case 5: return 4;
+            case 6: return 4;
+            case 19:
+                if(naTrue){return 18;}
+                else{return 11;}
+            case 24:
+                if(paTrue){return 23;}
+                else if(naTrue){return 18;}
+                else{return 11;}
+            case 28:
+                if(pssTrue){return 27;}
+                else if(paTrue){return 23;}
+                else if(naTrue){return 18;}
+                else{return 11;}
+            case 31:
+                if(ccTrue){return 30;}
+                else if(pssTrue){return 27;}
+                else if(paTrue){return 23;}
+                else if(naTrue){return 18;}
+                else{return 11;}
+            default: return (qID - 1);
+        }
+
+    }
+
+/*
     public static int validatePreviousPosition(int qID) {
         if(qID>6){
             return qID-1;
@@ -155,6 +261,7 @@ public class MyQuitSmokeSurvey {
             default: return 0;
         }
     }
+    */
 
 
 

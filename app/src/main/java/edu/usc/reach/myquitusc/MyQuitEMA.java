@@ -240,7 +240,7 @@ public class MyQuitEMA extends Activity {
             case 4:
                 return MyQuitRandomSurvey.validatePreviousPosition(position,naTrue,paTrue,pssTrue,ccTrue,anhedoniaTrue);
             case 5:
-                return MyQuitSmokeSurvey.validatePreviousPosition(position);
+                return MyQuitSmokeSurvey.validatePreviousPosition(position,naTrue,paTrue,pssTrue,ccTrue,anhedoniaTrue);
             case 6:
                 return MyQuitOffSuccessSurvey.validatePreviousPosition(position);
             default:
@@ -322,7 +322,7 @@ public class MyQuitEMA extends Activity {
                     //Log.d("MY-QUIT-USC", "New is" + MyQuitEndOfDaySurvey.validateNextPosition(position,
                     //        MyQuitEMAHelper.pullSpecificAnswer(MyQuitCSVHelper.getFullDate(), sessionID, position,surveyID)));
                     return MyQuitSmokeSurvey.validateNextPosition(position,
-                            sendAId);
+                            sendAId,naTrue,paTrue,pssTrue,ccTrue,anhedoniaTrue);
                 } catch (NumberFormatException nfe) {
                     //Log.d("MY-QUIT-USC", "Overwriting survey position to " + position);
                     //Log.d("MY-QUIT-USC", "Answer is " + MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), sessionID, position, surveyID));
@@ -547,18 +547,36 @@ public class MyQuitEMA extends Activity {
         boolean next = pickSurveyInfo.getBooleanExtra("Next", false);
         boolean previous = pickSurveyInfo.getBooleanExtra("Previous", false);
 
+        boolean naTrue=false;
+        boolean paTrue=false;
+        boolean pssTrue=false;
+        boolean ccTrue=false;
+        boolean anhedoniaTrue=false;
 
-        boolean naTrue = MyQuitEMAHelper.pullLastSessionMarker(MyQuitCSVHelper.getFullDate(),
-                MyQuitRandomSurvey.KEY_SURVEY_SUCCESS,MyQuitRandomSurvey.KEY_NA);
-        boolean paTrue = MyQuitEMAHelper.pullLastSessionMarker(MyQuitCSVHelper.getFullDate(),
-                MyQuitRandomSurvey.KEY_SURVEY_SUCCESS,MyQuitRandomSurvey.KEY_PA);
-        boolean pssTrue = MyQuitEMAHelper.pullLastSessionMarker(MyQuitCSVHelper.getFullDate(),
-                MyQuitRandomSurvey.KEY_SURVEY_SUCCESS,MyQuitRandomSurvey.KEY_PSS);
-        boolean ccTrue = MyQuitEMAHelper.pullLastSessionMarker(MyQuitCSVHelper.getFullDate(),
-                MyQuitRandomSurvey.KEY_SURVEY_SUCCESS,MyQuitRandomSurvey.KEY_CC);
-        boolean anhedoniaTrue = MyQuitEMAHelper.pullLastSessionMarker(MyQuitCSVHelper.getFullDate(),
-                MyQuitRandomSurvey.KEY_SURVEY_SUCCESS,MyQuitRandomSurvey.KEY_ANHEDONIA);
-
+        if(survey==MyQuitRandomSurvey.KEY_SURVEY_SUCCESS) {
+             naTrue = MyQuitEMAHelper.pullLastSessionMarker(MyQuitCSVHelper.getFullDate(),
+                    MyQuitRandomSurvey.KEY_SURVEY_SUCCESS, MyQuitRandomSurvey.KEY_NA);
+             paTrue = MyQuitEMAHelper.pullLastSessionMarker(MyQuitCSVHelper.getFullDate(),
+                    MyQuitRandomSurvey.KEY_SURVEY_SUCCESS, MyQuitRandomSurvey.KEY_PA);
+             pssTrue = MyQuitEMAHelper.pullLastSessionMarker(MyQuitCSVHelper.getFullDate(),
+                    MyQuitRandomSurvey.KEY_SURVEY_SUCCESS, MyQuitRandomSurvey.KEY_PSS);
+             ccTrue = MyQuitEMAHelper.pullLastSessionMarker(MyQuitCSVHelper.getFullDate(),
+                    MyQuitRandomSurvey.KEY_SURVEY_SUCCESS, MyQuitRandomSurvey.KEY_CC);
+             anhedoniaTrue = MyQuitEMAHelper.pullLastSessionMarker(MyQuitCSVHelper.getFullDate(),
+                    MyQuitRandomSurvey.KEY_SURVEY_SUCCESS, MyQuitRandomSurvey.KEY_ANHEDONIA);
+        }
+        else if(survey==MyQuitSmokeSurvey.KEY_SURVEY_SUCCESS) {
+              naTrue = MyQuitEMAHelper.pullLastSessionMarker(MyQuitCSVHelper.getFullDate(),
+                    MyQuitSmokeSurvey.KEY_SURVEY_SUCCESS, MyQuitSmokeSurvey.KEY_NA);
+              paTrue = MyQuitEMAHelper.pullLastSessionMarker(MyQuitCSVHelper.getFullDate(),
+                    MyQuitSmokeSurvey.KEY_SURVEY_SUCCESS, MyQuitSmokeSurvey.KEY_PA);
+              pssTrue = MyQuitEMAHelper.pullLastSessionMarker(MyQuitCSVHelper.getFullDate(),
+                    MyQuitSmokeSurvey.KEY_SURVEY_SUCCESS, MyQuitSmokeSurvey.KEY_PSS);
+              ccTrue = MyQuitEMAHelper.pullLastSessionMarker(MyQuitCSVHelper.getFullDate(),
+                    MyQuitSmokeSurvey.KEY_SURVEY_SUCCESS, MyQuitSmokeSurvey.KEY_CC);
+              anhedoniaTrue = MyQuitEMAHelper.pullLastSessionMarker(MyQuitCSVHelper.getFullDate(),
+                    MyQuitSmokeSurvey.KEY_SURVEY_SUCCESS, MyQuitSmokeSurvey.KEY_ANHEDONIA);
+        }
 
         int position;
 

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Random;
 
 import edu.usc.reach.myquitusc.Surveys.MyQuitRandomSurvey;
+import edu.usc.reach.myquitusc.Surveys.MyQuitSmokeSurvey;
 
 /**
  * Created by Eldin on 12/30/14.
@@ -495,10 +496,22 @@ public class MyQuitEMAHelper {
              ccTrue = Math.random()<0.6;
              anhedoniaTrue = Math.random()<0.6;
         }
+        else if(surveyID== MyQuitSmokeSurvey.KEY_SURVEY_SUCCESS){
+            naTrue = Math.random()<0.6;
+            paTrue = Math.random()<0.6;
+            pssTrue = Math.random()<0.6;
+            ccTrue = Math.random()<0.6;
+            anhedoniaTrue = Math.random()<0.6;
+        }
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.emaPath + fileName, true));
             Log.d("MQU","Logging ID for " + sessionID);
             if(surveyID== MyQuitRandomSurvey.KEY_SURVEY_SUCCESS){
+                writer.writeNext(new String[] {calledDate,String.valueOf(surveyID),String.valueOf(sessionID),
+                        String.valueOf(naTrue),String.valueOf(paTrue),String.valueOf(pssTrue),
+                        String.valueOf(ccTrue),String.valueOf(anhedoniaTrue)});
+            }
+            else if(surveyID== MyQuitSmokeSurvey.KEY_SURVEY_SUCCESS){
                 writer.writeNext(new String[] {calledDate,String.valueOf(surveyID),String.valueOf(sessionID),
                         String.valueOf(naTrue),String.valueOf(paTrue),String.valueOf(pssTrue),
                         String.valueOf(ccTrue),String.valueOf(anhedoniaTrue)});

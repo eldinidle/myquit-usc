@@ -88,11 +88,11 @@ public class MyQuitEndOfDaySurvey {
 
 
     public  List<String[]> getQuestions(Context context){
-        List<String[]> returnList = Arrays.asList(howManyCigs, pssFamily,pssMoney,pssSchool,pssWork,
-              naDistressed, naHopeless, naIrritable, naSad, naScared, naTense, naUpset,
-              paCheerful, paEnthusiastic, paHappy, paInterested, paProud,
-              troubleCigs, botherDesire, frequentUrges, confidentQuit, helpQuit(context),
-              vapeCig, vapeCigCount, vapePuffCount, endMessage);
+        List<String[]> returnList = Arrays.asList(howManyCigs, pssFamily,pssMoney,pssSchool,pssWork, // 5
+              naDistressed, naHopeless, naIrritable, naSad, naScared, naTense, naUpset, //7 12
+              paCheerful, paEnthusiastic, paHappy, paInterested, paProud, // 5 17
+              troubleCigs, botherDesire, frequentUrges, confidentQuit, helpQuit(context), //5 22
+              vapeCig, vapeCigCount, vapePuffCount, endMessage); // 4
         return returnList;
     }
 

@@ -15,6 +15,7 @@ import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,8 +39,10 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.TimeZone;
 
 import edu.usc.reach.myquitusc.DatabaseHelpers.MyQuitAdmin;
+import hirondelle.date4j.DateTime;
 
 public class MyQuitHomeScreen extends ActionBarActivity {
 
@@ -123,6 +126,14 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             Calendar cal = Calendar.getInstance();
             args.putInt("month", cal.get(Calendar.MONTH) + 1);
             args.putInt("year", cal.get(Calendar.YEAR));
+            String[] dateString = MyQuitCSVHelper.pullLoginStatus("MyQuitDate").split("/");
+
+            Calendar calHold = Calendar.getInstance();
+            calHold.set(Integer.parseInt(dateString[2]),(Integer.parseInt(dateString[0])-1),Integer.parseInt(dateString[1]));
+            Date test = calHold.getTime();
+            caldroidFragment.setBackgroundResourceForDate(R.color.ActiveText, test);
+            caldroidFragment.setTextColorForDate(R.color.caldroid_white, test);
+
             caldroidFragment.setArguments(args);
             //Button rightArrow = caldroidFragment.getRightArrowButton();
             //rightArrow.setBackgroundResource(R.drawable.calendar_next_arrow);
@@ -130,6 +141,9 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             android.support.v4.app.FragmentTransaction t = getSupportFragmentManager().beginTransaction();
             t.add(R.id.calendarViewOut, caldroidFragment);
             t.commit();
+
+
+
 
             final CaldroidListener listener = new CaldroidListener() {
 
@@ -341,12 +355,26 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             args.putInt("month", cal.get(Calendar.MONTH) + 1);
             args.putInt("year", cal.get(Calendar.YEAR));
             caldroidFragment.setArguments(args);
+
+
+            String[] dateString = MyQuitCSVHelper.pullLoginStatus("MyQuitDate").split("/");
+            Calendar calHold = Calendar.getInstance();
+            calHold.set(Integer.parseInt(dateString[2]),(Integer.parseInt(dateString[0])-1),Integer.parseInt(dateString[1]));
+            Date test = calHold.getTime();
+            caldroidFragment.setBackgroundResourceForDate(R.color.ActiveText, test);
+            caldroidFragment.setTextColorForDate(R.color.caldroid_white, test);
+
             //Button rightArrow = caldroidFragment.getRightArrowButton();
             //rightArrow.setBackgroundResource(R.drawable.calendar_next_arrow);
 
             android.support.v4.app.FragmentTransaction t = getSupportFragmentManager().beginTransaction();
             t.add(R.id.calendarViewOut, caldroidFragment);
             t.commit();
+
+
+
+
+
 
             final CaldroidListener listener = new CaldroidListener() {
 

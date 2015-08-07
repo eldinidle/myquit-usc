@@ -139,8 +139,10 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             //rightArrow.setBackgroundResource(R.drawable.calendar_next_arrow);
 
             android.support.v4.app.FragmentTransaction t = getSupportFragmentManager().beginTransaction();
-            t.add(R.id.calendarViewOut, caldroidFragment);
-            t.commit();
+            if(t.isEmpty()) {
+                t.add(R.id.calendarViewOut, caldroidFragment);
+                t.commit();
+            }
 
 
 
@@ -368,8 +370,10 @@ public class MyQuitHomeScreen extends ActionBarActivity {
             //rightArrow.setBackgroundResource(R.drawable.calendar_next_arrow);
 
             android.support.v4.app.FragmentTransaction t = getSupportFragmentManager().beginTransaction();
-            t.add(R.id.calendarViewOut, caldroidFragment);
-            t.commit();
+            if(t.isEmpty()) {
+                t.add(R.id.calendarViewOut, caldroidFragment);
+                t.commit();
+            }
 
 
 

@@ -647,7 +647,13 @@ public class MyQuitPHP {
         List<NameValuePair> emaParams = new ArrayList<NameValuePair>();
         int fullLength = params.length;
         String datetime = params[fullLength-7] + " " + params[fullLength-6];
-        int surveyType = Integer.valueOf(params[fullLength-3]);
+        int surveyType = 1234;
+        try {
+            surveyType = Integer.valueOf(params[fullLength - 3]);
+        }
+        catch(NumberFormatException nfe) {
+            nfe.printStackTrace();
+        }
         switch(surveyType){
             case MyQuitCheckSuccessSurvey.KEY_SURVEY_SUCCESS:
                 emaParams.add(new BasicNameValuePair("didFollow",params[0]));

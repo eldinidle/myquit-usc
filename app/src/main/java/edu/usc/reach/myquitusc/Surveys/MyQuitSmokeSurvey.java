@@ -21,7 +21,7 @@ public class MyQuitSmokeSurvey {
     public static final int KEY_ANHEDONIA = 7;
 
     public static final String[] whereAt = {"Where were you when you decided to smoke this cigarette?","Home","Bathroom",
-    "Dormitory","Class","Bar/restaurant","Work","Outside","Car","Other location"};
+    "Dormitory","Coffee shop/cafe","Class","Bar/restaurant","Work","Outside","Car","Other location"};
     public static final String[] whereAtText = {"Where were you?","TEXT_ENTRY"};
 
     public static final String[] whatDoing = {"What were you doing when you decided to smoke this cigarette?","Socializing","Studying/reading/working",
@@ -34,7 +34,7 @@ public class MyQuitSmokeSurvey {
     public static final String[] reasonSmokeText = {"Why are you smoking this cigarette?","TEXT_ENTRY"};
 
     public static final String[] whoWith = {"Who have you been with in the last 15 minutes?","No one, I was alone",
-            "Friends","Family","Other persons"};
+            "Korean friends","Non-Korean friends", "Family","Other persons"};
 
     public static final String[] hadThese = {"Have you had any of these in the past hour?","Alcohol","Water",
     "Coffee","Tea","Soda","Meal/snack","Other","Nothing"};

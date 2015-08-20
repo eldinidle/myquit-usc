@@ -23,7 +23,7 @@ public class MyQuitRandomSurvey {
     public static final int KEY_ANHEDONIA = 7;
 
     public static final String[] whereAt = {"Where were you when the phone alerted you?","Home","Bathroom",
-    "Dormitory","Class","Bar/restaurant","Work","Outside","Car","Other location"};
+    "Dormitory","Coffee shop/cafe","Class","Bar/restaurant","Work","Outside","Car","Other location"};
     public static final String[] whereAtText = {"Where were you?","TEXT_ENTRY"};
 
     public static final String[] whatDoing = {"What were you doing when the phone alerted you?","Socializing","Studying/reading/working",

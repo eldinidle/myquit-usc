@@ -510,14 +510,17 @@ public class MyQuitEMAHelper {
                 writer.writeNext(new String[] {calledDate,String.valueOf(surveyID),String.valueOf(sessionID),
                         String.valueOf(naTrue),String.valueOf(paTrue),String.valueOf(pssTrue),
                         String.valueOf(ccTrue),String.valueOf(anhedoniaTrue)});
+                MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Session:" + sessionID,(naTrue+","+paTrue+","+pssTrue+","+ccTrue+","+anhedoniaTrue),MyQuitCSVHelper.getFulltime());
             }
             else if(surveyID== MyQuitSmokeSurvey.KEY_SURVEY_SUCCESS){
                 writer.writeNext(new String[] {calledDate,String.valueOf(surveyID),String.valueOf(sessionID),
                         String.valueOf(naTrue),String.valueOf(paTrue),String.valueOf(pssTrue),
                         String.valueOf(ccTrue),String.valueOf(anhedoniaTrue)});
+                MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Session:" + sessionID,(naTrue+","+paTrue+","+pssTrue+","+ccTrue+","+anhedoniaTrue),MyQuitCSVHelper.getFulltime());
             }
             else {
                 writer.writeNext(new String[] {calledDate,String.valueOf(surveyID),String.valueOf(sessionID)});
+                MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Session:" + sessionID,(naTrue+","+paTrue+","+pssTrue+","+ccTrue+","+anhedoniaTrue),MyQuitCSVHelper.getFulltime());
             }
             writer.close();
         } catch (IOException e) {

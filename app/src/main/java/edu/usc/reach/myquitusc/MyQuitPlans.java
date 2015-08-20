@@ -501,7 +501,7 @@ public class MyQuitPlans extends Activity  {
                         startActivity(reLaunchCustom);
                     }
                     else {
-                        Toast.makeText(getActivity(),"Please enter longer label or press Done.",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(),"Please enter longer label or press Done.",Toast.LENGTH_LONG).show();
                     }
 
                 }

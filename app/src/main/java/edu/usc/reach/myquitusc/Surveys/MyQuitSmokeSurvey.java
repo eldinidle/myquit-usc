@@ -25,7 +25,7 @@ public class MyQuitSmokeSurvey {
     public static final String[] whereAtText = {"Where were you?","TEXT_ENTRY"};
 
     public static final String[] whatDoing = {"What were you doing when you decided to smoke this cigarette?","Socializing","Studying/reading/working",
-    "TV/hobby/phone","Exercise/walking","Eating","Sleeping","Commuting","Other"};
+    "TV","Phone","Exercise/walking","Eating","Sleeping","Commuting","Other"};
     public static final String[] whatDoingText = {"What was this other thing?","TEXT_ENTRY"};
 
     public static final String[] reasonSmoke = {"I am smoking because...","Reduce craving","Soon going where I cannot smoke",

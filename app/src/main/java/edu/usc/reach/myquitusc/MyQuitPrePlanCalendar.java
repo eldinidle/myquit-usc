@@ -8,6 +8,7 @@ import android.database.DataSetObserver;
 import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +29,143 @@ import java.util.Date;
 
 
 public class MyQuitPrePlanCalendar extends Activity {
+
+    private String getCalledDate(){
+        Intent pickupDate = getIntent();
+        return pickupDate.getStringExtra("Date");
+    }
+
+    private int getFocusPosition(){
+        Intent pickupDate = getIntent();
+        return pickupDate.getIntExtra("FocusPosition",0);
+    }
+
+    private boolean getWeekEnd() {
+        Intent pickupDate = getIntent();
+        return pickupDate.getBooleanExtra("Weekend", false);
+    }
+
+    private boolean getInstruct() {
+        Intent pickupDate = getIntent();
+        return pickupDate.getBooleanExtra("Instruct",false);
+    }
+
+    private boolean getFromHome() {
+        Intent pickupDate = getIntent();
+        return pickupDate.getBooleanExtra("FromHome",false);
+    }
+
+
+    void runHomeButton(){
+
+        Button homeButton = (Button) findViewById(R.id.calendarHome);
+        homeButton.setText("Submit");
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean weekEnd = getWeekEnd();
+                boolean fromHome = getFromHome();
+
+                if (weekEnd) {
+                    if (MyQuitAutoAssign.minimumLabelConfirm("DEFAULT_WEEKEND")) {
+                        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Default Calendar Changed","NA",MyQuitCSVHelper.getFulltime());
+                        if(!fromHome){setEndOfDay();}
+                        else{
+                            MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Default Weekend Changed","NA",MyQuitCSVHelper.getFulltime());
+                            Intent homeLaunch = new Intent(getApplicationContext(), MyQuitHomeScreen.class);
+                            homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                    | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            MyQuitPrePlanCalendar.this.overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
+                            startActivity(homeLaunch);
+                        }
+                    } else {
+                        Toast.makeText(v.getContext(), "Please enter at least " +
+                                        MyQuitAutoAssign.minimumLabels + " labels in the day",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+                if (!weekEnd) {
+                    if (MyQuitAutoAssign.minimumLabelConfirm("DEFAULT_WEEKDAY")) {
+                        if(!fromHome) {
+                            Intent homeLaunch = new Intent(v.getContext(), MyQuitPrePlanCalendar.class);
+                            homeLaunch.putExtra("Date", "DEFAULT_WEEKEND");
+                            homeLaunch.putExtra("Weekend", true);
+                            homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                    | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            finish();
+                            startActivity(homeLaunch);
+                        }
+                        else {
+                            MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Default Weekday Changed","NA",MyQuitCSVHelper.getFulltime());
+                            Intent homeLaunch = new Intent(getApplicationContext(), MyQuitHomeScreen.class);
+                            homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                    | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            MyQuitPrePlanCalendar.this.overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
+                            startActivity(homeLaunch);
+                        }
+                    } else {
+                        Toast.makeText(v.getContext(), "Please enter at least " +
+                                        MyQuitAutoAssign.minimumLabels + " labels in the day",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
+    }
+
+    void runTodayView(){
+
+        int focusPosition = getFocusPosition();
+        ListView todayView = (ListView) findViewById(R.id.listView);
+        timeArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, pulledTimes);
+        todayView.setAdapter(timeArrayAdapter);
+        todayView.setSelection(focusPosition);
+        todayView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                boolean weekEnd = getWeekEnd();
+                boolean fromHome = getFromHome();
+                String calledDate = getCalledDate();
+                Intent taskLaunch = new Intent(view.getContext(), MyQuitTasksActivity.class);
+                taskLaunch.putExtra("PrePlan", true);
+                taskLaunch.putExtra("FromHome", fromHome);
+                taskLaunch.putExtra("Weekend", weekEnd);
+                taskLaunch.putExtra("timeCode", pulledTimes[position]);
+                taskLaunch.putExtra("positionTime", position);
+                taskLaunch.putExtra("calledDate", calledDate);
+                MyQuitPrePlanCalendar.this.overridePendingTransition(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_top);
+                startActivity(taskLaunch);
+                //DialogFragment tasksFragment = TasksFragmentDialog.newInstance(pulledTimes[position], position, calledDate);
+                //tasksFragment.show(getFragmentManager(), "dialog");
+            }
+        });
+
+        todayView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                String calledDate = getCalledDate();
+                boolean fromHome = getFromHome();
+                boolean weekEnd = getWeekEnd();
+                pulledTimes[position] = MyQuitCSVHelper.defaultTimes[position];
+                MyQuitPHP.postCalendarEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),calledDate,MyQuitCSVHelper.defaultTimes[position],"DELETED","DELETED",MyQuitCSVHelper.getFulltime());
+                try {
+                    MyQuitCSVHelper.pushDateTimes(calledDate, pulledTimes);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(view.getContext(), "Warning: Not Synced", Toast.LENGTH_LONG);
+                }
+                Intent launchBack = new Intent(view.getContext(), MyQuitPrePlanCalendar.class);
+                launchBack.putExtra("Date",calledDate);
+                launchBack.putExtra("FocusPosition",position);
+                launchBack.putExtra("Weekend",weekEnd);
+                launchBack.putExtra("FromHome",fromHome);
+                launchBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                MyQuitPrePlanCalendar.this.overridePendingTransition(R.anim.abc_slide_in_bottom,R.anim.abc_slide_out_top);
+                startActivity(launchBack);
+                return false;
+            }
+        });
+    }
 
     private void setEndOfDay(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -119,10 +257,14 @@ public class MyQuitPrePlanCalendar extends Activity {
 
 
         Intent pickupDate = getIntent();
-        final String calledDate = pickupDate.getStringExtra("Date");
-        final int focusPosition = pickupDate.getIntExtra("FocusPosition",0);
-        final boolean weekEnd = pickupDate.getBooleanExtra("Weekend",false);
-        final boolean instruct = pickupDate.getBooleanExtra("Instruct",false);
+          String calledDate = pickupDate.getStringExtra("Date");
+          int focusPosition = pickupDate.getIntExtra("FocusPosition",0);
+          boolean weekEnd = pickupDate.getBooleanExtra("Weekend",false);
+          boolean instruct = pickupDate.getBooleanExtra("Instruct",false);
+          boolean fromHome = pickupDate.getBooleanExtra("FromHome",false);
+
+        Log.d("MQU-PREPLAN","Date" + calledDate + "focusPos" + focusPosition + "weekend is " + weekEnd + "instruct is " + instruct + "fromHome is" + fromHome);
+
         if(instruct){showInstruction();}
 
         try {
@@ -146,79 +288,11 @@ public class MyQuitPrePlanCalendar extends Activity {
         if(weekEnd){
             titleCalendar.setText("Your Typical Weekend (Sat-Sun)");
         }
-        ListView todayView = (ListView) findViewById(R.id.listView);
-        timeArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, pulledTimes);
-        todayView.setAdapter(timeArrayAdapter);
-        todayView.setSelection(focusPosition);
-        todayView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent taskLaunch = new Intent(view.getContext(), MyQuitTasksActivity.class);
-                    taskLaunch.putExtra("PrePlan", true);
-                    taskLaunch.putExtra("Weekend", weekEnd);
-                    taskLaunch.putExtra("timeCode", pulledTimes[position]);
-                    taskLaunch.putExtra("positionTime", position);
-                    taskLaunch.putExtra("calledDate", calledDate);
-                    MyQuitPrePlanCalendar.this.overridePendingTransition(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_top);
-                    startActivity(taskLaunch);
-                //DialogFragment tasksFragment = TasksFragmentDialog.newInstance(pulledTimes[position], position, calledDate);
-                //tasksFragment.show(getFragmentManager(), "dialog");
-            }
-        });
 
-        todayView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                pulledTimes[position] = MyQuitCSVHelper.defaultTimes[position];
-                try {
-                    MyQuitCSVHelper.pushDateTimes(calledDate, pulledTimes);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(view.getContext(), "Warning: Not Synced", Toast.LENGTH_LONG);
-                }
-                Intent launchBack = new Intent(view.getContext(), MyQuitPrePlanCalendar.class);
-                launchBack.putExtra("Date",calledDate);
-                launchBack.putExtra("FocusPosition",position);
-                launchBack.putExtra("Weekend",weekEnd);
-                launchBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                MyQuitPrePlanCalendar.this.overridePendingTransition(R.anim.abc_slide_in_bottom,R.anim.abc_slide_out_top);
-                startActivity(launchBack);
-                return false;
-            }
-        });
+        runTodayView( );
 
-        Button homeButton = (Button) findViewById(R.id.calendarHome);
-        homeButton.setText("Submit");
-        homeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (weekEnd) {
-                    if (MyQuitAutoAssign.minimumLabelConfirm("DEFAULT_WEEKEND")) {
-                        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Default Calendar Changed","NA",MyQuitCSVHelper.getFulltime());
-                        setEndOfDay();
-                    } else {
-                        Toast.makeText(v.getContext(), "Please enter at least " +
-                                        MyQuitAutoAssign.minimumLabels + " labels in the day",
-                                Toast.LENGTH_LONG).show();
-                    }
-                }
-                if (!weekEnd) {
-                    if (MyQuitAutoAssign.minimumLabelConfirm("DEFAULT_WEEKDAY")) {
-                        Intent homeLaunch = new Intent(v.getContext(), MyQuitPrePlanCalendar.class);
-                        homeLaunch.putExtra("Date", "DEFAULT_WEEKEND");
-                        homeLaunch.putExtra("Weekend", true);
-                        homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        finish();
-                        startActivity(homeLaunch);
-                    } else {
-                        Toast.makeText(v.getContext(), "Please enter at least " +
-                                        MyQuitAutoAssign.minimumLabels + " labels in the day",
-                                Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-        });
+        runHomeButton( );
+
 
 
         Button moveBack = (Button) findViewById(R.id.previousDay);

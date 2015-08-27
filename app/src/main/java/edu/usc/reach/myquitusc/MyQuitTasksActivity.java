@@ -20,7 +20,7 @@ public class MyQuitTasksActivity extends Activity {
             new String[] { "Sleeping", "Clubbing"};
     String[] pulledTimes;
 
-
+//
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +33,7 @@ public class MyQuitTasksActivity extends Activity {
         final int positionTitle = calendarCall.getIntExtra("positionTime",0);
         final String callingDate = calendarCall.getStringExtra("calledDate");
         final boolean prePlanCall = calendarCall.getBooleanExtra("PrePlan",false);
+        final boolean fromHome = calendarCall.getBooleanExtra("FromHome",false);
         final boolean weekEnd = calendarCall.getBooleanExtra("Weekend",false);
         try {
             pulledTimes = MyQuitCSVHelper.pullDateTimes(callingDate);
@@ -48,6 +49,7 @@ public class MyQuitTasksActivity extends Activity {
             launchBack.putExtra("Date", callingDate);
             launchBack.putExtra("FocusPosition",positionTitle);
             launchBack.putExtra("Weekend", weekEnd);
+            launchBack.putExtra("FromHome",fromHome);
             launchBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             MyQuitTasksActivity.this.overridePendingTransition(R.anim.abc_slide_in_bottom,R.anim.abc_slide_out_top);
             startActivity(launchBack);
@@ -84,6 +86,7 @@ public class MyQuitTasksActivity extends Activity {
                 launchBack.putExtra("Date",callingDate);
                 launchBack.putExtra("FocusPosition",positionTitle);
                 launchBack.putExtra("Weekend",weekEnd);
+                launchBack.putExtra("FromHome",fromHome);
                 launchBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 MyQuitTasksActivity.this.overridePendingTransition(R.anim.abc_slide_in_bottom,R.anim.abc_slide_out_top);
                 MyQuitPHP.postCalendarEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),callingDate,MyQuitCSVHelper.defaultTimes[positionTitle],NEW_TASKS_LIST[position],NEW_INTENTS_LIST[position],MyQuitCSVHelper.getFulltime());

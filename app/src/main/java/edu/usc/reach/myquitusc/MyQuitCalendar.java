@@ -104,6 +104,7 @@ public class MyQuitCalendar extends Activity   {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 pulledTimes[position] = MyQuitCSVHelper.defaultTimes[position];
+                MyQuitPHP.postCalendarEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),calledDate,MyQuitCSVHelper.defaultTimes[position],"DELETED","DELETED",MyQuitCSVHelper.getFulltime());
                 try {
                     MyQuitCSVHelper.pushDateTimes(calledDate, pulledTimes);
                 } catch (IOException e) {

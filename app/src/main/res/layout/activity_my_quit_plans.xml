@@ -26,19 +26,18 @@
         android:layout_above="@+id/customIntent" />
 
     <EditText
-        android:layout_width="200dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/customIntent"
-        android:layout_alignParentRight="false"
-        android:layout_alignParentEnd="false"
-        android:autoText="true"
-        android:editable="true"
         android:enabled="true"
-        android:inputType="text"
-        android:layout_centerInParent="true"
-        android:layout_alignLeft="@+id/suggestButton"
-        android:layout_alignRight="@+id/suggestButton"
-        android:hint=" " />
+        android:inputType="textMultiLine"
+        android:scrollHorizontally="false"
+        android:layout_centerVertical="true"
+        android:layout_alignRight="@+id/nextIntent"
+        android:maxLines ="4"
+        android:maxLength ="2000"
+        android:layout_alignLeft="@+id/previousIntent" />
+
 
     <Button
         android:layout_width="fill_parent"

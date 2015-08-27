@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,6 +68,109 @@ public class MyQuitHomeScreen extends ActionBarActivity {
         tv.setTextColor(getResources().getColor(R.color.AppBar));
     }
 
+    void selectedIntention(final String situation){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final EditText intention = new EditText(this);
+        builder.setTitle("Instead of smoking, I will:")
+                .setView(intention)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (intention.getText().toString() != null && intention.getText().toString().length() > 5) {
+                            MyQuitPlanHelper.appendToBaseList(getApplicationContext(), situation,intention.getText().toString(),false);
+                            dialog.dismiss();
+                        }
+
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        formatDialog(dialog);
+    }
+
+    void selectedSituation(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final EditText situation = new EditText(this);
+        builder.setTitle("Please enter the new risky situation:")
+                .setView(situation)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (situation.getText().toString() != null && situation.getText().toString().length() > 5) {
+                            dialog.dismiss();
+                            selectedIntention(situation.getText().toString());
+                        }
+
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        formatDialog(dialog);
+    }
+
+    void confirmPlanChange(){
+        CharSequence items[] = {"Add a risky situation","Change my typical weekday","Change my typical weekend"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("What would you like to do?")
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d("MQU-PREPLAN", "this is" + which);
+                        switch (which) {
+                            case 0: {
+                                dialog.dismiss();
+                                selectedSituation();
+                                break;
+                            }
+                            case 1: {
+                                Intent homeLaunch = new Intent(getApplicationContext(), MyQuitPrePlanCalendar.class);
+                                homeLaunch.putExtra("Date", "DEFAULT_WEEKDAY");
+                                homeLaunch.putExtra("FromHome", true);
+                                homeLaunch.putExtra("Instruct", true);
+                                homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                        | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                finish();
+                                startActivity(homeLaunch);
+                                break;
+                            }
+                            case 2: {
+                                Intent homeLaunch = new Intent(getApplicationContext(), MyQuitPrePlanCalendar.class);
+                                homeLaunch.putExtra("Date", "DEFAULT_WEEKEND");
+                                homeLaunch.putExtra("Weekend", true);
+                                homeLaunch.putExtra("FromHome", true);
+                                homeLaunch.putExtra("Instruct", true);
+                                homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                        | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                finish();
+                                startActivity(homeLaunch);
+                                break;
+                            }
+                            default: {
+                                dialog.dismiss();
+                                break;
+                            }
+                        }
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        formatDialog(dialog);
+
+    }
 
     void resumeMainStudy(){
         Button oopsSmoke = (Button) findViewById(R.id.oopsSmoked);
@@ -295,6 +399,8 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                 @Override
                 public void onClick(View v) {
                     if (MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
+                        confirmPlanChange();
+                        /*
                         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                         builder.setMessage(("Once you complete your new plans, you will be asked to reassign your " +
                                 "typical weekdays and weekends, do you wish to proceed?"))
@@ -319,6 +425,8 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                         dialog.show();
 
                         formatDialog(dialog);
+
+                        */
 
                     } else {
                         Intent startPlan = new Intent(getApplicationContext(), MyQuitPrePlanArray.class);
@@ -440,6 +548,8 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                 @Override
                 public void onClick(View v) {
                     if (MyQuitCSVHelper.pullLoginStatus("completedPlans") != null) {
+                        confirmPlanChange();
+                        /*
                         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                         builder.setMessage(("Once you complete your new plans, you will be asked to reassign your " +
                                 "typical weekdays and weekends, do you wish to proceed?"))
@@ -464,6 +574,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                         dialog.show();
 
                         formatDialog(dialog);
+                        */
 
                     } else {
                         Intent startPlan = new Intent(getApplicationContext(), MyQuitPrePlanArray.class);

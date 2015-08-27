@@ -391,6 +391,24 @@ public class MyQuitPlanHelper {
 
     }
 
+    public static void cycleBaseListTracker(Context context){
+        List<String[]> baseList = pullBaseList(context,false);
+        for(String[] holdArray: baseList){
+            String situation = holdArray[0];
+            String intention = holdArray[2];
+            MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"New Situation: " + situation,"New Intention: " +intention,MyQuitCSVHelper.getFulltime());
+        }
+
+    }
+
+    public static void appendToBaseList(Context context, String situation, String intention,boolean temporaryChange){
+        List<String[]> oldBaseList = pullBaseList(context,temporaryChange);
+        String[] threeItems = new String[] {situation,"If I am " + situation + ", I will...",intention};
+        oldBaseList.add(threeItems);
+        pushBaseList(context,oldBaseList,temporaryChange);
+        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"New Situation: " + situation,"New Intention: " +intention,MyQuitCSVHelper.getFulltime());
+    }
+
     public static boolean pushBaseList(Context context, List<String[]> newBaseList, boolean temporaryChange) {
         String fileName;
         if(temporaryChange){fileName = "ACTIVITY_PAIRING" + ".csv";}

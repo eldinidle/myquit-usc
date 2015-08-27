@@ -138,13 +138,13 @@ public class MyQuitPlans extends Activity  {
         };
         if(pullFull[2].length()>5) {
             customIntent.setImeOptions(EditorInfo.IME_ACTION_DONE);
-            customIntent.setSingleLine(true);
+            //customIntent.setSingleLine(true);
             customIntent.setText(pullFull[2]);
             customIntent.setOnEditorActionListener(listener);
         }
         else {
             customIntent.setImeOptions(EditorInfo.IME_ACTION_DONE);
-            customIntent.setSingleLine(true);
+            //customIntent.setSingleLine(true);
             customIntent.setText("");
             customIntent.setOnEditorActionListener(listener);
         }
@@ -193,6 +193,7 @@ public class MyQuitPlans extends Activity  {
                             homeLaunch.putExtra("Instruct",true);
                             homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                     | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            MyQuitPlanHelper.cycleBaseListTracker(getApplicationContext());
                             finish();
                             startActivity(homeLaunch);
                         } catch (IOException e) {

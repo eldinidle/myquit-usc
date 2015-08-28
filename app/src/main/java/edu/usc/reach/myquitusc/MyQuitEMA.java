@@ -6,15 +6,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -22,6 +27,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import edu.usc.reach.myquitusc.Surveys.MyQuitCalendarSuccessSurvey;
@@ -37,6 +44,7 @@ public class MyQuitEMA extends Activity {
     protected static final int KEY_SINGLE_CHOICE = 1;
     protected static final int KEY_TEXT_ENTRY = 2;
     protected static final int KEY_NUMERICAL_ENTRY = 3;
+    protected static final int KEY_MULTIPLE_CHOICE = 4;
 
     @SuppressWarnings("ResourceType")
     void addButtonBeyondTwo(int qstring, RadioGroup answers, RadioButton buttonName, String[] questionString, int sessionID, int aID, int position, boolean receiver,
@@ -521,6 +529,71 @@ public class MyQuitEMA extends Activity {
             });
         }
 
+    public void createLowerButtons(Context context, final int surID, final int questionKey, final ListView listView,
+                                   final int surveyKey, final int position, final int surveyLength){
+        final Intent nextSurvey = new Intent(this, MyQuitEMA.class);
+        final Intent previousSurvey = new Intent(this, MyQuitEMA.class);
+        Button nextButton = (Button) findViewById(R.id.nextEMA);
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SparseBooleanArray itemPositions = listView.getCheckedItemPositions();
+                String answer = "";
+                for (int i = 0; i < listView.getAdapter().getCount(); i++) {
+                    if(itemPositions.get(i)){
+                        answer = answer + "1/";
+                    }
+                    else{
+                        answer = answer + "0/";
+                    }
+                }
+                if(itemPositions.size()>0){
+                    try {
+                        MyQuitEMAHelper.pushSpecificAnswer(MyQuitCSVHelper.getFullDate(),MyQuitCSVHelper.getTimeOnly(),surID,answer,position,false,surveyLength,surveyKey);
+                        nextSurvey.putExtra("Survey", surveyKey);
+                        nextSurvey.putExtra("SessionID", surID);
+                        nextSurvey.putExtra("Position", position);
+                        nextSurvey.putExtra("Receiver", false);
+                        nextSurvey.putExtra("Next", true);
+                        finish();
+                        startActivity(nextSurvey);
+                        Log.d("MY-QUIT-USC", "Sending survey" + surveyKey + " position " + position + " receiver false next");
+                    } catch (IOException e) {
+                        Toast.makeText(getApplicationContext(), "Please select an answer.", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Please select an answer.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        Button previousButton = (Button) findViewById(R.id.prevousEMA);
+        previousButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                previousSurvey.putExtra("Survey", surveyKey);
+                previousSurvey.putExtra("SessionID", surID);
+                previousSurvey.putExtra("Position", position);
+                previousSurvey.putExtra("Receiver", false);
+                previousSurvey.putExtra("Previous", true);
+                previousSurvey.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                try {
+                    MyQuitEMAHelper.pushSpecificAnswer(MyQuitCSVHelper.getFullDate(),
+                            MyQuitCSVHelper.getTimeOnly(),
+                            surID, 9999, position, false, surveyLength, surveyKey);
+                } catch (IOException e) {
+                    Log.d("MY-QUIT-USC","Something's wrong...");
+                    e.printStackTrace();
+                }
+                startActivity(previousSurvey);
+                Log.d("MY-QUIT-USC", "Sending survey" + surveyKey + " position " + position + " receiver false previous");
+            }
+        });
+    }
+
     @SuppressWarnings("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -611,73 +684,89 @@ public class MyQuitEMA extends Activity {
         question.setText(questionString[0]);
 
         if (questionString.length > 1) {
-            Log.d("MQU-MQU","questionstring is" + questionString[1]);
-            if (!questionString[1].equalsIgnoreCase("TEXT_ENTRY") & !questionString[1].equalsIgnoreCase("NUMERICAL_ENTRY") ) {
-                RadioButton answer1 = new RadioButton(this);
-                answer1.setText(questionString[1]);
-                answer1.setId(1001);
-                radioButtonListenerAdapter(answer1, sessionID, 1001, position, receiver, surveyLength, survey);
-                answers.addView(answer1);
-                RadioButton answer2 = new RadioButton(this);
-                Log.d("MQU-MQU","questionstring is wrong " + questionString[1]);
-                answer2.setText(questionString[2]);
-                answer2.setId(1002);
-                radioButtonListenerAdapter(answer2, sessionID, 1002, position, receiver, surveyLength, survey);
-                answers.addView(answer2);
-                try {
-                    RadioButton answer3 = new RadioButton(this);
-                    addButtonBeyondTwo(3, answers,answer3,questionString,sessionID,1003,position,receiver,surveyLength,survey);
-                    RadioButton answer4 = new RadioButton(this);
-                    addButtonBeyondTwo(4, answers,answer4,questionString,sessionID,1004,position,receiver,surveyLength,survey);
-                    RadioButton answer5 = new RadioButton(this);
-                    addButtonBeyondTwo(5, answers,answer5,questionString,sessionID,1005,position,receiver,surveyLength,survey);
-                    RadioButton answer6 = new RadioButton(this);
-                    addButtonBeyondTwo(6, answers,answer6,questionString,sessionID,1006,position,receiver,surveyLength,survey);
-                    RadioButton answer7 = new RadioButton(this);
-                    addButtonBeyondTwo(7, answers,answer7,questionString,sessionID,1007,position,receiver,surveyLength,survey);
-                    RadioButton answer8 = new RadioButton(this);
-                    addButtonBeyondTwo(8, answers,answer8,questionString,sessionID,1008,position,receiver,surveyLength,survey);
-                    RadioButton answer9 = new RadioButton(this);
-                    addButtonBeyondTwo(9, answers,answer9,questionString,sessionID,1009,position,receiver,surveyLength,survey);
-                    RadioButton answer10 = new RadioButton(this);
-                    addButtonBeyondTwo(10, answers,answer10,questionString,sessionID,1010,position,receiver,surveyLength,survey);
-                    RadioButton answer11 = new RadioButton(this);
-                    addButtonBeyondTwo(11, answers,answer10,questionString,sessionID,1011,position,receiver,surveyLength,survey);
-                    RadioButton answer12 = new RadioButton(this);
-                    addButtonBeyondTwo(12, answers,answer10,questionString,sessionID,1012,position,receiver,surveyLength,survey);
-                    RadioButton answer13 = new RadioButton(this);
-                    addButtonBeyondTwo(13, answers,answer10,questionString,sessionID,1013,position,receiver,surveyLength,survey);
-                    RadioButton answer14 = new RadioButton(this);
-                    addButtonBeyondTwo(14, answers,answer10,questionString,sessionID,1014,position,receiver,surveyLength,survey);
-                    RadioButton answer15 = new RadioButton(this);
-                    addButtonBeyondTwo(15, answers,answer10,questionString,sessionID,1015,position,receiver,surveyLength,survey);
-                    RadioButton answer16 = new RadioButton(this);
-                    addButtonBeyondTwo(16, answers,answer10,questionString,sessionID,1016,position,receiver,surveyLength,survey);
-                    RadioButton answer17 = new RadioButton(this);
-                    addButtonBeyondTwo(17, answers,answer10,questionString,sessionID,1017,position,receiver,surveyLength,survey);
-                    RadioButton answer18 = new RadioButton(this);
-                    addButtonBeyondTwo(18, answers,answer10,questionString,sessionID,1018,position,receiver,surveyLength,survey);
-                    RadioButton answer19 = new RadioButton(this);
-                    addButtonBeyondTwo(19, answers,answer10,questionString,sessionID,1019,position,receiver,surveyLength,survey);
-                    RadioButton answer20 = new RadioButton(this);
-                    addButtonBeyondTwo(20, answers,answer10,questionString,sessionID,1020,position,receiver,surveyLength,survey);
-                    RadioButton answer21 = new RadioButton(this);
-                    addButtonBeyondTwo(21, answers,answer10,questionString,sessionID,1021,position,receiver,surveyLength,survey);
-                    RadioButton answer22 = new RadioButton(this);
-                    addButtonBeyondTwo(22, answers,answer10,questionString,sessionID,1022,position,receiver,surveyLength,survey);
-                    RadioButton answer23 = new RadioButton(this);
-                    addButtonBeyondTwo(23, answers,answer10,questionString,sessionID,1023,position,receiver,surveyLength,survey);
-                    RadioButton answer24 = new RadioButton(this);
-                    addButtonBeyondTwo(24, answers,answer10,questionString,sessionID,1024,position,receiver,surveyLength,survey);
-                } catch (Exception a) {}
+            if (questionString[questionString.length - 1].equalsIgnoreCase("MULTIPLE_CHOICE")) {
+                ListView listView = new ListView(this);
+                List<String> newQuestions = new ArrayList<String>(Arrays.asList(questionString));
+                newQuestions.remove(newQuestions.size()-1);
+                newQuestions.remove(0);
+                //String[] newQuestionString = new String[newQuestions.size()];
+                //newQuestionString = newQuestions.toArray(newQuestionString);
+                ArrayAdapter listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice,newQuestions);
+                listView.setAdapter(listAdapter);
+                listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
                 surveySetup.addView(question);
-                surveySetup.addView(answers);
-                createLowerButtons(this, sessionID, KEY_SINGLE_CHOICE, answers, survey, position,retrieveSurveyLength(survey));
-            } else if (questionString[1].equalsIgnoreCase("TEXT_ENTRY")) {
-                textDecision(surveySetup, question, sessionID, position, survey, answers);
+                surveySetup.addView(listView);
+                createLowerButtons(this, sessionID, KEY_MULTIPLE_CHOICE, listView, survey, position, retrieveSurveyLength(survey));
             }
-            else if (questionString[1].equalsIgnoreCase("NUMERICAL_ENTRY")) {
-                numericalDecision(surveySetup, question, sessionID, position, survey);
+            else {
+                Log.d("MQU-MQU", "questionstring is" + questionString[1]);
+                if (!questionString[1].equalsIgnoreCase("TEXT_ENTRY") & !questionString[1].equalsIgnoreCase("NUMERICAL_ENTRY")) {
+                    RadioButton answer1 = new RadioButton(this);
+                    answer1.setText(questionString[1]);
+                    answer1.setId(1001);
+                    radioButtonListenerAdapter(answer1, sessionID, 1001, position, receiver, surveyLength, survey);
+                    answers.addView(answer1);
+                    RadioButton answer2 = new RadioButton(this);
+                    Log.d("MQU-MQU", "questionstring is wrong " + questionString[1]);
+                    answer2.setText(questionString[2]);
+                    answer2.setId(1002);
+                    radioButtonListenerAdapter(answer2, sessionID, 1002, position, receiver, surveyLength, survey);
+                    answers.addView(answer2);
+                    try {
+                        RadioButton answer3 = new RadioButton(this);
+                        addButtonBeyondTwo(3, answers, answer3, questionString, sessionID, 1003, position, receiver, surveyLength, survey);
+                        RadioButton answer4 = new RadioButton(this);
+                        addButtonBeyondTwo(4, answers, answer4, questionString, sessionID, 1004, position, receiver, surveyLength, survey);
+                        RadioButton answer5 = new RadioButton(this);
+                        addButtonBeyondTwo(5, answers, answer5, questionString, sessionID, 1005, position, receiver, surveyLength, survey);
+                        RadioButton answer6 = new RadioButton(this);
+                        addButtonBeyondTwo(6, answers, answer6, questionString, sessionID, 1006, position, receiver, surveyLength, survey);
+                        RadioButton answer7 = new RadioButton(this);
+                        addButtonBeyondTwo(7, answers, answer7, questionString, sessionID, 1007, position, receiver, surveyLength, survey);
+                        RadioButton answer8 = new RadioButton(this);
+                        addButtonBeyondTwo(8, answers, answer8, questionString, sessionID, 1008, position, receiver, surveyLength, survey);
+                        RadioButton answer9 = new RadioButton(this);
+                        addButtonBeyondTwo(9, answers, answer9, questionString, sessionID, 1009, position, receiver, surveyLength, survey);
+                        RadioButton answer10 = new RadioButton(this);
+                        addButtonBeyondTwo(10, answers, answer10, questionString, sessionID, 1010, position, receiver, surveyLength, survey);
+                        RadioButton answer11 = new RadioButton(this);
+                        addButtonBeyondTwo(11, answers, answer10, questionString, sessionID, 1011, position, receiver, surveyLength, survey);
+                        RadioButton answer12 = new RadioButton(this);
+                        addButtonBeyondTwo(12, answers, answer10, questionString, sessionID, 1012, position, receiver, surveyLength, survey);
+                        RadioButton answer13 = new RadioButton(this);
+                        addButtonBeyondTwo(13, answers, answer10, questionString, sessionID, 1013, position, receiver, surveyLength, survey);
+                        RadioButton answer14 = new RadioButton(this);
+                        addButtonBeyondTwo(14, answers, answer10, questionString, sessionID, 1014, position, receiver, surveyLength, survey);
+                        RadioButton answer15 = new RadioButton(this);
+                        addButtonBeyondTwo(15, answers, answer10, questionString, sessionID, 1015, position, receiver, surveyLength, survey);
+                        RadioButton answer16 = new RadioButton(this);
+                        addButtonBeyondTwo(16, answers, answer10, questionString, sessionID, 1016, position, receiver, surveyLength, survey);
+                        RadioButton answer17 = new RadioButton(this);
+                        addButtonBeyondTwo(17, answers, answer10, questionString, sessionID, 1017, position, receiver, surveyLength, survey);
+                        RadioButton answer18 = new RadioButton(this);
+                        addButtonBeyondTwo(18, answers, answer10, questionString, sessionID, 1018, position, receiver, surveyLength, survey);
+                        RadioButton answer19 = new RadioButton(this);
+                        addButtonBeyondTwo(19, answers, answer10, questionString, sessionID, 1019, position, receiver, surveyLength, survey);
+                        RadioButton answer20 = new RadioButton(this);
+                        addButtonBeyondTwo(20, answers, answer10, questionString, sessionID, 1020, position, receiver, surveyLength, survey);
+                        RadioButton answer21 = new RadioButton(this);
+                        addButtonBeyondTwo(21, answers, answer10, questionString, sessionID, 1021, position, receiver, surveyLength, survey);
+                        RadioButton answer22 = new RadioButton(this);
+                        addButtonBeyondTwo(22, answers, answer10, questionString, sessionID, 1022, position, receiver, surveyLength, survey);
+                        RadioButton answer23 = new RadioButton(this);
+                        addButtonBeyondTwo(23, answers, answer10, questionString, sessionID, 1023, position, receiver, surveyLength, survey);
+                        RadioButton answer24 = new RadioButton(this);
+                        addButtonBeyondTwo(24, answers, answer10, questionString, sessionID, 1024, position, receiver, surveyLength, survey);
+                    } catch (Exception a) {
+                    }
+                    surveySetup.addView(question);
+                    surveySetup.addView(answers);
+                    createLowerButtons(this, sessionID, KEY_SINGLE_CHOICE, answers, survey, position, retrieveSurveyLength(survey));
+                } else if (questionString[1].equalsIgnoreCase("TEXT_ENTRY")) {
+                    textDecision(surveySetup, question, sessionID, position, survey, answers);
+                } else if (questionString[1].equalsIgnoreCase("NUMERICAL_ENTRY")) {
+                    numericalDecision(surveySetup, question, sessionID, position, survey);
+                }
             }
         }
         else {

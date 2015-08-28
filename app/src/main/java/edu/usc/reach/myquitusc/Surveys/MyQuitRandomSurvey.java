@@ -31,10 +31,10 @@ public class MyQuitRandomSurvey {
     public static final String[] whatDoingText = {"What was this other thing?","TEXT_ENTRY"};
 
     public static final String[] whoWith = {"Who have you been with in the last 15 minutes?","No one, I was alone",
-            "Korean friends","Non-Korean friends", "Family","Other persons"};
+            "Korean friends","Non-Korean friends", "Family","Other persons","MULTIPLE_CHOICE"};
 
     public static final String[] hadThese = {"Have you had any of these in the past hour?","Alcohol","Water",
-    "Coffee","Tea","Soda","Meal/snack","Other","Nothing"};
+    "Coffee","Tea","Soda","Meal/snack","Other","Nothing","MULTIPLE_CHOICE"};
     public static final String[] othersSmoke = {"Were others smoking around you when the phone went off?",
     "Yes", "No"};
     public static final String[] allowSmoke = {"Is smoking allowed where you are at when the phone went off?",
@@ -168,7 +168,7 @@ public class MyQuitRandomSurvey {
     public static int validateNextPosition(int qID, String aID, boolean naTrue, boolean paTrue,
                                            boolean pssTrue, boolean ccTrue, boolean anhedoniaTrue) {
         Log.d("MQU-EMA","Received Qid" + qID + " and " + aID );
-        return qID + 1;
+        return qID +1;
     }
 
 

@@ -30,14 +30,14 @@ public class MyQuitSmokeSurvey {
 
     public static final String[] reasonSmoke = {"I am smoking because...","Reduce craving","Soon going where I cannot smoke",
         "Cope with negative emotion","Enhance positive emotion","Habit/automatic","Opportunity to socialize",
-        "Break from work/studying","Boredom/to kill time","Other reason"};
+        "Break from work/studying","Boredom/to kill time","Other reason","MULTIPLE_CHOICE"};
     public static final String[] reasonSmokeText = {"Why are you smoking this cigarette?","TEXT_ENTRY"};
 
     public static final String[] whoWith = {"Who have you been with in the last 15 minutes?","No one, I was alone",
-            "Korean friends","Non-Korean friends", "Family","Other persons"};
+            "Korean friends","Non-Korean friends", "Family","Other persons","MULTIPLE_CHOICE"};
 
     public static final String[] hadThese = {"Have you had any of these in the past hour?","Alcohol","Water",
-    "Coffee","Tea","Soda","Meal/snack","Other","Nothing"};
+    "Coffee","Tea","Soda","Meal/snack","Other","Nothing","MULTIPLE_CHOICE"};
     public static final String[] othersSmoke = {"Were others smoking around you when you decided to smoke this cigarette?",
     "Yes","No"};
     public static final String[] allowSmoke = {"Is smoking allowed where you decided to smoke this cigarette?",
@@ -208,7 +208,20 @@ public class MyQuitSmokeSurvey {
 
     public static int validateNextPosition(int qID, String aID) {
         Log.d("MQU-EMA","Received Qid" + qID + " and " + aID );
-        return qID + 1;
+        switch (qID){
+            case 4: {
+                char[] splitArray = aID.toCharArray();
+                String splitDraw = String.valueOf(splitArray[(splitArray.length-2)]);
+                Log.d("MQU-EMA","Received char" + splitDraw );
+                if(Integer.parseInt(splitDraw)>0){
+                    return qID + 1;
+                }
+                else {
+                    return qID + 2;
+                }
+            }
+            default: return qID +1;
+        }
     }
 
 

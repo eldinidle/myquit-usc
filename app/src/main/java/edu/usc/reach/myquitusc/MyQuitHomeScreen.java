@@ -105,7 +105,10 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (situation.getText().toString() != null && situation.getText().toString().length() > 5) {
+                        if (situation.getText().toString() != null && MyQuitPlanHelper.checkTaskListDuplicate(situation.getText().toString(),getApplicationContext())){
+                            Toast.makeText(getApplicationContext(), "This is a duplicate situation, please enter a different label.", Toast.LENGTH_LONG).show();
+                        }
+                        else if (situation.getText().toString() != null && situation.getText().toString().length() > 5) {
                             dialog.dismiss();
                             selectedIntention(situation.getText().toString());
                         }
@@ -597,6 +600,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Application Interaction","Main Screen Accessed",MyQuitCSVHelper.getFulltime());
         mainDBContext = getApplicationContext();
         setContentView(R.layout.activity_my_quit_home_screen);
         boolean creatStruc = MyQuitCSVHelper.createStructure();
@@ -628,6 +632,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
     @Override
     protected void onResume(){
         super.onResume();
+        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Application Interaction","Home Screen Resumed",MyQuitCSVHelper.getFulltime());
         try {
             if(MyQuitLoginActivity.confirmPreStudy()) {
             }
@@ -837,7 +842,7 @@ public class MyQuitHomeScreen extends ActionBarActivity {
                         getDialog().dismiss();
                         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
                         final EditText situation = new EditText(view.getContext());
-                        builder.setTitle("Instead of smoking, I will:")
+                        builder.setTitle("While smoking, I was:")
                                 .setView(situation)
                                 .setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
                                     @Override

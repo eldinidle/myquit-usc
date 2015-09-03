@@ -92,7 +92,6 @@ public class MyQuitRandomSurvey {
     //public static final String[] ccUrgeVape = {"I had frequent urges to vape in the past 15 minutes.",
     //        "1 = Not at all", "2","3","4","5","6","7","8","9","10 = Extremely"};
 
-//TODO: Implement 60% dump
 
     public static final String[] anhedoniaPeople = {"How much pleasure/enjoyment would you feel right now in response to spending time with people you are close to, such as family and friends?",
             "1 = No pleasure", "2","3","4","5","6","7","8","9","10 = Extreme pleasure"};

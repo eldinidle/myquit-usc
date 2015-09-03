@@ -338,8 +338,8 @@ public class MyQuitProgress extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_quit_progress);
-
-        runGraphView(1);
+        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Application Interaction","My Progress",MyQuitCSVHelper.getFulltime());
+        runGraphView(2);
 
         Button smokedCigs = (Button) findViewById(R.id.cigSmokeStatus);
         Button avoidedCigs = (Button) findViewById(R.id.cigSavedStatus);

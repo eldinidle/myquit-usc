@@ -72,15 +72,20 @@ public class MyQuitCSVHelper{
     }
 
     public static boolean isLastEventPastXMinutes(int emaType, int minutes){
+        try {
         String stringTime = MyQuitCSVHelper.pullLastEvent(emaType)[1];
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
         Calendar now = Calendar.getInstance();
         Date timeNow = now.getTime();
-        try {
+
             Date timeThen = sdf.parse(stringTime);
             long compareTime = timeNow.getTime() - timeThen.getTime();
             return (compareTime > (minutes * 60 * 1000));
-        } catch (ParseException e) {
+        } catch (ArrayIndexOutOfBoundsException aioe) {
+            aioe.printStackTrace();
+            return false;
+        }
+        catch (ParseException e) {
             e.printStackTrace();
             return false;
         }

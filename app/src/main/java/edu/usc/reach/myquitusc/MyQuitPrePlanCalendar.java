@@ -230,7 +230,7 @@ public class MyQuitPrePlanCalendar extends Activity {
 
     private void showInstruction() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(("Please select each hour you wish to schedule. If you change your mind, long-press the hour to clear your entry."))
+        builder.setMessage(("Please select each hour you wish to schedule. If you change your mind, hold down the hour to clear your entry."))
                 .setPositiveButton("Ok",new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

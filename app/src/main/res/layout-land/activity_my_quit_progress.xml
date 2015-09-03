@@ -43,8 +43,8 @@
             android:layout_toRightOf="@+id/cigSmokeStatus"
             android:layout_alignParentRight="false"
             android:layout_weight="1"
-            android:background="#FAFAFA"
-            android:textColor="@color/ActiveText" />
+            android:background="@color/ActiveText"
+            android:textColor="#FAFAFA" />
 
         <Button
             android:layout_width="0dp"
@@ -61,8 +61,8 @@
             android:text="Money Spent"
             android:id="@+id/moneySpentStatus"
             android:layout_weight="1"
-            android:background="#FAFAFA"
-            android:textColor="@color/ActiveText" />
+            android:background="@color/ActiveText"
+            android:textColor="#FAFAFA" />
 
         <Button
             android:layout_width="0dp"

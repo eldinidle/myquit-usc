@@ -352,14 +352,14 @@ public class MyQuitPHP {
                     emaParams.add(new BasicNameValuePair("pssFamily", params[0][24]));
                     emaParams.add(new BasicNameValuePair("pssMoney", params[0][25]));
                     emaParams.add(new BasicNameValuePair("ccMindCig", params[0][26]));
-                    emaParams.add(new BasicNameValuePair("ccMindVape", params[0][27]));
-                    emaParams.add(new BasicNameValuePair("ccDesireCig", params[0][28]));
-                    emaParams.add(new BasicNameValuePair("ccDesireVape", params[0][29]));
-                    emaParams.add(new BasicNameValuePair("ccUrgeCig", params[0][30]));
-                    emaParams.add(new BasicNameValuePair("ccUrgeVape", params[0][31]));
-                    emaParams.add(new BasicNameValuePair("anhedoniaPeople", params[0][32]));
-                    emaParams.add(new BasicNameValuePair("anhedoniaHobby", params[0][33]));
-                    emaParams.add(new BasicNameValuePair("anhedoniaSocial", params[0][34]));
+                    //emaParams.add(new BasicNameValuePair("ccMindVape", params[0][27]));
+                    emaParams.add(new BasicNameValuePair("ccDesireCig", params[0][27]));
+                    //emaParams.add(new BasicNameValuePair("ccDesireVape", params[0][29]));
+                    emaParams.add(new BasicNameValuePair("ccUrgeCig", params[0][28]));
+                    //emaParams.add(new BasicNameValuePair("ccUrgeVape", params[0][31]));
+                    emaParams.add(new BasicNameValuePair("anhedoniaPeople", params[0][29]));
+                    emaParams.add(new BasicNameValuePair("anhedoniaHobby", params[0][30]));
+                    emaParams.add(new BasicNameValuePair("anhedoniaSocial", params[0][31]));
                     break;
                 case MyQuitSmokeSurvey.KEY_SURVEY_SUCCESS:
                     emaParams.add(new BasicNameValuePair("whereAt", params[0][0]));
@@ -730,14 +730,14 @@ public class MyQuitPHP {
                 emaParams.add(new BasicNameValuePair("pssFamily", params[24]));
                 emaParams.add(new BasicNameValuePair("pssMoney", params[25]));
                 emaParams.add(new BasicNameValuePair("ccMindCig", params[26]));
-                emaParams.add(new BasicNameValuePair("ccMindVape", params[27]));
-                emaParams.add(new BasicNameValuePair("ccDesireCig", params[28]));
-                emaParams.add(new BasicNameValuePair("ccDesireVape", params[29]));
-                emaParams.add(new BasicNameValuePair("ccUrgeCig", params[30]));
-                emaParams.add(new BasicNameValuePair("ccUrgeVape", params[31]));
-                emaParams.add(new BasicNameValuePair("anhedoniaPeople", params[32]));
-                emaParams.add(new BasicNameValuePair("anhedoniaHobby", params[33]));
-                emaParams.add(new BasicNameValuePair("anhedoniaSocial", params[34]));
+                //emaParams.add(new BasicNameValuePair("ccMindVape", params[27]));
+                emaParams.add(new BasicNameValuePair("ccDesireCig", params[27]));
+                //emaParams.add(new BasicNameValuePair("ccDesireVape", params[29]));
+                emaParams.add(new BasicNameValuePair("ccUrgeCig", params[28]));
+                //emaParams.add(new BasicNameValuePair("ccUrgeVape", params[31]));
+                emaParams.add(new BasicNameValuePair("anhedoniaPeople", params[29]));
+                emaParams.add(new BasicNameValuePair("anhedoniaHobby", params[30]));
+                emaParams.add(new BasicNameValuePair("anhedoniaSocial", params[31]));
                 break;
             case MyQuitSmokeSurvey.KEY_SURVEY_SUCCESS:
                 emaParams.add(new BasicNameValuePair("whereAt", params[0]));

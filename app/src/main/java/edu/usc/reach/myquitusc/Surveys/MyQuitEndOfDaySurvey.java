@@ -83,6 +83,13 @@ public class MyQuitEndOfDaySurvey {
     public static final String[] vapePuffCount = {"How many puffs did you take each time you vaped or used e-cigs?",
             "NUMERICAL_ENTRY"};
 
+    public static final String[] anhedoniaPeople = {"How much pleasure/enjoyment would you feel right now in response to spending time with people you are close to, such as family and friends?",
+            "1 = No pleasure", "2","3","4","5","6","7","8","9","10 = Extreme pleasure"};
+    public static final String[] anhedoniaHobby = {"How much pleasure/enjoyment would you feel right now in response to personal hobbies, such as reading, painting, following sports, or collecting things?",
+            "1 = No pleasure", "2","3","4","5","6","7","8","9","10 = Extreme pleasure"};
+    public static final String[] anhedoniaSocial = {"How much pleasure/enjoyment would you feel right now in response to socializing with other people in-person or over the phone and Internet?",
+            "1 = No pleasure", "2","3","4","5","6","7","8","9","10 = Extreme pleasure"};
+
 
     public static final String[] endMessage = {"Thank you for completing the survey"};
 

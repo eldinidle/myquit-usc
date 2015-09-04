@@ -13,8 +13,8 @@ import edu.usc.reach.myquitusc.MyQuitPlanHelper;
  */
 public class MyQuitEndOfDaySurvey {
     public static final int KEY_SURVEY_SUCCESS = 3;
-    public static final int KEY_END_SURVEY = 25;
-    public static final int KEY_SURVEY_LENGTH = 26;
+    public static final int KEY_END_SURVEY = 28;
+    public static final int KEY_SURVEY_LENGTH = 29;
 
     public static final String[] howManyCigs = {"How many cigarettes did you smoke today?", "NUMERICAL_ENTRY"};
 
@@ -95,11 +95,11 @@ public class MyQuitEndOfDaySurvey {
 
 
     public  List<String[]> getQuestions(Context context){
-        List<String[]> returnList = Arrays.asList(howManyCigs, pssFamily,pssMoney,pssSchool,pssWork, // 5
-              naDistressed, naHopeless, naIrritable, naSad, naScared, naTense, naUpset, //7 12
-              paCheerful, paEnthusiastic, paHappy, paInterested, paProud, // 5 17
-              troubleCigs, botherDesire, frequentUrges, confidentQuit, helpQuit(context), //5 22
-              vapeCig, vapeCigCount, vapePuffCount, endMessage); // 4
+        List<String[]> returnList = Arrays.asList(howManyCigs, pssFamily,pssMoney,pssSchool,pssWork, // 4/5
+              naDistressed, naHopeless, naIrritable, naSad, naScared, naTense, naUpset, //7 11/12
+              paCheerful, paEnthusiastic, paHappy, paInterested, paProud, // 5 16/17
+              troubleCigs, botherDesire, frequentUrges, confidentQuit, helpQuit(context), //5 21/22
+              vapeCig, vapeCigCount, vapePuffCount, anhedoniaPeople, anhedoniaHobby, anhedoniaSocial, endMessage); // 4 28/29
         return returnList;
     }
 
@@ -113,10 +113,13 @@ public class MyQuitEndOfDaySurvey {
                 case 22:
                     switch(aID){
                         case 1001: return 23;
-                        case 1002: return KEY_END_SURVEY;
+                        case 1002: return 25;
                     } break;
                 case 23: return 24;
-                case 24: return KEY_END_SURVEY;
+                case 24: return 25;
+                case 25: return 26;
+                case 26: return 27;
+                case 27: return KEY_END_SURVEY;
                 default: return 0;
             }
         }
@@ -132,11 +135,10 @@ public class MyQuitEndOfDaySurvey {
 
 
     public static int validatePreviousPosition(int qID) {
-        if(qID>0){
-            return qID-1;
-        }
-        else {
-            return 0;
+        switch(qID){
+            case 0: return 0;
+            case 25: return 22;
+            default: return qID-1;
         }
     }
 

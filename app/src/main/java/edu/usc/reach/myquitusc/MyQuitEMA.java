@@ -383,19 +383,27 @@ public class MyQuitEMA extends Activity {
             @Override
             public void onClick(View v) {
                 try {
-                    MyQuitEMAHelper.pushSpecificAnswer(MyQuitCSVHelper.getFullDate(),
-                            MyQuitCSVHelper.getTimeOnly(),
-                            surID, aID, qPosition, false, surveyLength, survey);
+                    if(survey == MyQuitEndOfDaySurvey.KEY_SURVEY_SUCCESS && qPosition == 24) {
+                        MyQuitEMAHelper.pushSpecificAnswer(MyQuitCSVHelper.getFullDate(), MyQuitCSVHelper.getTimeOnly(), surID, MyQuitEndOfDaySurvey.pullHelpQuitAnswer(getApplicationContext(),aID), qPosition, false, surveyLength, survey);
+                    }
+                    else {
+                        MyQuitEMAHelper.pushSpecificAnswer(MyQuitCSVHelper.getFullDate(),
+                                MyQuitCSVHelper.getTimeOnly(),
+                                surID, aID, qPosition, false, surveyLength, survey);
+                    }
                     Log.d("MY-QUIT-USC","Pushed session"+surID+" with "+ "question:" +
                             qPosition + " on answer:" + aID + ". New survey is" + oldSurvey + " and length =" + surveyLength );
-                } catch (IOException e) {
+                    if(survey == MyQuitEndOfDaySurvey.KEY_SURVEY_SUCCESS && qPosition == 24) {
+                    Log.d("MY-QUIT-USC","answer is" + MyQuitEndOfDaySurvey.pullHelpQuitAnswer(getApplicationContext(),aID));
+                    }
+                    } catch (IOException e) {
                     Log.d("MY-QUIT-USC", "Something's wrong...");
                 }
             }
         });
     }
 
-    public void createLowerButtons(Context context, final int surID, final int questionKey, final NumberPicker answerSelection,
+    public void createLowerButtons(final Context context, final int surID, final int questionKey, final NumberPicker answerSelection,
                                    final int surveyKey, final int position, final int surveyLength){
         final Intent nextSurvey = new Intent(this, MyQuitEMA.class);
         final Intent previousSurvey = new Intent(this, MyQuitEMA.class);
@@ -406,7 +414,7 @@ public class MyQuitEMA extends Activity {
                 int aID = answerSelection.getValue();
                 if(aID>-1){
                     try {
-                        MyQuitEMAHelper.pushSpecificAnswer(MyQuitCSVHelper.getFullDate(),MyQuitCSVHelper.getTimeOnly(),surID,aID,position,false,surveyLength,surveyKey);
+                        MyQuitEMAHelper.pushSpecificAnswer(MyQuitCSVHelper.getFullDate(), MyQuitCSVHelper.getTimeOnly(), surID, aID, position, false, surveyLength, surveyKey);
                         nextSurvey.putExtra("Survey", surveyKey);
                         nextSurvey.putExtra("SessionID", surID);
                         nextSurvey.putExtra("Position", position);
@@ -451,7 +459,7 @@ public class MyQuitEMA extends Activity {
         });
     }
 
-    public void createLowerButtons(Context context, final int surID, final int questionKey, RadioGroup answerSelection,
+    public void createLowerButtons(Context context, final int surID, final int questionKey, final RadioGroup answerSelection,
                                    final int surveyKey, final int position, final int surveyLength){
             final Intent nextSurvey = new Intent(this, MyQuitEMA.class);
             final Intent previousSurvey = new Intent(this, MyQuitEMA.class);
@@ -462,7 +470,7 @@ public class MyQuitEMA extends Activity {
                    if(questionKey == KEY_SINGLE_CHOICE) {
                        try {
                            int test = Integer.valueOf(MyQuitEMAHelper.pullSpecificAnswerString(MyQuitCSVHelper.getFullDate(), surID, position, surveyKey));
-                           if(test<2000) {
+                           if((test<2000)) {
                                nextSurvey.putExtra("Survey", surveyKey);
                                nextSurvey.putExtra("SessionID", surID);
                                nextSurvey.putExtra("Position", position);
@@ -476,7 +484,19 @@ public class MyQuitEMA extends Activity {
                                Toast.makeText(getApplicationContext(), "Please select an answer.", Toast.LENGTH_SHORT).show();
                            }
                        } catch (Exception neo) {
-                           Toast.makeText(getApplicationContext(), "Please select an answer.", Toast.LENGTH_SHORT).show();
+                           if (surveyKey == MyQuitEndOfDaySurvey.KEY_SURVEY_SUCCESS && position == 24 && answerSelection.getCheckedRadioButtonId() != -1) {
+                               nextSurvey.putExtra("Survey", surveyKey);
+                               nextSurvey.putExtra("SessionID", surID);
+                               nextSurvey.putExtra("Position", position);
+                               nextSurvey.putExtra("Receiver", false);
+                               nextSurvey.putExtra("Next", true);
+                               finish();
+                               startActivity(nextSurvey);
+                               Log.d("MY-QUIT-USC", "Sending survey" + surveyKey + " position " + position + " receiver false next");
+                           }
+                           else {
+                               Toast.makeText(getApplicationContext(), "Please select an answer.", Toast.LENGTH_SHORT).show();
+                           }
                        }
                    }
                    if(questionKey == KEY_TEXT_ENTRY){

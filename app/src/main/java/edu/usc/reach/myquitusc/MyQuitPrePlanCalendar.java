@@ -126,42 +126,52 @@ public class MyQuitPrePlanCalendar extends Activity {
                 boolean weekEnd = getWeekEnd();
                 boolean fromHome = getFromHome();
                 String calledDate = getCalledDate();
-                Intent taskLaunch = new Intent(view.getContext(), MyQuitTasksActivity.class);
-                taskLaunch.putExtra("PrePlan", true);
-                taskLaunch.putExtra("FromHome", fromHome);
-                taskLaunch.putExtra("Weekend", weekEnd);
-                taskLaunch.putExtra("timeCode", pulledTimes[position]);
-                taskLaunch.putExtra("positionTime", position);
-                taskLaunch.putExtra("calledDate", calledDate);
-                MyQuitPrePlanCalendar.this.overridePendingTransition(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_top);
-                startActivity(taskLaunch);
-                //DialogFragment tasksFragment = TasksFragmentDialog.newInstance(pulledTimes[position], position, calledDate);
-                //tasksFragment.show(getFragmentManager(), "dialog");
+                if ((pulledTimes[position].matches(MyQuitCSVHelper.defaultTimes[position]))) {
+                    Intent taskLaunch = new Intent(view.getContext(), MyQuitTasksActivity.class);
+                    taskLaunch.putExtra("PrePlan", true);
+                    taskLaunch.putExtra("FromHome", fromHome);
+                    taskLaunch.putExtra("Weekend", weekEnd);
+                    taskLaunch.putExtra("timeCode", pulledTimes[position]);
+                    taskLaunch.putExtra("positionTime", position);
+                    taskLaunch.putExtra("calledDate", calledDate);
+                    MyQuitPrePlanCalendar.this.overridePendingTransition(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_top);
+                    startActivity(taskLaunch);
+                    //DialogFragment tasksFragment = TasksFragmentDialog.newInstance(pulledTimes[position], position, calledDate);
+                    //tasksFragment.show(getFragmentManager(), "dialog");
+                }
+                else {
+                    Toast.makeText(getApplicationContext(),"Hold down to erase first before adding.",Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         todayView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                String calledDate = getCalledDate();
-                boolean fromHome = getFromHome();
-                boolean weekEnd = getWeekEnd();
-                pulledTimes[position] = MyQuitCSVHelper.defaultTimes[position];
-                MyQuitPHP.postCalendarEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),calledDate,MyQuitCSVHelper.defaultTimes[position],"DELETED","DELETED",MyQuitCSVHelper.getFulltime());
-                try {
-                    MyQuitCSVHelper.pushDateTimes(calledDate, pulledTimes);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(view.getContext(), "Warning: Not Synced", Toast.LENGTH_LONG);
+                if(!(pulledTimes[position].matches(MyQuitCSVHelper.defaultTimes[position]))) {
+                    String calledDate = getCalledDate();
+                    boolean fromHome = getFromHome();
+                    boolean weekEnd = getWeekEnd();
+                    pulledTimes[position] = MyQuitCSVHelper.defaultTimes[position];
+                    MyQuitPHP.postCalendarEvent(MyQuitCSVHelper.pullLoginStatus("UserName"), calledDate, MyQuitCSVHelper.defaultTimes[position], "DELETED", "DELETED", MyQuitCSVHelper.getFulltime());
+                    try {
+                        MyQuitCSVHelper.pushDateTimes(calledDate, pulledTimes);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(view.getContext(), "Warning: Not Synced", Toast.LENGTH_LONG);
+                    }
+                    Intent launchBack = new Intent(view.getContext(), MyQuitPrePlanCalendar.class);
+                    launchBack.putExtra("Date", calledDate);
+                    launchBack.putExtra("FocusPosition", position);
+                    launchBack.putExtra("Weekend", weekEnd);
+                    launchBack.putExtra("FromHome", fromHome);
+                    launchBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    MyQuitPrePlanCalendar.this.overridePendingTransition(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_top);
+                    startActivity(launchBack);
                 }
-                Intent launchBack = new Intent(view.getContext(), MyQuitPrePlanCalendar.class);
-                launchBack.putExtra("Date",calledDate);
-                launchBack.putExtra("FocusPosition",position);
-                launchBack.putExtra("Weekend",weekEnd);
-                launchBack.putExtra("FromHome",fromHome);
-                launchBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                MyQuitPrePlanCalendar.this.overridePendingTransition(R.anim.abc_slide_in_bottom,R.anim.abc_slide_out_top);
-                startActivity(launchBack);
+                else {
+                    Toast.makeText(getApplicationContext(),"Sorry, this entry is already empty...",Toast.LENGTH_SHORT).show();
+                }
                 return false;
             }
         });

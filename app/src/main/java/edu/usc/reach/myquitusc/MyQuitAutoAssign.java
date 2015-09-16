@@ -49,6 +49,7 @@ public class MyQuitAutoAssign {
      * @return true if EMA will run
      */
     public static boolean runEMAOffAlgorithm() {
+        /*
         Log.d("MQU-ALGORITHM","Running decision tree for II prompt");
         String numberOfPrompts = MyQuitCSVHelper.pullLoginStatus("AlgorithmCount");
         int numPrompts = Integer.valueOf(numberOfPrompts);
@@ -61,7 +62,8 @@ public class MyQuitAutoAssign {
             Log.d("MQU-ALGORITHM","Algorithm is returning true, not within 8 loop");
             return true;
         }
-
+        */
+        return true;
     }
 
     public static boolean minimumLabelConfirm(String calledDate) {

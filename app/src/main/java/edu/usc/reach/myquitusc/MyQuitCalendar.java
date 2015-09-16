@@ -85,7 +85,7 @@ public class MyQuitCalendar extends Activity   {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("MQU-CH","lock is" + MyQuitCalendarHelper.returnLockedHour(calledDate));
-                if ((position > MyQuitCalendarHelper.returnLockedHour(calledDate)-1)) {
+                if ((pulledTimes[position].matches(MyQuitCSVHelper.defaultTimes[position])) && (position > MyQuitCalendarHelper.returnLockedHour(calledDate)-1)) {
                     Intent taskLaunch = new Intent(view.getContext(), MyQuitTasksActivity.class);
                     taskLaunch.putExtra("timeCode", pulledTimes[position]);
                     taskLaunch.putExtra("positionTime", position);
@@ -95,28 +95,39 @@ public class MyQuitCalendar extends Activity   {
                     //DialogFragment tasksFragment = TasksFragmentDialog.newInstance(pulledTimes[position], position, calledDate);
                     //tasksFragment.show(getFragmentManager(), "dialog");
                 }
-                else {
+                else if ((pulledTimes[position].matches(MyQuitCSVHelper.defaultTimes[position]))) {
                     Toast.makeText(getApplicationContext(),"You can't edit this time anymore",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(),"Hold down to erase first before adding.",Toast.LENGTH_SHORT).show();
                 }
             }
         });
         todayView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                pulledTimes[position] = MyQuitCSVHelper.defaultTimes[position];
-                MyQuitPHP.postCalendarEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),calledDate,MyQuitCSVHelper.defaultTimes[position],"DELETED","DELETED",MyQuitCSVHelper.getFulltime());
-                try {
-                    MyQuitCSVHelper.pushDateTimes(calledDate, pulledTimes);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(view.getContext(), "Warning: Not Synced", Toast.LENGTH_LONG);
+                if (!(pulledTimes[position].matches(MyQuitCSVHelper.defaultTimes[position])) && (position > MyQuitCalendarHelper.returnLockedHour(calledDate)-1)) {
+                    pulledTimes[position] = MyQuitCSVHelper.defaultTimes[position];
+                    MyQuitPHP.postCalendarEvent(MyQuitCSVHelper.pullLoginStatus("UserName"), calledDate, MyQuitCSVHelper.defaultTimes[position], "DELETED", "DELETED", MyQuitCSVHelper.getFulltime());
+                    try {
+                        MyQuitCSVHelper.pushDateTimes(calledDate, pulledTimes);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(view.getContext(), "Warning: Not Synced", Toast.LENGTH_LONG);
+                    }
+                    Intent launchBack = new Intent(view.getContext(), MyQuitCalendar.class);
+                    launchBack.putExtra("Date", calledDate);
+                    launchBack.putExtra("FocusPosition", position);
+                    launchBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    MyQuitCalendar.this.overridePendingTransition(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_top);
+                    startActivity(launchBack);
                 }
-                Intent launchBack = new Intent(view.getContext(), MyQuitCalendar.class);
-                launchBack.putExtra("Date",calledDate);
-                launchBack.putExtra("FocusPosition",position);
-                launchBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                MyQuitCalendar.this.overridePendingTransition(R.anim.abc_slide_in_bottom,R.anim.abc_slide_out_top);
-                startActivity(launchBack);
+                else if ((pulledTimes[position].matches(MyQuitCSVHelper.defaultTimes[position])) && (position > MyQuitCalendarHelper.returnLockedHour(calledDate)-1)) {
+                    Toast.makeText(getApplicationContext(),"Sorry, this entry is already empty...",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(),"You can't edit this time anymore.",Toast.LENGTH_SHORT).show();
+                }
                 return false;
             }
         });

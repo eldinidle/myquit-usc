@@ -37,7 +37,10 @@ public class MyQuitIntentPrompt extends Activity {
                             parsedHourSituation,
                             MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(), true));
                 }
-                else { MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"), "Received II", "Popped - EMA Not Assigned", MyQuitCSVHelper.getFulltime());}
+                else {
+                    MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"), "Received II", "Popped - EMA Not Assigned", MyQuitCSVHelper.getFulltime());
+                    MyQuitCalendarHelper.returnEMAPromptTime(MyQuitCalendarHelper.assignArrayPosition(true));
+                    }
                 MyQuitCalendarHelper.setSession(getApplicationContext(), true, true);
             }
             catch(StringIndexOutOfBoundsException soeo) {
@@ -58,7 +61,10 @@ public class MyQuitIntentPrompt extends Activity {
                             parsedHourSituation, MyQuitCalendarHelper.
                                     returnIntentFromSituation(getApplicationContext(), false));
                 }
-                else { MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"), "Received II", "Popped - EMA Not Assigned", MyQuitCSVHelper.getFulltime());}
+                else {
+                    MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"), "Received II", "Popped - EMA Not Assigned", MyQuitCSVHelper.getFulltime());
+                    MyQuitCalendarHelper.returnEMAPromptTime(MyQuitCalendarHelper.assignArrayPosition(false));
+                }
                 MyQuitCalendarHelper.setSession(getApplicationContext(), false, true);
             }
             catch(StringIndexOutOfBoundsException soeo) {
@@ -142,7 +148,7 @@ public class MyQuitIntentPrompt extends Activity {
                 parsedHourSituation = "doing something";
                 finish();
             }
-            intentView.setText("Instead of smoking while: \"" + parsedHourSituation + "\", you said you would: \""
+            intentView.setText("Instead of smoking while: \"" + parsedHourSituation + "\", you said: \""
                     + MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(), true) + "\"");
             activateEMA();
         }
@@ -156,7 +162,7 @@ public class MyQuitIntentPrompt extends Activity {
                 parsedHourSituation = "doing something";
                 finish();
             }
-            intentView.setText("Instead of smoking while: \"" + parsedHourSituation + "\", you said you would: \""
+            intentView.setText("Instead of smoking while: \"" + parsedHourSituation + "\", you said: \""
                     + MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(), false) + "\"");
             activateEMA();
         }

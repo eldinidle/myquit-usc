@@ -22,6 +22,7 @@ import java.util.Random;
 
 import edu.usc.reach.myquitusc.DatabaseHelpers.MyQuitDatabaseHandler;
 import edu.usc.reach.myquitusc.DatabaseHelpers.PlannedSituation;
+import edu.usc.reach.myquitusc.Surveys.MyQuitCalendarSuccessSurvey;
 
 /**
  * Created by Eldin on 1/10/15.
@@ -98,7 +99,8 @@ public class MyQuitCalendarHelper {
 
     public static boolean isThisWakingUp(boolean preTenMinutes)  {
         String hourSituation = unassignHoursArray()[assignArrayPosition(preTenMinutes)];
-        return hourSituation.equalsIgnoreCase("Waking up");
+        Log.d("MQU-WAKE", hourSituation + hourSituation.replace(" ", "").replace("-", "").equalsIgnoreCase("wakingup"));
+        return hourSituation.replace(" ","").replace("-", "").equalsIgnoreCase("wakingup");
     }
 
     public static String returnIntentFromSituation(Context context, boolean preTenMinutes)  {
@@ -183,7 +185,7 @@ public class MyQuitCalendarHelper {
 
     public static void decideCalendar (Context context) { /*TODO: develop pre-injection code for decision on algorithm in
                                                             TODO: MyQuitEMA Helper class*/
-            if (isWithinXNextHour(10) && !returnIntentFromSituation(context,true).
+            if (newEMASetsUpAfterOldEMA() && isWithinXNextHour(10) && !returnIntentFromSituation(context,true).
                     equalsIgnoreCase("No Match") && !isThisWakingUp(true) && !isWithinXAfterHour(20)) {
                 Log.d("MQU-CH", "Decide Loop > 50 minutes");
                 if(didLastReadPassMinutes(30)) {
@@ -213,6 +215,7 @@ public class MyQuitCalendarHelper {
                         }
                         else{
                             MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Not Prompted With II","No EMA",MyQuitCSVHelper.getFulltime());
+                            returnEMAPromptTime(MyQuitCalendarHelper.assignArrayPosition(true));
                         }
                         setSession(context, true, true);
                     }
@@ -223,7 +226,7 @@ public class MyQuitCalendarHelper {
                 }
 
             }
-            else if (!isWithinXNextHour(10) && !returnIntentFromSituation(context,false).
+            else if (newEMASetsUpAfterOldEMA() && !isWithinXNextHour(10) && !returnIntentFromSituation(context,false).
                     equalsIgnoreCase("No Match") && isWithinXAfterHour(20)){
                 Log.d("MQU-CH","Decide Loop < 20 minutes");
                 if(didLastReadPassMinutes(30)){
@@ -253,6 +256,7 @@ public class MyQuitCalendarHelper {
                         }
                         else {
                             MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Not Prompted With II","No EMA",MyQuitCSVHelper.getFulltime());
+                            returnEMAPromptTime(MyQuitCalendarHelper.assignArrayPosition(false));
                         }
                         setSession(context,false,true);
                     }
@@ -285,6 +289,8 @@ public class MyQuitCalendarHelper {
         for(String oneSitu: situationList){
             try {
                 oneSitu.substring(3);
+                Log.d("MQU-CH","oneSitu" + oneSitu);
+                Log.d("MQU-CH","sitList Pos" + situationList[startPos] + startPos);
                 if(counter<(startPos)){
                     integerArrayTable.add(counter);
                     Log.d("MQU-CH","begin counter at " + counter);
@@ -320,23 +326,62 @@ public class MyQuitCalendarHelper {
     //TODO: check the declaration of this method to determine how it interacts with the decideCalendar method in the
     //TODO: ema helper class and receiver class
     public static void setUpEMAPrompt(int emaStartPosition, String situation, String intention) {
-        int promptedHour = returnEMAPromptTime(emaStartPosition) - 1;
-        //SimpleDateFormat date = new SimpleDateFormat("MM/dd/yyyy");
-        //SimpleDateFormat newsdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-        String calledFullTime = MyQuitCSVHelper.getFullDate() + " " + new DecimalFormat("00").format(promptedHour)
-                + ":45:00";
-        String[] pushEvent = new String [] {calledFullTime, situation, intention};
-        try {
-            String stepDate = MyQuitCSVHelper.getFullDate().replaceAll("/", "_");
-            String fileName = "CalendarEMATimes" + stepDate + ".csv";
-            CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.emaPath +
-                    fileName, true));
-            writer.writeNext(pushEvent);
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //if(newEMASetsUpAfterOldEMA()) {
+            int promptedHour = returnEMAPromptTime(emaStartPosition) - 1;
+            //SimpleDateFormat date = new SimpleDateFormat("MM/dd/yyyy");
+            //SimpleDateFormat newsdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+            String calledFullTime = MyQuitCSVHelper.getFullDate() + " " + new DecimalFormat("00").format(promptedHour)
+                    + ":45:00";
+            Log.d("MQU-WAKE", "Prompted hour" + calledFullTime);
+            String[] pushEvent = new String[]{calledFullTime, situation, intention};
+            try {
+                String stepDate = MyQuitCSVHelper.getFullDate().replaceAll("/", "_");
+                String fileName = "CalendarEMATimes" + stepDate + ".csv";
+                CSVWriter writer = new CSVWriter(new FileWriter(MyQuitCSVHelper.emaPath +
+                        fileName, true));
+                writer.writeNext(pushEvent);
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+      //  }
     }
+
+    public static String[] returnLastEMARow() {
+        List<String[]> allEvents = returnCalendarEMA();
+        String[] returnRow = new String[3];
+        try {
+            for(String[] row: allEvents) {
+                returnRow = row;
+            }
+        }
+        catch (NullPointerException neo) {
+            neo.printStackTrace();
+            Log.d("MQU-WAKE","Null returns");
+            return returnRow;
+        }
+        return returnRow;
+    }
+
+    public static boolean newEMASetsUpAfterOldEMA(){
+        String stringTime = returnLastEMARow()[0];
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        Calendar now = Calendar.getInstance();
+        Date timeNow = now.getTime();
+        try {
+            Date emaTime = sdf.parse(stringTime);
+            Log.d("MQU-WAKE","ematime is" + stringTime);
+            return emaTime.before(timeNow);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return true;
+        } catch (NullPointerException neo) {
+            neo.printStackTrace();
+            return true;
+        }
+
+    }
+
 
     public static List<String[]> returnCalendarEMA() {
         try {

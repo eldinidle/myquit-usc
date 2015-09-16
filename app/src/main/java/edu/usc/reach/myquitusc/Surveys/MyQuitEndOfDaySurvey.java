@@ -63,6 +63,12 @@ public class MyQuitEndOfDaySurvey {
     public static final String[] confidentQuit = {"Today, I felt confident that I can quit smoking.",
             "1 = Not at all", "2","3","4","5","6","7","8","9","10 = Extremely"};
 
+    public static String pullHelpQuitAnswer(Context context, int answerID) {
+        String[] hold = MyQuitPlanHelper.pullIntentsList(context, false);
+        int position = answerID - 1001;
+        return hold[position];
+    }
+
     public static  String[] helpQuit(Context context) {
         String[] hold = MyQuitPlanHelper.pullIntentsList(context, false);
         String[] newArray = new String[hold.length+2];
@@ -98,28 +104,27 @@ public class MyQuitEndOfDaySurvey {
         List<String[]> returnList = Arrays.asList(howManyCigs, pssFamily,pssMoney,pssSchool,pssWork, // 4/5
               naDistressed, naHopeless, naIrritable, naSad, naScared, naTense, naUpset, //7 11/12
               paCheerful, paEnthusiastic, paHappy, paInterested, paProud, // 5 16/17
-              troubleCigs, botherDesire, frequentUrges, confidentQuit, helpQuit(context), //5 21/22
-              vapeCig, vapeCigCount, vapePuffCount, anhedoniaPeople, anhedoniaHobby, anhedoniaSocial, endMessage); // 4 28/29
+              anhedoniaPeople, anhedoniaHobby, anhedoniaSocial, // 19/20
+              troubleCigs, botherDesire, frequentUrges, confidentQuit, helpQuit(context), //5 24/25
+              vapeCig, vapeCigCount, vapePuffCount, endMessage); // 4 28/29
         return returnList;
     }
 
     public static int validateNextPosition(int qID, int aID) {
         Log.d("MQU-EMA","Received Qid" + qID + " and " + aID );
-        if(qID<22){
+        if(qID<25){
             return qID + 1;
         }
         else {
             switch(qID){
-                case 22:
+                case 25:
                     switch(aID){
-                        case 1001: return 23;
-                        case 1002: return 25;
+                        case 1001: return 26;
+                        case 1002: return 28;
                     } break;
-                case 23: return 24;
-                case 24: return 25;
-                case 25: return 26;
                 case 26: return 27;
-                case 27: return KEY_END_SURVEY;
+                case 27: return 28;
+                case 28: return KEY_END_SURVEY;
                 default: return 0;
             }
         }
@@ -129,7 +134,7 @@ public class MyQuitEndOfDaySurvey {
     public static int validateNextPosition(int qID, String aID) {
         Log.d("MQU-EMA","Received Qid" + qID + " and " + aID );
         switch(aID) {
-            default: return KEY_END_SURVEY;
+            default: return qID + 1;
         }
     }
 
@@ -137,7 +142,7 @@ public class MyQuitEndOfDaySurvey {
     public static int validatePreviousPosition(int qID) {
         switch(qID){
             case 0: return 0;
-            case 25: return 22;
+            //case 25: return 22;
             default: return qID-1;
         }
     }

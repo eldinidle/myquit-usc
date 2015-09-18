@@ -191,22 +191,27 @@ public class MyQuitCalendarHelper {
                 if(didLastReadPassMinutes(30)) {
                     Log.d("MQU-CH", "50 minutes > YES");
                     boolean prompt = Math.random() > 0.5;
+                    String hourSituation = MyQuitCalendarHelper.unassignHoursArray()[MyQuitCalendarHelper.assignArrayPosition(true)];
+                    String parsedHourSituation;
+                    try {
+                        parsedHourSituation = hourSituation.substring(3);
+                    }
+                    catch(StringIndexOutOfBoundsException soeo) {
+                        parsedHourSituation = "doing something";
+                    }
                     if (prompt) {
                         //logSituationScan(MyQuitCSVHelper.getFulltime(),unassignHoursArray()[assignArrayPosition(true)],true);
-                        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Prompted With II","NA",MyQuitCSVHelper.getFulltime());
+                        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Prompted With II","EMA Ready",MyQuitCSVHelper.getFulltime());
+                        MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(true),
+                                parsedHourSituation,
+                                MyQuitCalendarHelper.returnIntentFromSituation(context, true));
+                        //returnEMAPromptTime(MyQuitCalendarHelper.assignArrayPosition(true)); // test this
                         setSession(context, true, false);
                         pushActionCalendar(context);
                     }
                     else {
                         //logSituationScan(MyQuitCSVHelper.getFulltime(),unassignHoursArray()[assignArrayPosition(true)],false);
-                        String hourSituation = MyQuitCalendarHelper.unassignHoursArray()[MyQuitCalendarHelper.assignArrayPosition(true)];
-                        String parsedHourSituation;
-                        try {
-                            parsedHourSituation = hourSituation.substring(3);
-                        }
-                        catch(StringIndexOutOfBoundsException soeo) {
-                            parsedHourSituation = "doing something";
-                        }
+
                         if(MyQuitAutoAssign.runEMAOffAlgorithm()) {
                             MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Not Prompted With II","EMA Assigned",MyQuitCSVHelper.getFulltime());
                             MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(true),
@@ -232,22 +237,27 @@ public class MyQuitCalendarHelper {
                 if(didLastReadPassMinutes(30)){
                     Log.d("MQU-CH", "20 minutes > YES");
                     boolean prompt = Math.random() > 0.5;
+                    String hourSituation = MyQuitCalendarHelper.unassignHoursArray()[MyQuitCalendarHelper.assignArrayPosition(false)];
+                    String parsedHourSituation;
+                    try {
+                        parsedHourSituation = hourSituation.substring(3);
+                    }
+                    catch(StringIndexOutOfBoundsException soeo) {
+                        parsedHourSituation = "doing something";
+                    }
                     if(prompt){
                         //logSituationScan(MyQuitCSVHelper.getFulltime(),unassignHoursArray()[assignArrayPosition(false)],true);
-                        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Prompted With II","NA",MyQuitCSVHelper.getFulltime());
+                        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Prompted With II","EMA Ready",MyQuitCSVHelper.getFulltime());
+                        //returnEMAPromptTime(MyQuitCalendarHelper.assignArrayPosition(false));
+                        MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(false),
+                                parsedHourSituation, MyQuitCalendarHelper.
+                                        returnIntentFromSituation(context, false));
                         setSession(context,false,false);
                         pushActionCalendar(context);
                     }
                     else {
                         //logSituationScan(MyQuitCSVHelper.getFulltime(),unassignHoursArray()[assignArrayPosition(false)],false);
-                        String hourSituation = MyQuitCalendarHelper.unassignHoursArray()[MyQuitCalendarHelper.assignArrayPosition(false)];
-                        String parsedHourSituation;
-                        try {
-                            parsedHourSituation = hourSituation.substring(3);
-                        }
-                        catch(StringIndexOutOfBoundsException soeo) {
-                            parsedHourSituation = "doing something";
-                        }
+
                         if(MyQuitAutoAssign.runEMAOffAlgorithm()) {
                             MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Not Prompted With II","EMA Assigned",MyQuitCSVHelper.getFulltime());
                             MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(false),
@@ -347,24 +357,37 @@ public class MyQuitCalendarHelper {
       //  }
     }
 
-    public static String[] returnLastEMARow() {
-        List<String[]> allEvents = returnCalendarEMA();
-        String[] returnRow = new String[3];
-        try {
-            for(String[] row: allEvents) {
-                returnRow = row;
-            }
+    public static String returnLastEMARow() {
+        int lastLock = returnLockedHour(MyQuitCSVHelper.getFullDate()) - 1;
+        String lastLockFix = Integer.toString(lastLock);
+        if (lastLock == -1){
+            lastLock = 0;
         }
-        catch (NullPointerException neo) {
-            neo.printStackTrace();
-            Log.d("MQU-WAKE","Null returns");
+        if (lastLock < 10) {
+            lastLockFix = "0" + lastLockFix;
+        }
+        String fullTime = MyQuitCSVHelper.getFullDate() + " " + lastLockFix + ":45:00";
+        return fullTime;
+        /*
+        {
+            List<String[]> allEvents = returnCalendarEMA();
+            String[] returnRow = new String[3];
+            try {
+                for (String[] row : allEvents) {
+                    returnRow = row;
+                }
+            } catch (NullPointerException neo) {
+                neo.printStackTrace();
+                Log.d("MQU-WAKE", "Null returns");
+                return returnRow;
+            }
             return returnRow;
         }
-        return returnRow;
+        */
     }
 
     public static boolean newEMASetsUpAfterOldEMA(){
-        String stringTime = returnLastEMARow()[0];
+        String stringTime = returnLastEMARow();
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
         Calendar now = Calendar.getInstance();
         Date timeNow = now.getTime();

@@ -31,16 +31,16 @@ public class MyQuitIntentPrompt extends Activity {
                 parsedHourSituation = hourSituation.substring(3);
                 //TODO: THIS IS WHERE YOU INJECT ALGORITHM 24x3
                 // TODO: Double check that this algorithm is actually running
-                if (MyQuitAutoAssign.runEMAOffAlgorithm()) {
+                //if (MyQuitAutoAssign.runEMAOffAlgorithm()) {
                     MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"), "Received II", "Popped - EMA Assigned", MyQuitCSVHelper.getFulltime());
-                    MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(true),
-                            parsedHourSituation,
-                            MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(), true));
-                }
-                else {
-                    MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"), "Received II", "Popped - EMA Not Assigned", MyQuitCSVHelper.getFulltime());
-                    MyQuitCalendarHelper.returnEMAPromptTime(MyQuitCalendarHelper.assignArrayPosition(true));
-                    }
+                 //   MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(true),
+                  //          parsedHourSituation,
+                 //           MyQuitCalendarHelper.returnIntentFromSituation(getApplicationContext(), true));
+                //}
+                //else {
+                 //   MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"), "Received II", "Popped - EMA Not Assigned", MyQuitCSVHelper.getFulltime());
+                 //   MyQuitCalendarHelper.returnEMAPromptTime(MyQuitCalendarHelper.assignArrayPosition(true));
+                //    }
                 MyQuitCalendarHelper.setSession(getApplicationContext(), true, true);
             }
             catch(StringIndexOutOfBoundsException soeo) {
@@ -55,16 +55,16 @@ public class MyQuitIntentPrompt extends Activity {
             try {
                 parsedHourSituation = hourSituation.substring(3);
 
-                if (MyQuitAutoAssign.runEMAOffAlgorithm()) {
+               // if (MyQuitAutoAssign.runEMAOffAlgorithm()) {
                     MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"), "Received II", "Popped - EMA Assigned", MyQuitCSVHelper.getFulltime());
-                    MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(false),
-                            parsedHourSituation, MyQuitCalendarHelper.
-                                    returnIntentFromSituation(getApplicationContext(), false));
-                }
-                else {
-                    MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"), "Received II", "Popped - EMA Not Assigned", MyQuitCSVHelper.getFulltime());
-                    MyQuitCalendarHelper.returnEMAPromptTime(MyQuitCalendarHelper.assignArrayPosition(false));
-                }
+               //     MyQuitCalendarHelper.setUpEMAPrompt(MyQuitCalendarHelper.assignArrayPosition(false),
+               //             parsedHourSituation, MyQuitCalendarHelper.
+               //                     returnIntentFromSituation(getApplicationContext(), false));
+              //  }
+               // else {
+               //     MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"), "Received II", "Popped - EMA Not Assigned", MyQuitCSVHelper.getFulltime());
+               //     MyQuitCalendarHelper.returnEMAPromptTime(MyQuitCalendarHelper.assignArrayPosition(false));
+               // }
                 MyQuitCalendarHelper.setSession(getApplicationContext(), false, true);
             }
             catch(StringIndexOutOfBoundsException soeo) {

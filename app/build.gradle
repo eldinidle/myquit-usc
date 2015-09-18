@@ -8,8 +8,8 @@ android {
         applicationId "edu.usc.reach.myquitusc"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 27
-        versionName "2.7"
+        versionCode 28
+        versionName "2.8"
     }
     buildTypes {
         release {

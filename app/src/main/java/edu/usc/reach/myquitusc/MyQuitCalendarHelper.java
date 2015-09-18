@@ -190,7 +190,7 @@ public class MyQuitCalendarHelper {
                 Log.d("MQU-CH", "Decide Loop > 50 minutes");
                 if(didLastReadPassMinutes(30)) {
                     Log.d("MQU-CH", "50 minutes > YES");
-                    boolean prompt = Math.random() > 0.5;
+                    boolean prompt = Math.random() > 0.30;
                     String hourSituation = MyQuitCalendarHelper.unassignHoursArray()[MyQuitCalendarHelper.assignArrayPosition(true)];
                     String parsedHourSituation;
                     try {
@@ -236,7 +236,7 @@ public class MyQuitCalendarHelper {
                 Log.d("MQU-CH","Decide Loop < 20 minutes");
                 if(didLastReadPassMinutes(30)){
                     Log.d("MQU-CH", "20 minutes > YES");
-                    boolean prompt = Math.random() > 0.5;
+                    boolean prompt = Math.random() > 0.30;
                     String hourSituation = MyQuitCalendarHelper.unassignHoursArray()[MyQuitCalendarHelper.assignArrayPosition(false)];
                     String parsedHourSituation;
                     try {

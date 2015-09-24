@@ -54,6 +54,7 @@ public class MyQuitPlans extends Activity  {
                                   Button statusBar, Button suggestButton,
                                   EditText customIntent, TextView presentSituation,
                                   Button removeCustom, int oldPosition) {
+
         setBackBaseListListener(backButton,nextButton,statusBar, suggestButton,
                 customIntent, presentSituation, removeCustom, oldPosition);
         setNextBaseListListener(nextButton,backButton,statusBar, suggestButton,
@@ -63,6 +64,8 @@ public class MyQuitPlans extends Activity  {
         setEditTextListener(getApplicationContext(),customIntent,oldPosition);
         setSituationTextView(presentSituation, oldPosition);
         setRemoveCustomButton(removeCustom,oldPosition);
+
+
     }
 
     private void setRemoveCustomButton(Button removeCustomSituation, int indexPosition) {
@@ -110,6 +113,7 @@ public class MyQuitPlans extends Activity  {
         String[] pullFull = MyQuitPlanHelper.pullBaseList(context.getApplicationContext(),true).
                 get(indexPosition);
         final int oldPosition = indexPosition;
+        //customIntent.setText(pullFull[2]);
         TextView.OnEditorActionListener listener = new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -136,6 +140,7 @@ public class MyQuitPlans extends Activity  {
                 return true;
             }
         };
+        /*  OLD
         if(pullFull[2].length()>5) {
             customIntent.setImeOptions(EditorInfo.IME_ACTION_DONE);
             //customIntent.setSingleLine(true);
@@ -148,6 +153,7 @@ public class MyQuitPlans extends Activity  {
             customIntent.setText("");
             customIntent.setOnEditorActionListener(listener);
         }
+        */
     }
 
     private void setNextBaseListListener(final Button nextButton, final Button backButton,
@@ -179,18 +185,22 @@ public class MyQuitPlans extends Activity  {
             nextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    callAllListeners(nextButton,backButton,statusBar,suggestButton,customIntent,presentSituation,
-                            removeCustom,indexPosition);
-                    if(MyQuitPlanHelper.listDone(getApplicationContext(),true)) {
+                    String pullFull = customIntent.getText().toString();
+                    if(pullFull.length()>5) {
+                    MyQuitPlanHelper.pushIntentBaseList(getApplicationContext(), indexPosition, customIntent
+                            .getText().toString(), true);
+                    callAllListeners(nextButton, backButton, statusBar, suggestButton, customIntent, presentSituation,
+                            removeCustom, indexPosition);
+                    if (MyQuitPlanHelper.listDone(getApplicationContext(), true)) {
 
                         MyQuitPlanHelper.convertBaseList(getApplicationContext());
                         try {
                             MyQuitCSVHelper.pushDateTimes("DEFAULT_WEEKDAY", MyQuitCSVHelper.defaultTimes);
                             MyQuitCSVHelper.pushDateTimes("DEFAULT_WEEKEND", MyQuitCSVHelper.defaultTimes);
-                            MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"MyQuit Plans Changed","NA",MyQuitCSVHelper.getFulltime());
+                            MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"), "MyQuit Plans Changed", "NA", MyQuitCSVHelper.getFulltime());
                             Intent homeLaunch = new Intent(v.getContext(), MyQuitPrePlanCalendar.class);
                             homeLaunch.putExtra("Date", "DEFAULT_WEEKDAY");
-                            homeLaunch.putExtra("Instruct",true);
+                            homeLaunch.putExtra("Instruct", true);
                             homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                     | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             MyQuitPlanHelper.cycleBaseListTracker(getApplicationContext());
@@ -200,9 +210,12 @@ public class MyQuitPlans extends Activity  {
                             e.printStackTrace();
                         }
 
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Please review all answers.", Toast.LENGTH_LONG).show();
                     }
+                }
                     else {
-                        Toast.makeText(getApplicationContext(),"Please review all answers.",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"Please enter a longer intention.",Toast.LENGTH_LONG).show();
                     }
                 }
             });
@@ -215,8 +228,19 @@ public class MyQuitPlans extends Activity  {
             nextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    callAllListeners(nextButton,backButton,statusBar,suggestButton, customIntent,
-                            presentSituation, removeCustom, oldPosition);
+                    String pullFull = customIntent.getText().toString();
+                    if(pullFull.length()>5) {
+                        MyQuitPlanHelper.pushIntentBaseList(getApplicationContext(), indexPosition, customIntent
+                                .getText().toString(), true);
+                        callAllListeners(nextButton, backButton, statusBar, suggestButton, customIntent,
+                                presentSituation, removeCustom, oldPosition);
+                        String[] pullFullArray = MyQuitPlanHelper.pullBaseList(getApplicationContext(),true).
+                                get(oldPosition);
+                        customIntent.setText(pullFullArray[2]);
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(),"Please enter a longer intention.",Toast.LENGTH_LONG).show();
+                    }
                 }
             });
         }
@@ -225,7 +249,7 @@ public class MyQuitPlans extends Activity  {
     private void setBackBaseListListener(final Button backButton, final Button nextButton,
                                          final Button statusBar, final Button suggestButton,
                                          final EditText customIntent, final TextView presentSituation,
-                                         final Button removeCustom, int indexPosition) {
+                                         final Button removeCustom, final int indexPosition) {
         if(indexPosition==0){
             backButton.setText("");
             backButton.setClickable(false);
@@ -239,8 +263,11 @@ public class MyQuitPlans extends Activity  {
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    callAllListeners(nextButton,backButton,statusBar, suggestButton, customIntent,
-                            presentSituation, removeCustom,  oldPosition);
+                    callAllListeners(nextButton, backButton, statusBar, suggestButton, customIntent,
+                            presentSituation, removeCustom, oldPosition);
+                    String[] pullFull = MyQuitPlanHelper.pullBaseList(getApplicationContext(),true).
+                            get(oldPosition);
+                    customIntent.setText(pullFull[2]);
                }
             });
         }

@@ -600,7 +600,15 @@ public class MyQuitHomeScreen extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Application Interaction","Main Screen Accessed",MyQuitCSVHelper.getFulltime());
+        String nameVersion = "0.0";
+        try {
+            nameVersion = getApplicationContext().getPackageManager()
+                    .getPackageInfo(getApplicationContext().getPackageName(), 0).versionName;
+        }
+        catch (PackageManager.NameNotFoundException nnf) {
+            nnf.printStackTrace();
+        }
+        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"Application Interaction","Main Screen Accessed " + nameVersion,MyQuitCSVHelper.getFulltime());
         mainDBContext = getApplicationContext();
         setContentView(R.layout.activity_my_quit_home_screen);
         boolean creatStruc = MyQuitCSVHelper.createStructure();

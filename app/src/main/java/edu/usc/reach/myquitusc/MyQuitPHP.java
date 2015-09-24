@@ -23,6 +23,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -584,6 +585,7 @@ public class MyQuitPHP {
                 List<String[]> newPush = new ArrayList<String[]>();
                 for(String[] row: pullTimes){
                     if(!syncEMAEvent(row)){
+                        Log.d("MQU-PHP","Expand adding" + Arrays.toString(row));
                         Log.d("MQU-PHP","Adding" + row[row.length-1] + row[row.length-2] + row[row.length-3]);
                         newPush.add(row);
                         Log.d("MQU-PHP","Added" + row[row.length-1] + row[row.length-2] + row[row.length-3]);
@@ -650,10 +652,10 @@ public class MyQuitPHP {
         HttpPost httpPost = new HttpPost(urlPostEMAEvent);
         List<NameValuePair> emaParams = new ArrayList<NameValuePair>();
         int fullLength = params.length;
-        String datetime = params[fullLength-7] + " " + params[fullLength-6];
+        String datetime = params[fullLength-2]; //params[fullLength-7] + " " + params[fullLength-6];
         int surveyType = 1234;
         try {
-            surveyType = Integer.valueOf(params[fullLength - 3]);
+            surveyType = Integer.valueOf(params[fullLength - 4]);
         }
         catch(NumberFormatException nfe) {
             nfe.printStackTrace();
@@ -665,8 +667,8 @@ public class MyQuitPHP {
                 emaParams.add(new BasicNameValuePair("didSmokeY",params[2]));
                 emaParams.add(new BasicNameValuePair("didSmokeN",params[3]));
                 emaParams.add(new BasicNameValuePair("doInstead",params[4]));
-                emaParams.add(new BasicNameValuePair("situation",params[fullLength-2]));
-                emaParams.add(new BasicNameValuePair("intention",params[fullLength-1]));
+                emaParams.add(new BasicNameValuePair("situation",params[fullLength-8]));
+                emaParams.add(new BasicNameValuePair("intention",params[fullLength-7]));
                 break;
             case MyQuitCalendarSuccessSurvey.KEY_SURVEY_SUCCESS:
                 emaParams.add(new BasicNameValuePair("areContext",params[0]));
@@ -675,8 +677,8 @@ public class MyQuitPHP {
                 emaParams.add(new BasicNameValuePair("didSmokeY",params[3]));
                 emaParams.add(new BasicNameValuePair("didSmokeN",params[4]));
                 emaParams.add(new BasicNameValuePair("doInstead",params[5]));
-                emaParams.add(new BasicNameValuePair("situation",params[fullLength-2]));
-                emaParams.add(new BasicNameValuePair("intention",params[fullLength-1]));
+                emaParams.add(new BasicNameValuePair("situation",params[fullLength-8]));
+                emaParams.add(new BasicNameValuePair("intention",params[fullLength-7]));
                 break;
             case MyQuitEndOfDaySurvey.KEY_SURVEY_SUCCESS:
                 emaParams.add(new BasicNameValuePair("howManyCigs", params[0]));
@@ -785,9 +787,9 @@ public class MyQuitPHP {
                 break;
         }
 
-        emaParams.add(new BasicNameValuePair("username",params[fullLength-4]));
-        emaParams.add(new BasicNameValuePair("surveytype",params[fullLength-3]));
-        emaParams.add(new BasicNameValuePair("sessionid",params[fullLength-5]));
+        emaParams.add(new BasicNameValuePair("username",params[fullLength-5]));
+        emaParams.add(new BasicNameValuePair("surveytype",params[fullLength-4]));
+        emaParams.add(new BasicNameValuePair("sessionid",params[fullLength-3]));
         emaParams.add(new BasicNameValuePair("datetime",datetime));
         emaParams.add(new BasicNameValuePair("allowed",String.valueOf(phpAllowInteger)));
         Log.d("MQU-PHP","Caught" + params[fullLength-2] + params[fullLength-1] + params[fullLength-3]);
@@ -1037,6 +1039,8 @@ public class MyQuitPHP {
             int count = 0;
             for(NameValuePair iterate: emaParamList){
                 pushRow[count] = iterate.getValue().toString();
+                Log.d("MyQuitUSC","EMA post status save " + pushRow[count] + "");
+                count++;
             }
             writer.writeNext(pushRow);
             writer.close();

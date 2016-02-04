@@ -23,7 +23,7 @@ public class MyQuitPreQuitEndOfDaySurvey {
     public static final String[] confidentQuit = {"Today, I felt confident that I can quit smoking.",
             "1 = Not at all", "2","3","4","5","6","7","8","9","10 = Extremely"};
 
-    public static final String[] readyQuit = {"Do you feel ready to quit?",
+    public static final String[] readyQuit = {"I feel ready to quit.",
             "1 = Not at all", "2","3","4","5","6","7","8","9","10 = Extremely"};
 
 

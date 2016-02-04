@@ -324,9 +324,10 @@ public class MyQuitPHP {
                     emaParams.add(new BasicNameValuePair("frequentUrges", params[0][22]));
                     emaParams.add(new BasicNameValuePair("confidentQuit", params[0][23]));
                     emaParams.add(new BasicNameValuePair("helpQuit", params[0][24]));
-                    emaParams.add(new BasicNameValuePair("vapeCig", params[0][25]));
-                    emaParams.add(new BasicNameValuePair("vapeCigCount", params[0][26]));
-                    emaParams.add(new BasicNameValuePair("vapePuffCount", params[0][27]));
+                    emaParams.add(new BasicNameValuePair("fatigueQuit", params[0][25]));
+                    emaParams.add(new BasicNameValuePair("vapeCig", params[0][26]));
+                    emaParams.add(new BasicNameValuePair("vapeCigCount", params[0][27]));
+                    emaParams.add(new BasicNameValuePair("vapePuffCount", params[0][28]));
                     break;
                 case MyQuitOffSuccessSurvey.KEY_SURVEY_SUCCESS:
                     break;
@@ -715,9 +716,10 @@ public class MyQuitPHP {
                 emaParams.add(new BasicNameValuePair("frequentUrges", params[22]));
                 emaParams.add(new BasicNameValuePair("confidentQuit", params[23]));
                 emaParams.add(new BasicNameValuePair("helpQuit", params[24]));
-                emaParams.add(new BasicNameValuePair("vapeCig", params[25]));
-                emaParams.add(new BasicNameValuePair("vapeCigCount", params[26]));
-                emaParams.add(new BasicNameValuePair("vapePuffCount", params[27]));
+                emaParams.add(new BasicNameValuePair("fatigueQuit", params[25]));
+                emaParams.add(new BasicNameValuePair("vapeCig", params[26]));
+                emaParams.add(new BasicNameValuePair("vapeCigCount", params[27]));
+                emaParams.add(new BasicNameValuePair("vapePuffCount", params[28]));
                 break;
             case MyQuitOffSuccessSurvey.KEY_SURVEY_SUCCESS:
                 break;

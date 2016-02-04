@@ -13,8 +13,8 @@ import edu.usc.reach.myquitusc.MyQuitPlanHelper;
  */
 public class MyQuitEndOfDaySurvey {
     public static final int KEY_SURVEY_SUCCESS = 3;
-    public static final int KEY_END_SURVEY = 28;
-    public static final int KEY_SURVEY_LENGTH = 29;
+    public static final int KEY_END_SURVEY = 29;
+    public static final int KEY_SURVEY_LENGTH = 30;
 
     public static final String[] howManyCigs = {"How many cigarettes did you smoke today?", "NUMERICAL_ENTRY"};
 
@@ -96,33 +96,35 @@ public class MyQuitEndOfDaySurvey {
     public static final String[] anhedoniaSocial = {"How much pleasure/enjoyment would you feel right now in response to socializing with other people in-person or over the phone and Internet?",
             "1 = No pleasure", "2","3","4","5","6","7","8","9","10 = Extreme pleasure"};
 
+    public static final String[] fatigueQuit = {"I am tired of trying to quit smoking.",
+            "1 = Disagree most", "2","3","4","5","6","7","8","9","10 = Agree most"};
+
 
     public static final String[] endMessage = {"Thank you for completing the survey"};
 
 
     public  List<String[]> getQuestions(Context context){
-        List<String[]> returnList = Arrays.asList(howManyCigs, pssFamily,pssMoney,pssSchool,pssWork, // 4/5
-              naDistressed, naHopeless, naIrritable, naSad, naScared, naTense, naUpset, //7 11/12
-              paCheerful, paEnthusiastic, paHappy, paInterested, paProud, // 5 16/17
-              anhedoniaPeople, anhedoniaHobby, anhedoniaSocial, // 19/20
-              troubleCigs, botherDesire, frequentUrges, confidentQuit, helpQuit(context), //5 24/25
-              vapeCig, vapeCigCount, vapePuffCount, endMessage); // 4 28/29
+        List<String[]> returnList = Arrays.asList(howManyCigs, pssFamily,pssMoney,pssSchool,pssWork, // 5
+              naDistressed, naHopeless, naIrritable, naSad, naScared, naTense, naUpset, //7
+              paCheerful, paEnthusiastic, paHappy, paInterested, paProud, // 5
+              anhedoniaPeople, anhedoniaHobby, anhedoniaSocial, // 3
+              troubleCigs, botherDesire, frequentUrges, confidentQuit, helpQuit(context), //5
+              fatigueQuit, vapeCig, vapeCigCount, vapePuffCount, endMessage); // 5 30
         return returnList;
     }
 
     public static int validateNextPosition(int qID, int aID) {
         Log.d("MQU-EMA","Received Qid" + qID + " and " + aID );
-        if(qID<25){
+        if(qID<26){
             return qID + 1;
         }
         else {
             switch(qID){
-                case 25:
+                case 26:
                     switch(aID){
-                        case 1001: return 26;
-                        case 1002: return 28;
+                        case 1001: return 27;
+                        case 1002: return KEY_END_SURVEY;
                     } break;
-                case 26: return 27;
                 case 27: return 28;
                 case 28: return KEY_END_SURVEY;
                 default: return 0;

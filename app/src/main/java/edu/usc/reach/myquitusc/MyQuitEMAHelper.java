@@ -320,13 +320,24 @@ public class MyQuitEMAHelper {
     }
 
 
-    public static void setUpEODEMA() {
-        Calendar nowTime = Calendar.getInstance();
-        if(nowTime.get(Calendar.HOUR_OF_DAY) >= KEY_EOD_PROMPT_HOUR() &&
-                MyQuitCSVHelper.isLastEventPastXMinutesTrue(MyQuitCSVHelper.END_OF_DAY_EMA_KEY, (60*(24-KEY_EOD_PROMPT_HOUR())))){
-            MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"EMA Prompt Ready","EOD",MyQuitCSVHelper.getFulltime());
-            MyQuitCSVHelper.logEMAEvents(MyQuitCSVHelper.END_OF_DAY_EMA_KEY,
-                    "intentPresented", MyQuitCSVHelper.getFulltime(),"","");
+    public static void setUpEODEMA(boolean isMainStudy) {
+        if(isMainStudy) {
+            Calendar nowTime = Calendar.getInstance();
+            if (nowTime.get(Calendar.HOUR_OF_DAY) >= KEY_EOD_PROMPT_HOUR() &&
+                    MyQuitCSVHelper.isLastEventPastXMinutesTrue(MyQuitCSVHelper.END_OF_DAY_EMA_KEY, (60 * (24 - KEY_EOD_PROMPT_HOUR())))) {
+                MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"), "EMA Prompt Ready", "EOD", MyQuitCSVHelper.getFulltime());
+                MyQuitCSVHelper.logEMAEvents(MyQuitCSVHelper.END_OF_DAY_EMA_KEY,
+                        "intentPresented", MyQuitCSVHelper.getFulltime(), "", "");
+            }
+        }
+        else {
+            Calendar nowTime = Calendar.getInstance();
+            if (nowTime.get(Calendar.HOUR_OF_DAY) >= KEY_EOD_PROMPT_HOUR() &&
+                    MyQuitCSVHelper.isLastEventPastXMinutesTrue(MyQuitCSVHelper.PQ_END_OF_DAY_EMA_KEY, (60 * (24 - KEY_EOD_PROMPT_HOUR())))) {
+                MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"), "EMA Prompt Ready", "PreQuit EOD", MyQuitCSVHelper.getFulltime());
+                MyQuitCSVHelper.logEMAEvents(MyQuitCSVHelper.PQ_END_OF_DAY_EMA_KEY,
+                        "intentPresented", MyQuitCSVHelper.getFulltime(), "", "");
+            }
         }
     }
 

@@ -24,7 +24,7 @@ public class MyQuitReceiver extends BroadcastReceiver {
     void runMainStudy(Context context) {
         MyQuitAutoAssign.autoAssignCalendar();
         MyQuitEMAHelper.setUpCalendarEMA();
-        MyQuitEMAHelper.setUpEODEMA();
+        MyQuitEMAHelper.setUpEODEMA(true);
         MyQuitEMAHelper.setUpRogueEMA();
         MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.ROGUE_EMA_KEY);
         MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.CALENDAR_EMA_KEY);
@@ -39,8 +39,10 @@ public class MyQuitReceiver extends BroadcastReceiver {
     void runPreMainStudy(Context context){
         MyQuitEMAHelper.setUpRandomEMA();
         MyQuitEMAHelper.setUpSmokeEMA();
+        MyQuitEMAHelper.setUpEODEMA(false);
         MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.RANDOM_EMA_KEY);
         MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.SMOKE_EMA_KEY);
+        MyQuitEMAHelper.decideEMA(context, MyQuitCSVHelper.PQ_END_OF_DAY_EMA_KEY);
         MyQuitPHP.decidePHPPost();
         MyQuitGPSHelper.pushGPSData(context);
     }

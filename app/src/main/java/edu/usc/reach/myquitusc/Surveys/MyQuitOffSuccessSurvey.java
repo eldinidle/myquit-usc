@@ -12,7 +12,7 @@ import edu.usc.reach.myquitusc.MyQuitCSVHelper;
  * Created by Eldin on 12/30/14.
  */
 public class MyQuitOffSuccessSurvey {
-    public static final int KEY_SURVEY_SUCCESS = 6;
+    public static final int KEY_SURVEY_SUCCESS = 7;
     public static final int KEY_END_SURVEY = 2;
     public static final int KEY_SURVEY_LENGTH = 3;
 

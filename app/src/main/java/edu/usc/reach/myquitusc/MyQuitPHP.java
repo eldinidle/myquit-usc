@@ -32,6 +32,7 @@ import edu.usc.reach.myquitusc.Surveys.MyQuitCalendarSuccessSurvey;
 import edu.usc.reach.myquitusc.Surveys.MyQuitCheckSuccessSurvey;
 import edu.usc.reach.myquitusc.Surveys.MyQuitEndOfDaySurvey;
 import edu.usc.reach.myquitusc.Surveys.MyQuitOffSuccessSurvey;
+import edu.usc.reach.myquitusc.Surveys.MyQuitPreQuitEndOfDaySurvey;
 import edu.usc.reach.myquitusc.Surveys.MyQuitRandomSurvey;
 import edu.usc.reach.myquitusc.Surveys.MyQuitRandomSurveyBackup;
 import edu.usc.reach.myquitusc.Surveys.MyQuitSmokeSurvey;
@@ -401,6 +402,14 @@ public class MyQuitPHP {
                     emaParams.add(new BasicNameValuePair("anhedoniaPeople", params[0][31]));
                     emaParams.add(new BasicNameValuePair("anhedoniaHobby", params[0][32]));
                     emaParams.add(new BasicNameValuePair("anhedoniaSocial", params[0][33]));
+                    break;
+                case MyQuitPreQuitEndOfDaySurvey.KEY_SURVEY_SUCCESS:
+                    emaParams.add(new BasicNameValuePair("howManyCigs",params[0][0]));
+                    emaParams.add(new BasicNameValuePair("confidentQuit",params[0][1]));
+                    emaParams.add(new BasicNameValuePair("readyQuit",params[0][2]));
+                    emaParams.add(new BasicNameValuePair("vapeCig",params[0][3]));
+                    emaParams.add(new BasicNameValuePair("vapeCigCount",params[0][4]));
+                    emaParams.add(new BasicNameValuePair("vapePuffCount",params[0][5]));
                     break;
             }
 
@@ -784,6 +793,14 @@ public class MyQuitPHP {
                 emaParams.add(new BasicNameValuePair("anhedoniaPeople", params[31]));
                 emaParams.add(new BasicNameValuePair("anhedoniaHobby", params[32]));
                 emaParams.add(new BasicNameValuePair("anhedoniaSocial", params[33]));
+                break;
+            case MyQuitPreQuitEndOfDaySurvey.KEY_SURVEY_SUCCESS:
+                emaParams.add(new BasicNameValuePair("howManyCigs",params[0]));
+                emaParams.add(new BasicNameValuePair("confidentQuit",params[1]));
+                emaParams.add(new BasicNameValuePair("readyQuit",params[2]));
+                emaParams.add(new BasicNameValuePair("vapeCig",params[3]));
+                emaParams.add(new BasicNameValuePair("vapeCigCount",params[4]));
+                emaParams.add(new BasicNameValuePair("vapePuffCount",params[5]));
                 break;
         }
 

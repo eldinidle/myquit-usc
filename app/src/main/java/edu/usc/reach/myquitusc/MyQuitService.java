@@ -85,15 +85,16 @@ public class MyQuitService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         String decisionAction;
         int surveyID = 0;
+        int decisionSessionID = 0;
         try {
             decisionAction = intent.getStringExtra("Action");
             surveyID = intent.getIntExtra("Survey",1);
+            decisionSessionID = intent.getIntExtra("SessionID",0);
         }
         catch(Exception e) {
             decisionAction = "Do Nothing";
         }
         int emaType = surveyID;
-        int decisionSessionID = intent.getIntExtra("SessionID",0);
         String actionString = "Processing...";
         if (decisionAction.matches("SFTP")) {
             actionString = "Uploading data to the cloud...";

@@ -66,7 +66,12 @@ public class MyQuitEndOfDaySurvey {
     public static String pullHelpQuitAnswer(Context context, int answerID) {
         String[] hold = MyQuitPlanHelper.pullIntentsList(context, false);
         int position = answerID - 1001;
-        return hold[position];
+        try {
+            return hold[position];
+        }
+        catch (ArrayIndexOutOfBoundsException aieo) {
+            return "none of these";
+        }
     }
 
     public static  String[] helpQuit(Context context) {

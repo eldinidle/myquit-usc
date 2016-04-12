@@ -38,164 +38,164 @@ public class MyQuitPlanHelper {
     public static String[] outWithFriends = new String[] {"Going out with friends",
             "If I am going out with friends...",""}; // , I will...",""};
     private static String[] helpOutWithFriends = new String[] {
-            "I will leave my cigarettes at home",
-            "Stay inside and watch my favourite video when my smoker friends smoke outside",
-            "I will bring a stress ball with me",
-            "I will ask my friends to give me a dollar for each hour that I didn't smoke"
+            "I will leave my cigarettes at home or in my car.",
+            "I will ask a non-smoker friend to stay inside with me.",
+            "I will stay away from the place people usually smoke at.",
+            "I will give my pack of cigarettes to a non-smoker friend."
 };
 
     public static String[] partyBar = new String[] {"Party or bar",
             "If I am at a party or a bar...",""}; // , I will...",""};
     private static String[] helpPartyBar = new String[] {
-            "I will watch a video that motivates me or makes me happy",
-            "I will stay inside where smoking is not allowed",
-            "I will give my pack of cigarettes to a friend",
-            "I will eat finger-food or appetizers"
+            "I will leave my cigarettes at home or in my car.",
+            "I will ask a non-smoker friend to stay inside with me.",
+            "I will stay away from the place people usually smoke at.",
+            "I will give my pack of cigarettes to a non-smoker friend."
     };
 
 
     public static String[] aroundSmokers = new String[] {"Around other smokers",
             "If I am around other people who smoke...",""}; // , I will...",""};
     private static String[] helpAroundSmokers = new String[] {
-            "I will ask them not to offer me a cigarette",
-            "I will talk to them about topics not related to smoking, such as exercising",
-            "I will excuse myself to get something from a store",
-            "I will commit to myself that other smokers will not discourage me."
+            "I will remind myself about why I want to quit smoking.",
+            "I will be prepared to decline a cigarette offer.",
+            "I will ask a non-smoker friend to stay inside with me.",
+            "I will go to different location"
 };
 
     public static String[] offerCigarette = new String[] {"Someone will offer cigarette",
             "If someone offers me a cigarette...",""}; // , I will...",""};
     private static String[] helpOfferCigarette = new String[] {
-            "I will say I'm quitting and go to a restroom",
-            "I will decline the cigarette",
-            "I will say I am not feeling well or my throat hurts",
-            "I will refuse and then remind myself why I want to quit"
+            "I will say I'm quitting and go to a different location",
+            "I will hold the cigarette but not smoke it.",
+            "I will say I am not feeling well or that my throat hurts.",
+            "I will decline the offer and then remind myself why I want to quit"
     };
 
     public static String[] nonSmokingVenue = new String[] {"At a place where smoking isn't allowed",
             "If I am about to go to places where smoking is not allowed...",""}; // , I will...",""};
     private static String[] helpNonSmokingVenue = new String[] {
-            "I will bring snacks to distract me",
-            "I will bring a toothpick to chew on",
-            "I will bring a pack of gum",
-            "I will chat with my close friends"
+            "I will bring snacks to distract me ",
+            "I will bring something to chew on, like gum or a toothpick",
+            "I will look at my progress so far on MyQuit",
+            "I will call or chat with my close friends"
     };
 
     public static String[] wakeUpActivity = new String[] {"Waking up",
             "If I get up in the morning...",""}; // , I will...",""};
     private static String[] helpWakeUpActivity = new String[] {
             "I will brush my teeth or stretch to get myself going",
-            "I will nibble on some snacks",
-            "I will stay busy and not allow any time to smoke",
-            "I will look over my progress so far and commit to my plan for the day"
+            "I will take a shower as soon as I get up.",
+            "I will stay busy by checking my email or my Facebook newsfeed.",
+            "I will look over my progress on MyQuit so far"
     };
 
     public static String[] mealFinished = new String[] {"Eating a meal",
             "If I just finished a meal...",""}; // , I will...",""};
     private static String[] helpMealFinished = new String[] {
-            "I will drink coffee",
-            "I will go talk with a non-smoker",
-            "I will go for a walk",
-            "I will text my friend"
+            "I will hide my cigarette pack inside my bag ",
+            "I will eat dessert with a non-smoker friend",
+            "I will look at my progress so far on MyQuit",
+            "I will stay inside where smoking is not allowed."
     };
 
     public static String[] coffeeOrTea = new String[] {"Having coffee or tea",
             "If I am having coffee or tea...",""}; // , I will...",""};
     private static String[] helpCoffeeOrTea = new String[] {
-            "I will hide my cigarette pack inside my bag",
-            "I will enjoy the coffee/tea with a non-smoking friend",
-            "I will find a snack to chew on while drinking to keep myself occupied",
-            "I will drink coffee/tea inside where smoking is prohibited"
+            "I will hide my cigarette pack inside my bag ",
+            "I will sit with a non-smoking friend",
+            "I will look at my progress so far on MyQuit",
+            "I will stay inside where smoking is not allowed."
     };
 
     public static String[] onABreak = new String[] {"On a break",
             "If I am having a break...",""}; // , I will...",""};
     private static String[] helpOnABreak = new String[] {
-            "I will avoid being around smokers",
-            "I will listen to a song/watch a video clip",
-            "I will go for a walk",
-            "I will read a book",
+            "I will stay away from the place people usually smoke at.",
+            "I will hang out with a non-smoker friend.",
+            "I will go for a walk inside my building.",
+            "I will look at my progress so far on MyQuit"
 };
 
     public static String[] inACarActivity = new String[] {"Commuting or in a car",
             "If I commuting or in the car...",""}; // , I will...",""};
     private static String[] helpInACarActivity = new String[] {
-            "I will play engaging radio or podcasts to keep my focus",
-            "I will keep my cigarettes out of reach",
+            "I will chew on a straw or have a snack.",
+            "I will sing along to the music that's playing.",
             "I will talk to a friend/family member on the phone",
-            "I will listen to my favorite music for not smoking"
+            "I will put my cigarettes in the trunk."
 };
 
     public static String[] bedTimeActivity = new String[] {"Going to bed",
             "If I am about to go to bed...",""}; // , I will...",""};
     private static String[] helpBedtimeActivity = new String[] {
-            "I will listen to calming music/meditate to relax myself",
             "I will hide my cigarettes so it is harder for me to find them in the morning",
-            "I will read a book",
-            "I will plan out my entire morning and not allow time to smoke"
+            "I will remind myself about why I want to quit smoking.",
+            "I will look at my progress so far on MyQuit",
+            "I will plan out my schedule for the next day on MyQuit"
 };
 
     public static String[] feelingDepressed = new String[] {"I'm feeling depressed",
             "If I am feeling depressed...",""}; // , I will...",""};
     private static String[] helpFeelingDepressed = new String[] {
-            "I will go for a walk or for a run to clear my mind",
-            "I will watch a video that motivates me or makes me happy",
+            "I will go for a walk or a run to clear my mind",
+            "I will do my favorite hobby.",
             "I will call a friend or family member",
-            "I will remind myself of the positive effects of quitting smoking."
+            "I will hang out with a non-smoker friend."
 };
 
     public static String[] underStress = new String[] {"I'm feeling angry or frustrated",
             "If I am feeling angry or frustrated...",""}; // , I will...",""};
     private static String[] helpUnderStress = new String[] {
-            "I will practice breathing deeply",
-            "I will go for a walk alone",
-            "I will exercise/go for a run",
-            "I will tell myself that I can handle my emotions without using cigarettes"
+            "I will close my eyes and breathe deeply and slowly",
+            "I will call a friend or family member",
+            "I will go to the gym",
+            "I will hang out with a non-smoker friend."
 };
 
     public static String[] desireCig = new String[] {"I'm desiring a cigarette",
             "If I am desiring a cigarette...",""}; // , I will...",""};
     private static String[] helpDesireCig = new String[] {
-            "I will put my cigarette pack out of reach",
-            "I will try and meditate to distract myself with other happy thoughts",
-            "I will look at the progress I have made to motivate myself",
-            "I will text a close friend and promise not to smoke for the rest of the day"
+            "I will put my cigarette pack out of reach ",
+            "I will keep busy by doing my work.",
+            "I will hang out with a non-smoker friend.",
+            "I will stay inside where smoking is not allowed."
     };
 
     public static String[] enjoyingSmoking = new String[] {"Someone is smoking and enjoying it",
             "If I see someone smoking and enjoying it...",""}; // , I will...",""};
     private static String[] helpEnjoyingSmoking = new String[] {
-            "I will distract myself and avoid looking at them",
-            "I will reflect on the negative health consequences for them",
-            "I will watch a video on harmful effects of smoking ",
-            "I will remind myself of the positive consequences of quitting smoking "
+            "I will go to different location",
+            "I will think about what is happening to their lungs.",
+            "I will stay inside where smoking is not allowed.",
+            "I will remind myself of the benefits of quitting."
 };
 
     public static String[] gainedWeight = new String[] {"I noticed I gained weight",
             "If I noticed that I have gained weight...",""}; // , I will...",""};
     private static String[] helpGainedWeight = new String[] {
-            "I will think about topics not related to smoking, such as exercising",
-            "I will go straight to the gym",
-            "I will plan a workout/diet schedule for the day",
-            "I will buy a gym membership or plan exercising",
+            "I will go outside for a quick walk.",
+            "I will work out with a non-smoker friend.",
+            "I will eat something healthy.",
+            "I will drink a glass of water or tea."
 };
 
     public static String[] iAmBored = new String[] {"I'm bored",
             "If I am bored...",""}; // , I will...",""};
     private static String[] helpIAmBored = new String[] {
-            "I will go out to a park for a walk/jog",
-            "I will find something constructive to do with a friend",
-            "I will read a book",
-            "I will learn a new hobby",
+            "I will go outside for a quick walk.",
+            "I will hang out with a non-smoker friend.",
+            "I will look at my progress so far on MyQuit",
+            "I will stay busy by checking my email or my Facebook newsfeed."
     };
 
     public static String[] iAmDrinking = new String[] {"I'm drinking",
             "If I am drinking...",""}; // , I will...",""};
     private static String[] helpIAmDrinking = new String[] {
-            "I will not take my cigarettes with me",
-            "I will chew on a straw ",
-            "I will use the restroom more frequently ",
-            "I will ask a friend to stay inside with me "
+            "I will leave my cigarettes at home or in my car.",
+            "I will ask a non-smoker friend to stay inside with me.",
+            "I will stay away from the place people usually smoke at.",
+            "I will give my pack of cigarettes to a non-smoker friend."
     };
 
 

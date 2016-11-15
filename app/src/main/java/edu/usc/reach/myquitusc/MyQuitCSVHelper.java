@@ -357,6 +357,29 @@ public class MyQuitCSVHelper{
         }
     }
 
+    public static String pullFirstLoginTime(String logMessage) {
+        try {
+            CSVReader reader = new CSVReader(new FileReader(logPath + "LoginEvents.csv"));
+            List<String[]> runThrough = reader.readAll();
+            reader.close();
+            String pulledLog = null;
+            String pulledMessage;
+            runLoop:
+            for(String[] pulledReport: runThrough) {
+                pulledMessage = pulledReport[0];
+                if (pulledMessage.equalsIgnoreCase(logMessage)) {
+                    pulledLog = pulledReport[2];
+                    break runLoop;
+                }
+            }
+            return pulledLog;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
 
     public static Date pullCraveTime () throws IOException, ParseException {
         String[] pullEvent = null;

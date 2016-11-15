@@ -101,7 +101,7 @@ public class MyQuitProgress extends Activity {
             public int get(GraphViewDataInterface graphViewDataInterface) {
                 switch(typePull){
                     case 1: return Color.RED;
-                    case 2: return Color.BLUE;
+                    case 2: return Color.MAGENTA;
                     default: return 0;
                 }
             }
@@ -111,7 +111,7 @@ public class MyQuitProgress extends Activity {
             public int get(GraphViewDataInterface graphViewDataInterface) {
                 switch(typePull){
                     case 3: return Color.BLUE;
-                    case 4: return Color.RED;
+                    case 4: return Color.YELLOW;
                     case 5: return Color.GREEN;
                     default: return 0;
                 }

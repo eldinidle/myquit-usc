@@ -50,6 +50,11 @@
             android:screenOrientation="sensorLandscape" >
         </activity>
         <activity
+            android:name=".MyQuitProgressNew"
+            android:label="@string/title_activity_my_quit_progress"
+            android:screenOrientation="sensorLandscape" >
+        </activity>
+        <activity
             android:name=".MyQuitTasksActivity"
             android:label="@string/title_activity_my_quit_tasks"
             android:screenOrientation="portrait" >

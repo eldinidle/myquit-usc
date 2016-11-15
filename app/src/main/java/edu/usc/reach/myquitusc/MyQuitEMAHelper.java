@@ -30,17 +30,68 @@ import edu.usc.reach.myquitusc.Surveys.MyQuitSmokeSurvey;
 public class MyQuitEMAHelper {
     static final int KEY_NUM_REPROMPTS = 3;
 
-    private static int KEY_EOD_PROMPT_HOUR() {
+
+    private static int[] KEY_EOD_PROMPT_TIME() {
         try {
-            int checkReturnHour = Integer.parseInt(MyQuitCSVHelper.pullLoginStatus("EOD Prompt"));
-            if(checkReturnHour < 20 | checkReturnHour > 23){
-                return 22;
+            int returnWhich = Integer.parseInt(MyQuitCSVHelper.pullLoginStatus("EOD Prompt"));
+            switch(returnWhich){
+                case 0:
+                    return new int[] {20,0};
+                case 1:
+                    return new int[] {20,30};
+                case 2:
+                    return new int[] {21,0};
+                case 3:
+                    return new int[] {21,30};
+                case 4:
+                    return new int[] {22,0};
+                case 5:
+                    return new int[] {22,30};
+                case 6:
+                    return new int[] {23,0};
+                case 7:
+                    return new int[] {23,30};
+                default:
+                    return new int[] {22,0};
             }
-            else{return checkReturnHour;}
         }
         catch(NumberFormatException nfe){
-            return 22;
+            return new int[] {22,0};
         }
+    }
+
+    private static int KEY_EOD_PROMPT_HOUR_CUT() {
+        try {
+            int returnWhich = Integer.parseInt(MyQuitCSVHelper.pullLoginStatus("EOD Prompt"));
+            switch(returnWhich){
+                case 0:
+                    return 240;
+                case 1:
+                    return 210;
+                case 2:
+                    return 180;
+                case 3:
+                    return 150;
+                case 4:
+                    return 120;
+                case 5:
+                    return 90;
+                case 6:
+                    return 60;
+                case 7:
+                    return 30;
+                default:
+                    return 120;
+            }
+        }
+        catch(NumberFormatException nfe){
+            return 120;
+        }
+    }
+
+    public static String whatEODTime(int which){
+        CharSequence[] hourList = {"8:00 PM","8:30 PM","9:00 PM","9:30 PM","10:00 PM","10:30 PM","11:00 PM","11:30 PM"};
+        return hourList[which].toString();
     }
 
     //static final int KEY_EOD_PROMPT_HOUR = 22;
@@ -323,8 +374,8 @@ public class MyQuitEMAHelper {
     public static void setUpEODEMA(boolean isMainStudy) {
         if(isMainStudy) {
             Calendar nowTime = Calendar.getInstance();
-            if (nowTime.get(Calendar.HOUR_OF_DAY) >= KEY_EOD_PROMPT_HOUR() &&
-                    MyQuitCSVHelper.isLastEventPastXMinutesTrue(MyQuitCSVHelper.END_OF_DAY_EMA_KEY, (60 * (24 - KEY_EOD_PROMPT_HOUR())))) {
+            if (nowTime.get(Calendar.HOUR_OF_DAY) >= KEY_EOD_PROMPT_TIME()[0] && nowTime.get(Calendar.MINUTE) >= KEY_EOD_PROMPT_TIME()[1] &&
+                    MyQuitCSVHelper.isLastEventPastXMinutesTrue(MyQuitCSVHelper.END_OF_DAY_EMA_KEY, (60 * (24 - KEY_EOD_PROMPT_HOUR_CUT())))) {
                 MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"), "EMA Prompt Ready", "EOD", MyQuitCSVHelper.getFulltime());
                 MyQuitCSVHelper.logEMAEvents(MyQuitCSVHelper.END_OF_DAY_EMA_KEY,
                         "intentPresented", MyQuitCSVHelper.getFulltime(), "", "");
@@ -332,8 +383,8 @@ public class MyQuitEMAHelper {
         }
         else {
             Calendar nowTime = Calendar.getInstance();
-            if (nowTime.get(Calendar.HOUR_OF_DAY) >= KEY_EOD_PROMPT_HOUR() &&
-                    MyQuitCSVHelper.isLastEventPastXMinutesTrue(MyQuitCSVHelper.PQ_END_OF_DAY_EMA_KEY, (60 * (24 - KEY_EOD_PROMPT_HOUR())))) {
+            if (nowTime.get(Calendar.HOUR_OF_DAY) >= KEY_EOD_PROMPT_TIME()[0] && nowTime.get(Calendar.MINUTE) >= KEY_EOD_PROMPT_TIME()[1] &&
+                    MyQuitCSVHelper.isLastEventPastXMinutesTrue(MyQuitCSVHelper.PQ_END_OF_DAY_EMA_KEY, (60 * (24 - KEY_EOD_PROMPT_HOUR_CUT())))) {
                 MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"), "EMA Prompt Ready", "PreQuit EOD", MyQuitCSVHelper.getFulltime());
                 MyQuitCSVHelper.logEMAEvents(MyQuitCSVHelper.PQ_END_OF_DAY_EMA_KEY,
                         "intentPresented", MyQuitCSVHelper.getFulltime(), "", "");

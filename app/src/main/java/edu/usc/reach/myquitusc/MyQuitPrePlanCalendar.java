@@ -179,7 +179,7 @@ public class MyQuitPrePlanCalendar extends Activity {
 
     private void setEndOfDay(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        CharSequence[] hourList = {"8:00 PM","9:00 PM","10:00 PM","11:00 PM"};
+        CharSequence[] hourList = {"8:00 PM","8:30 PM","9:00 PM","9:30 PM","10:00 PM","10:30 PM","11:00 PM","11:30 PM"};
         //String[] hourList = new String[]{"8:00 PM","9:00 PM","10:00 PM","11:00 PM"};
         //ArrayAdapter<String> hoursAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_activated_1,hourList);
         builder.setTitle(("Select preferred time to receive your evening survey:"))
@@ -187,8 +187,8 @@ public class MyQuitPrePlanCalendar extends Activity {
                 .setItems(hourList,new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        MyQuitCSVHelper.logLoginEvents("EOD Prompt",String.valueOf(which+20),MyQuitCSVHelper.getFulltime());
-                        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"EOD Prompt Selected",String.valueOf(which+20),MyQuitCSVHelper.getFulltime());
+                        MyQuitCSVHelper.logLoginEvents("EOD Prompt",String.valueOf(which),MyQuitCSVHelper.getFulltime());
+                        MyQuitPHP.postTrackerEvent(MyQuitCSVHelper.pullLoginStatus("UserName"),"EOD Prompt Selected",String.valueOf(which),MyQuitCSVHelper.getFulltime());
                         Intent homeLaunch = new Intent(getApplicationContext(), MyQuitHomeScreen.class);
                         homeLaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);

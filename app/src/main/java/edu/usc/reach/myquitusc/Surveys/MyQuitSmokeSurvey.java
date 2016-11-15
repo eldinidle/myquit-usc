@@ -125,7 +125,7 @@ public class MyQuitSmokeSurvey {
             case 1: return 2;
             case 2:
                 switch(aID) {
-                    case 1008:
+                    case 1009:
                         return 3;
                     default:
                         return 4;

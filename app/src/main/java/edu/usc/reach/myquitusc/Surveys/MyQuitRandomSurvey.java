@@ -120,7 +120,7 @@ public class MyQuitRandomSurvey {
             switch(qID){
                 case 0:
                     switch(aID) {
-                        case 1009:
+                        case 1010:
                             return 1;
                         default:
                             return 2;

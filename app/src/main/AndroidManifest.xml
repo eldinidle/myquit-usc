@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.usc.reach.myquitusc" >
+    package="edu.usc.reach.myquituscnew" >
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -20,7 +20,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MyQuitHomeScreen"
+            android:name="edu.usc.reach.myquituscnew.MyQuitHomeScreen"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -30,56 +30,56 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MyQuitPlans"
+            android:name="edu.usc.reach.myquituscnew.MyQuitPlans"
             android:label="@string/title_activity_my_quit_plans"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".MyQuitCalendar"
+            android:name="edu.usc.reach.myquituscnew.MyQuitCalendar"
             android:label="@string/title_activity_my_quit_calendar"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".MyQuitPrePlanCalendar"
+            android:name="edu.usc.reach.myquituscnew.MyQuitPrePlanCalendar"
             android:label="@string/title_activity_my_quit_pre_plan_calendar"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".MyQuitProgress"
+            android:name="edu.usc.reach.myquituscnew.MyQuitProgress"
             android:label="@string/title_activity_my_quit_progress"
             android:screenOrientation="sensorLandscape" >
         </activity>
         <activity
-            android:name=".MyQuitProgressNew"
+            android:name="edu.usc.reach.myquituscnew.MyQuitProgressNew"
             android:label="@string/title_activity_my_quit_progress"
             android:screenOrientation="sensorLandscape" >
         </activity>
         <activity
-            android:name=".MyQuitTasksActivity"
+            android:name="edu.usc.reach.myquituscnew.MyQuitTasksActivity"
             android:label="@string/title_activity_my_quit_tasks"
             android:screenOrientation="portrait" >
         </activity>
 
         <receiver
-            android:name=".MyQuitReceiver"
+            android:name="edu.usc.reach.myquituscnew.MyQuitReceiver"
             android:enabled="true"
             android:exported="false" >
         </receiver>
 
         <service
-            android:name=".MyQuitService"
+            android:name="edu.usc.reach.myquituscnew.MyQuitService"
             android:enabled="true"
             android:exported="false" >
         </service>
 
         <activity
-            android:name=".MyQuitEMA"
+            android:name="edu.usc.reach.myquituscnew.MyQuitEMA"
             android:label="@string/title_activity_my_quit_em"
             android:screenOrientation="portrait" >
         </activity>
 
         <receiver
-            android:name=".MyQuitOnBootBroadcastReceiver"
+            android:name="edu.usc.reach.myquituscnew.MyQuitOnBootBroadcastReceiver"
             android:enabled="true"
             android:exported="false" >
             <intent-filter>
@@ -89,33 +89,33 @@
         </receiver>
 
         <activity
-            android:name=".MyQuitLoginActivity"
+            android:name="edu.usc.reach.myquituscnew.MyQuitLoginActivity"
             android:label="@string/title_activity_my_quit_login"
             android:windowSoftInputMode="adjustResize|stateHidden" >
         </activity>
         <activity
-            android:name=".MyQuitIntentPrompt"
+            android:name="edu.usc.reach.myquituscnew.MyQuitIntentPrompt"
             android:label="@string/title_activity_my_quit_intent_prompt"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".MyQuitPrePlanArray"
+            android:name="edu.usc.reach.myquituscnew.MyQuitPrePlanArray"
             android:label="@string/title_activity_my_quit_pre_plan_array"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".MyQuitNewPlans"
+            android:name="edu.usc.reach.myquituscnew.MyQuitNewPlans"
             android:label="@string/title_activity_my_quit_new_plans"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".DatabaseHelpers.MyQuitAdmin"
+            android:name="edu.usc.reach.myquituscnew.DatabaseHelpers.MyQuitAdmin"
             android:label="@string/title_activity_my_quit_admin" >
         </activity>
 
         <provider
-            android:name=".DatabaseHelpers.MyQuitContentProvider"
-            android:authorities="edu.usc.reach.myquitusc.provider"
+            android:name="edu.usc.reach.myquituscnew.DatabaseHelpers.MyQuitContentProvider"
+            android:authorities="edu.usc.reach.myquituscnew.provider"
             android:enabled="false"
             android:exported="true" >
         </provider>

@@ -12,8 +12,8 @@ public class MyQuitSFTP {
         FTPClient uscHost = new FTPClient();
 
         try {
-            uscHost.connect("ftp://mysmoke.usc.edu", 22);
-            uscHost.login("MyQuitUSCMobilePhone", "thisisthepassword");
+            uscHost.connect("", 22);
+            uscHost.login("", "");
             //MyQuitCSVHelper.logEMAEvents("Login success", MyQuitCSVHelper.getFulltime());
             try {
                 uscHost.changeWorkingDirectory("/" + userName);

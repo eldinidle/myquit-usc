@@ -41,7 +41,7 @@ import edu.usc.reach.myquituscnew.Surveys.MyQuitSmokeSurvey;
  */
 public class MyQuitPHP {
 
-    private final static int phpAllowInteger = 1265;
+    private final static int phpAllowInteger = 9999;
 
     private final static String rogueSuccessTable = "RoguePushSuccessTable.csv";
     private final static String trackerSuccessTable = "TrackerPushSuccessTable.csv";
@@ -51,13 +51,13 @@ public class MyQuitPHP {
 
     private final static String unPlannedSuccessTable = "UnplannedPushSuccessTable.csv";
 
-    private static final String urlPostRogueEvent = "http://myquitadmin.usc.edu/data.php";
-    private static final String urlTrackerEvent = "http://myquitadmin.usc.edu/tracker.php";
-    private static final String urlPostEMAEvent = "http://myquitadmin.usc.edu/myquitema.php";
-    private static final String urlPostCalendarEvent = "http://myquitadmin.usc.edu/calendar.php";
-    private static final String urlPostGPSEvent = "http://myquitadmin.usc.edu/gps.php";
+    private static final String urlPostRogueEvent = "";
+    private static final String urlTrackerEvent = "";
+    private static final String urlPostEMAEvent = "";
+    private static final String urlPostCalendarEvent = "";
+    private static final String urlPostGPSEvent = "";
 
-    private static final String urlPostUnplannedEvent = "http://myquit.usc.edu/postunplanned.php";
+    private static final String urlPostUnplannedEvent = "";
 
 
    // static JSONParser jsonParser = new JSONParser();
